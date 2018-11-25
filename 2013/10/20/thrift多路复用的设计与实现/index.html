@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="thrift rpc design,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="# 介绍Thrift作为一个跨语言的rpc框架，为后端服务间的多语言混合开发提供了高可靠，可扩展，以及高效的实现。但是自从2007年facebook开源后的6年时间内一直缺少一个多路复用的功能(Multiplexing Services)，也就是在一个Server上面实现多个Service调用。比如要实现一个后端服务，很多时候不仅仅只是实现业务服务接口，往往还会预留一些调试，监控服务接口，以往要实">
+<meta name="keywords" content="thrift rpc design">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Thrift多路复用的设计与实现">
+<meta property="og:url" content="http://yoursite.com/2013/10/20/thrift多路复用的设计与实现/index.html">
+<meta property="og:site_name" content="taocoding">
+<meta property="og:description" content="# 介绍Thrift作为一个跨语言的rpc框架，为后端服务间的多语言混合开发提供了高可靠，可扩展，以及高效的实现。但是自从2007年facebook开源后的6年时间内一直缺少一个多路复用的功能(Multiplexing Services)，也就是在一个Server上面实现多个Service调用。比如要实现一个后端服务，很多时候不仅仅只是实现业务服务接口，往往还会预留一些调试，监控服务接口，以往要实">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/2013/10/thrift-monolithic-interface.png">
+<meta property="og:image" content="http://yoursite.com/images/2013/10/thrift-multi-server.png">
+<meta property="og:image" content="http://yoursite.com/images/2013/10/thrift-arch.png">
+<meta property="og:image" content="http://yoursite.com/images/2013/10/thrift-multiplex-arch.png">
+<meta property="og:image" content="http://yoursite.com/images/2013/10/thrift-multiplex.png">
+<meta property="og:updated_time" content="2018-11-25T10:12:25.544Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Thrift多路复用的设计与实现">
+<meta name="twitter:description" content="# 介绍Thrift作为一个跨语言的rpc框架，为后端服务间的多语言混合开发提供了高可靠，可扩展，以及高效的实现。但是自从2007年facebook开源后的6年时间内一直缺少一个多路复用的功能(Multiplexing Services)，也就是在一个Server上面实现多个Service调用。比如要实现一个后端服务，很多时候不仅仅只是实现业务服务接口，往往还会预留一些调试，监控服务接口，以往要实">
+<meta name="twitter:image" content="http://yoursite.com/images/2013/10/thrift-monolithic-interface.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2013/10/20/thrift多路复用的设计与实现/">
+
+
+
+
+
+  <title>Thrift多路复用的设计与实现 | taocoding</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d13234060d812cb98a47e937139083a9";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">taocoding</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2013/10/20/thrift多路复用的设计与实现/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Thrift多路复用的设计与实现</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2013-10-20T17:15:59+08:00">
+                2013-10-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C++</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <div><br><br># 介绍<br><br>Thrift<span style="font-family: 微软雅黑;">作为一个跨语言的</span><span style="font-family: Times New Roman;">rpc</span><span style="font-family: 微软雅黑;">框架，为后端服务间的多语言混合开发提供了高可靠，可扩展，以及高效的实现。但是自从</span><span style="font-family: Times New Roman;">2007</span><span style="font-family: 微软雅黑;">年</span><span style="font-family: Times New Roman;">facebook</span><span style="font-family: 微软雅黑;">开源后的</span><span style="font-family: Times New Roman;">6</span><span style="font-family: 微软雅黑;">年时间内一直缺少一个多路复用的功能</span><span style="font-family: Times New Roman;">(</span>Multiplexing Services)<span style="font-family: 微软雅黑;">，也就是在一个</span><span style="font-family: Times New Roman;">Server</span><span style="font-family: 微软雅黑;">上面实现多个</span><span style="font-family: Times New Roman;">Service</span><span style="font-family: 微软雅黑;">调用。比如要实现一个后端服务，很多时候不仅仅只是实现业务服务接口，往往还会预留一些调试，监控服务接口，以往要实现多个</span><span style="font-family: Times New Roman;">Service</span><span style="font-family: 微软雅黑;">在一个</span><span style="font-family: Times New Roman;">Server</span><span style="font-family: 微软雅黑;">上面调用，要么将多个服务糅合成一个庞大的服务（图</span><span style="font-family: Times New Roman;">1</span><span style="font-family: 微软雅黑;">），要么将多个</span><span style="font-family: Times New Roman;">Service</span><span style="font-family: 微软雅黑;">分摊到不同的</span><span style="font-family: Times New Roman;">Server</span><span style="font-family: 微软雅黑;">上（图</span><span style="font-family: Times New Roman;">2</span><span style="font-family: 微软雅黑;">）。最近的版本</span><span style="font-family: Times New Roman;">0.9.1</span><span style="font-family: 微软雅黑;">终于实现内置的多路复用，本文将就该功能简要分析一下该功能的设计与实现，并提供一个简单的示例。</span><br><br><a href="/images/2013/10/thrift-monolithic-interface.png"><img src="/images/2013/10/thrift-monolithic-interface.png" alt="thrift-monolithic-interface"></a><br><br>图1<br><br><a href="/images/2013/10/thrift-multi-server.png"><img src="/images/2013/10/thrift-multi-server.png" alt="thrift-multi-server"></a><br><br>图2<br><br>&nbsp;<br><br>## 设计<br><br>Thrift<span style="font-family: 微软雅黑;">的架构如下：</span><br><br><a href="/images/2013/10/thrift-arch.png"><img src="/images/2013/10/thrift-arch.png" alt="thrift-arch"></a><br><br>Thrift<span style="font-family: 微软雅黑;">采取了很优雅的分层设计，下面简述各层的主要功能：</span><br><br>Ø Transport<br><br>负责传输数据的接口，有文件，内存，套接字等实现。<br><br>Ø Protocol<br><br>负责数据的协议交互接口，有二进制，<span style="font-family: Times New Roman;">Json</span><span style="font-family: 微软雅黑;">等实现。</span><br><br>Ø Processor<br><br>负责输入输出数据处理的接口，其实就是对<span style="font-family: Times New Roman;">Protocol</span><span style="font-family: 微软雅黑;">的处理。</span><br><br>Ø Server<br><br>包括了上面各层的创建和管理，并提供网络服务的功能，网络服务这块目前有四个实现，分别是最简单的单线程阻塞，多线程阻塞，线程池阻塞和基于<span style="font-family: Times New Roman;">libevent</span><span style="font-family: 微软雅黑;">的非阻塞模式。</span><br><br>实现多路复用有以下几个需要注意的地方：<br><br>Ø 不修改现有的<span style="font-family: Times New Roman;">Thrift</span><span style="font-family: 微软雅黑;">代码，主要是指向后兼容，旧代码可以在新版本中编译</span><br><br>Ø 不修改<a href="http://thrift.apache.org/static/files/thrift-20070401.pdf" target="_blank" rel="noopener">白皮书</a>上说的协议<br><br>Ø 不依赖任何<span style="font-family: Times New Roman;">Server</span><span style="font-family: 微软雅黑;">层代码，也不需要新的</span><span style="font-family: Times New Roman;">Server</span><span style="font-family: 微软雅黑;">实现</span><br><br>0.9.1<span style="font-family: 微软雅黑;">之前版本不能多个</span><span style="font-family: Times New Roman;">Service</span><span style="font-family: 微软雅黑;">在同一个</span><span style="font-family: Times New Roman;">Server</span><span style="font-family: 微软雅黑;">上面调用，主要是因为在协议层只把</span><span style="font-family: Times New Roman;">Service</span><span style="font-family: 微软雅黑;">的函数名打包，没有将</span><span style="font-family: Times New Roman;">ServiceName</span><span style="font-family: 微软雅黑;">打包进去，所以在</span><span style="font-family: Times New Roman;">Processor</span><span style="font-family: 微软雅黑;">层默认只能处理一个</span><span style="font-family: Times New Roman;">Service</span><span style="font-family: 微软雅黑;">。</span><br><br>新版本中通过新增以下设计完成了<span style="font-family: Times New Roman;">Service</span><span style="font-family: 微软雅黑;">的多路复用：</span><br><br><a href="/images/2013/10/thrift-multiplex-arch.png"><img src="/images/2013/10/thrift-multiplex-arch.png" alt="thrift-multiplex-arch"></a><br><br><a href="/images/2013/10/thrift-multiplex.png"><img src="/images/2013/10/thrift-multiplex.png" alt="thrift-multiplex"></a><br><br>深色部分为新增部分，需要多个<span style="font-family: Times New Roman;">Service</span><span style="font-family: 微软雅黑;">复用</span><span style="font-family: Times New Roman;">Server</span><span style="font-family: 微软雅黑;">的客户端需要使用新的</span><span style="font-family: Times New Roman;">Protocol</span><span style="font-family: 微软雅黑;">实现，支持</span><span style="font-family: Times New Roman;">Service</span><span style="font-family: 微软雅黑;">复用的服务端需要通过新的</span><span style="font-family: Times New Roman;">Processor</span><span style="font-family: 微软雅黑;">实现注册不同的</span><span style="font-family: Times New Roman;">Service</span><span style="font-family: 微软雅黑;">。</span><br><br>## 实现<br><br>从<span style="font-family: Times New Roman;">release-notes</span><span style="font-family: 微软雅黑;">看到目前已经有</span><span style="font-family: Times New Roman;">Java</span><span style="font-family: 微软雅黑;">，</span><span style="font-family: Times New Roman;">Delphi</span><span style="font-family: 微软雅黑;">，</span><span style="font-family: Times New Roman;">C#</span><span style="font-family: 微软雅黑;">，</span><span style="font-family: Times New Roman;">C++</span><span style="font-family: 微软雅黑;">几个语言实现了该功能，具体到</span><span style="font-family: Times New Roman;">C++</span><span style="font-family: 微软雅黑;">实现按照</span><a href="https://issues.apache.org/jira/browse/THRIFT-1902" target="_blank" rel="noopener">THRIFT-1902</a>的介绍，是直接移植的<span style="font-family: Times New Roman;">java</span><span style="font-family: 微软雅黑;">版本。</span><br><br>### 新增代码<br><br>protocol/TMultiplexedProtocol.h<br><br>protocol/TMultiplexedProtocol.cpp<br><br>protocol/TProtocolDecorator.h<br><br>processor/TMultiplexedProcessor.h<br><br>### 主要逻辑<br><br>1) TMultiplexedProtocol类重写writeMessageBegin_virt方法，在Service<span style="font-family: 微软雅黑;">的函数名前新增了</span><span style="font-family: Times New Roman;">ServiceName</span><span style="font-family: 微软雅黑;">，并附带了一个分隔符；该类采取了</span>decorator模式将绝大部分操作转发到实际的protocol<span style="font-family: 微软雅黑;">对象。</span><br><br>2) TMultiplexedProcessor类增加了一个存放service<span style="font-family: 微软雅黑;">的</span><span style="font-family: Times New Roman;">map</span><span style="font-family: 微软雅黑;">，</span><br><br>typedef std::map&lt; std::string, shared_ptr&lt;TProcessor&gt; &gt; services_t;<br><br>key为ServiceName，这样在process方法中先解出TMultiplexedProtocol传递过来的ServiceName，通过该key查找到对应的Processor对象，再调用该Processor的process方法，这样就完美的实现了多个serivice的共存。<br><br>## 使用示例<br><br>IDL:<br><pre class="brush:other">namespace cpp thrift.multiplex.demo<br><br>service FirstService<br>{<br>    void blahBlah()<br>}<br><br>service SecondService<br>{<br>    void blahBlah()<br>}</pre><br>Server:<br><pre class="brush:cpp">int port = 9090;<br>shared_ptr&lt;TProcessor&gt; processor1(new FirstServiceProcessor<br>         (shared_ptr&lt;FirstServiceHandler&gt;(new FirstServiceHandler())));<br>shared_ptr&lt;TProcessor&gt; processor2(new SecondServiceProcessor<br>         (shared_ptr&lt;SecondServiceHandler&gt;(new SecondServiceHandler())));<br><br>//使用MultiplexedProcessor<br>shared_ptr&lt;TMultiplexedProcessor&gt; processor(new TMultiplexedProcessor());<br><br>//注册各自的Service<br>processor-&gt;registerProcessor(“FirstService”, processor1);<br>processor-&gt;registerProcessor(“SecondService”, processor2);<br><br>shared_ptr&lt;TServerTransport&gt; serverTransport(new TServerSocket(port));<br>shared_ptr&lt;TTransportFactory&gt; transportFactory(new TBufferedTransportFactory());<br>shared_ptr&lt;TProtocolFactory&gt; protocolFactory(new TBinaryProtocolFactory());<br>TSimpleServer server(processor, serverTransport, transportFactory, protocolFactory);<br>server.serve();</pre><br>Client:<br><pre class="brush:cpp">shared_ptr&lt;TSocket&gt; transport(new TSocket(“localhost”, 9090));<br>transport-&gt;open();<br><br>shared_ptr&lt;TBinaryProtocol&gt; protocol(new TBinaryProtocol(transport));<br>shared_ptr&lt;TMultiplexedProtocol&gt; mp1(new TMultiplexedProtocol(protocol, “FirstService”));<br>shared_ptr&lt;FirstServiceClient&gt; service1(new FirstServiceClient(mp1));<br>shared_ptr&lt;TMultiplexedProtocol&gt; mp2(new TMultiplexedProtocol(protocol, “SecondService”));<br>shared_ptr&lt;SecondServiceClient&gt; service2(new SecondServiceClient(mp2));<br><br>service1-&gt;blahBlah();<br>service2-&gt;blahBlah();</pre><br><br>## 总结<br><br>Thrift<span style="font-family: 微软雅黑;">通过在客户端采取的</span>decorator模式巧妙的在协议层将ServiceName<span style="font-family: 微软雅黑;">传递到服务端，服务端通过常见的手段将</span><span style="font-family: Times New Roman;">ServiceName</span><span style="font-family: 微软雅黑;">和具体的</span><span style="font-family: Times New Roman;">Processor</span><span style="font-family: 微软雅黑;">进行映射，完美的解决了</span><span style="font-family: Times New Roman;">Service</span><span style="font-family: 微软雅黑;">的多路复用问题。</span><br><br>## 参考资料<br><br>1. <a href="http://thrift.apache.org/docs/concepts/" target="_blank" rel="noopener">http://thrift.apache.org/docs/concepts/</a><br><br>2. <a href="https://issues.apache.org/jira/browse/THRIFT-1902" target="_blank" rel="noopener">https://issues.apache.org/jira/browse/THRIFT-1902</a><br><br>3. <a href="https://issues.apache.org/jira/browse/THRIFT-563" target="_blank" rel="noopener">https://issues.apache.org/jira/browse/THRIFT-563</a><br><br>4. <a href="http://bigdata.impetus.com/whitepaper" target="_blank" rel="noopener">http://bigdata.impetus.com/whitepaper</a><br><br></div>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/thrift-rpc-design/" rel="tag"># thrift rpc design</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2013/09/09/qzone说说架构笔记/" rel="next" title="qzone说说架构笔记">
+                <i class="fa fa-chevron-left"></i> qzone说说架构笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2013/11/10/利用分布式缓存实现分布式锁/" rel="prev" title="利用分布式缓存实现分布式锁">
+                利用分布式缓存实现分布式锁 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">billowqiu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">152</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/billowqiu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:billowqiu@163.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">billowqiu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

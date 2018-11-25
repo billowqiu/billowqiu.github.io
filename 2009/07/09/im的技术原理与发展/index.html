@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、IM技术概念 IM技术全称Instant Messaging，中文翻译&amp;ldquo;即时通讯&amp;rdquo;，它是一种使人们能在网上识别在线用户并与他们实时交换消息的技术，是电子邮件发明以来迅速崛起的在线通讯方式。 IM的出现和互联网有着密不可分的关系，IM完全基于TCP/IP网络协议族实现，而TCP/IP协议族则是整个互联网得以实现的技术基础。 最早出现即时通讯协议是IRC（Internet">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IM的技术原理与发展">
+<meta property="og:url" content="http://yoursite.com/2009/07/09/im的技术原理与发展/index.html">
+<meta property="og:site_name" content="taocoding">
+<meta property="og:description" content="一、IM技术概念 IM技术全称Instant Messaging，中文翻译&amp;ldquo;即时通讯&amp;rdquo;，它是一种使人们能在网上识别在线用户并与他们实时交换消息的技术，是电子邮件发明以来迅速崛起的在线通讯方式。 IM的出现和互联网有着密不可分的关系，IM完全基于TCP/IP网络协议族实现，而TCP/IP协议族则是整个互联网得以实现的技术基础。 最早出现即时通讯协议是IRC（Internet">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-25T10:12:25.527Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="IM的技术原理与发展">
+<meta name="twitter:description" content="一、IM技术概念 IM技术全称Instant Messaging，中文翻译&amp;ldquo;即时通讯&amp;rdquo;，它是一种使人们能在网上识别在线用户并与他们实时交换消息的技术，是电子邮件发明以来迅速崛起的在线通讯方式。 IM的出现和互联网有着密不可分的关系，IM完全基于TCP/IP网络协议族实现，而TCP/IP协议族则是整个互联网得以实现的技术基础。 最早出现即时通讯协议是IRC（Internet">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2009/07/09/im的技术原理与发展/">
+
+
+
+
+
+  <title>IM的技术原理与发展 | taocoding</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d13234060d812cb98a47e937139083a9";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">taocoding</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/07/09/im的技术原理与发展/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">IM的技术原理与发展</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-07-09T01:19:00+08:00">
+                2009-07-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/未分类/" itemprop="url" rel="index">
+                    <span itemprop="name">未分类</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>一、IM技术概念</p>
+<p>IM技术全称Instant Messaging，中文翻译&ldquo;即时通讯&rdquo;，它是一种使人们能在网上识别在线用户并与他们实时交换消息的技术，是电子邮件发明以来迅速崛起的在线通讯方式。</p>
+<p>IM的出现和互联网有着密不可分的关系，IM完全基于TCP/IP网络协议族实现，而TCP/IP协议族则是整个互联网得以实现的技术基础。 最早出现即时通讯协议是IRC（Internet Relay Chat），但是可惜的是它仅能单纯的使用文字、符号的方式通过互联网进行交谈和沟通。随着互连网变得高度发达，即时通讯也变得远不止聊天这么简单，自1996年第一个IM产品ICQ发明后，IM的技术和功能也开始基本成型，语音、视频、文件共享、短信发送等高级信息交换功能都可以在IM工具上实现，于是功能强大的IM软件便足以搭建一个完整的通信交流平台。目前最具代表性的几款的IM通讯软件有MSN、Google Talk、Yahoo、Messenger 、腾讯QQ等。</p>
+<p>二、IM技术原理和工作方式</p>
+<p>典型的IM工作方式如下：登陆IM通讯中心（IM通讯服务器），获取一个自建立的历史的交流对象列表（好友列表），然后自身标志为在线状态，当好友列表中的某人在任何时候登录上线并试图通过你的计算机联系你时，IM系统会发一个消息提醒你，然后你能与他建立一个聊天会话通道进行各种消息如键入文字、通过语音等的交流，<br>从技术上来说，IM的基本技术原理如下：</p>
+<p>IM服务器<br>登陆或注销<br>用户A通过列表找到B，用户B获得的消息并与之交谈<br>通过IM服务器指引建立与B单独的通讯通道</p>
+<p>第一步，用户A输入自己的用户名和密码登录IM服务器，服务器通过读取用户数据库来验证用户身份，如果验证通过，登记用户A的IP地址、IM客户端软件的版本号及使用的TCP/UDP端口号，然后返回用户A登录成功的标志，此时用户A在IM系统中的状态为在线（Online Presence）。</p>
+<p>第二步，根据用户A存储在IM服务器上的好友列表（Buddy List），服务器将用户A在线的相关信息发送给也同时在线的IM好友的PC机，这些信息包括在线状态、IP地址、IM客户端使用的TCP端口（Port）号等，IM好友的客户端收到此信息后将在予以提示。</p>
+<p>第三步是IM服务器把用户A存储在服务器上的好友列表及相关信息回送到他的客户端机，这些信息包括也在线状态、IP地址、IM客户端使用的TCP端口（Port）号等信息，用户A的IM客户端收到后将显示这些好友列表及其在线状态。</p>
+<p>三、IM通讯方式</p>
+<p>1.在线直接通讯<br>如果用户A想与他的在线好友用户B聊天，他将直接通过服务器发送过来的用户B的IP地址、TCP端口号等信息，直接向用户B的PC机发出聊天信息，用户B的IM客户端软件收到后显示在屏幕上，然后用户B再直接回复到用户A的PC机，这样双方的即时文字消息就不再IM服务器中转，而是直接通过网络进行点对点的通讯，即对等通讯方式（Peer To Peer）。</p>
+<p>2.在线代理通讯<br>用户A与用户B的点对点通讯由于防火墙、网络速度等原因难以建立或者速度很慢，IM服务器将会主动提供消息中转服务，即用户A和用户B的即时消息全部先发送到IM服务器，再由服务器转发给对方。</p>
+<p>3.离线代理通讯<br>用户A与用户B由于各种原因不能同时在线的时候，如此时A向B发送消息，IM服务器可以主动寄存A用户的消息，到B用户下一次登陆的时候，自动将消息转发给B。</p>
+<p>4.扩展方式通讯<br>用户A可以通过IM服务器将信息以扩展的方式传递给B，如短信发送方式发送到B的手机，传真发送方式传递给B的电话机，以email的方式传递给B的电子邮箱等。<br>早期的IM系统，在IM客户端和IM服务器之间通讯采用UDP协议，UDP协议是不可靠的传输协议，而在IM客户端之间的直接通讯中，采用具备可靠传输能力的TCP协议。随着用户需求和技术环境的发展，目前主流的IM系统倾向于在IM客户端之间、IM客户端和IM服务器之间都采用TCP协议。<br>即时通讯相对于其他通讯方式如电话、传真、email等的最大优势就是消息传达的即时性和精确性，只要消息传递双方均在网络上可以互通，使用即时通讯软件传递消息，传递延时仅为1秒种</p>
+<p>四、兴起的嵌入式IM工具。</p>
+<p>传统的IM在统治了互联网即时通讯领域长达十年之久，以其日趋稳定的定能，与较强的用户黏着度，至今仍统治着这个巨大的市场。然而，软件行业的技术精英们，并不满足于此。他们厚积薄发，一直致力于开发出性能更为优越的即时通讯工具。当然，在功能上的不断完善，自然是一个必然的发展方向，在Web2.0时代，如何大力增强用户对网站的黏着度，而不仅仅是对于IM的拥附，已经成为他们的主攻方向了。于是，嵌入式IM工具，应运而生了。</p>
+<p>相对以往的传统的即使沟通工具，它们需要用户下载软件包，需要用户进行安装。对于拥有IM产品的网站而言，用户在登陆网站后，不能直接使用其IM工具，对于流量与用户的黏着度，都是有一定影响的。因此在IM与网站相互依存的今天，没有哪家网络公司，愿意将IM工具孤立开来。</p>
+<p>于是，目前，一种新型的嵌入式IM工具就应运而生了。这种IM工具，不需要下载安装，当用户登陆网页后，该IM直接嵌套在网页中，可以直接使用。</p>
+<p>而在功能上，则一点也不输于传统的IM，无论是传统的文字沟通的速度与效率，还是近年来越来越成为IM工具必备的音频/视频功能，这种嵌入式IM都能提供非常稳定的传输。更值得一提的是，因为嵌入式IM是嵌套在网页上的，软件供应商，可以根据网站需求，设计出适合网站风格的IM产品。而不是像传统的IM工具，千篇一律，毫无个性可言。</p>
+<p>目前，这类嵌入式IM在社区、交友、社团及协作等类型的网站上，应用已经较为广泛。在Web2.0时代，将发挥越来越重要的作用。 </p>
+<p></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2009/07/06/vs2005内存泄漏检测方法/" rel="next" title="VS2005内存泄漏检测方法">
+                <i class="fa fa-chevron-left"></i> VS2005内存泄漏检测方法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2009/07/14/c中回调callback的使用方法/" rel="prev" title="C++中回调(CallBack)的使用方法">
+                C++中回调(CallBack)的使用方法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">billowqiu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">152</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/billowqiu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:billowqiu@163.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">billowqiu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

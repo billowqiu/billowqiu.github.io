@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="&amp;amp;nbsp;鉴于以前写程序那种不经过仔细思考及分析的不良习惯，觉得画流程翻还是很必要的，而且养成习惯后，对自己的思维锻炼以及高效正确编程有很大的好处。翻开大一时发的《C程序设计》第二章复习了一下，把上面一个很好的例子自己整理了一下，而且发现一个不错的画流程图的工具(Diagram Designer)。以下为全文： &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 问">
+<meta property="og:type" content="article">
+<meta property="og:title" content="求素数">
+<meta property="og:url" content="http://yoursite.com/2008/05/23/求素数/index.html">
+<meta property="og:site_name" content="taocoding">
+<meta property="og:description" content="&amp;amp;nbsp;鉴于以前写程序那种不经过仔细思考及分析的不良习惯，觉得画流程翻还是很必要的，而且养成习惯后，对自己的思维锻炼以及高效正确编程有很大的好处。翻开大一时发的《C程序设计》第二章复习了一下，把上面一个很好的例子自己整理了一下，而且发现一个不错的画流程图的工具(Diagram Designer)。以下为全文： &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 问">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/50a29d363623c4cea2cc2b28.jpg">
+<meta property="og:image" content="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/5bb5041bf679f1c6ac6e7529.jpg">
+<meta property="og:image" content="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/735064fb189887314e4aea2a.jpg">
+<meta property="og:image" content="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/74cd06160bb4410b962b432b.jpg">
+<meta property="og:image" content="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/e957c817ac1353124b90a735.jpg">
+<meta property="og:image" content="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/db517951464f5e9c8d543035.jpg">
+<meta property="og:image" content="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/2742ef0180aa521d7aec2c31.jpg">
+<meta property="og:image" content="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/2cd0d4083c67e0c263d98637.jpg">
+<meta property="og:updated_time" content="2018-11-25T10:12:25.567Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="求素数">
+<meta name="twitter:description" content="&amp;amp;nbsp;鉴于以前写程序那种不经过仔细思考及分析的不良习惯，觉得画流程翻还是很必要的，而且养成习惯后，对自己的思维锻炼以及高效正确编程有很大的好处。翻开大一时发的《C程序设计》第二章复习了一下，把上面一个很好的例子自己整理了一下，而且发现一个不错的画流程图的工具(Diagram Designer)。以下为全文： &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 问">
+<meta name="twitter:image" content="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/50a29d363623c4cea2cc2b28.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2008/05/23/求素数/">
+
+
+
+
+
+  <title>求素数 | taocoding</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d13234060d812cb98a47e937139083a9";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">taocoding</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2008/05/23/求素数/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">求素数</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2008-05-23T23:07:00+08:00">
+                2008-05-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据结构-算法/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构/算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <pre><code>&amp;nbsp;鉴于以前写程序那种不经过仔细思考及分析的不良习惯，觉得画流程翻还是很必要的，而且养成习惯后，对自己的思维锻炼以及高效正确编程有很大的好处。翻开大一时发的《C程序设计》第二章复习了一下，把上面一个很好的例子自己整理了一下，而且发现一个不错的画流程图的工具(Diagram Designer)。以下为全文：
+</code></pre><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<span>问题：将</span><span><font face="Times New Roman">1</font></span><span>到</span><span><font face="Times New Roman">1000</font></span><span>之间的素数打印出来。</span>
+
+<span>算法描述：“筛选”法，所谓“筛选法”指的是“</span><span><font face="Times New Roman">Eratosthenes</font></span><span>筛法”。他采取的方法是，在一张纸上写上</span><span><font face="Times New Roman">1</font></span><span>到</span><span><font face="Times New Roman">1000</font></span><span>全部整数，然后逐个判断它们是否是素数，找出一个非素数，就把它挖掉，最后剩下的就是素数。</span>
+
+<span style="mso-ascii-: yes">①</span><span><font face="Times New Roman"> 2 3 </font></span><span style="mso-ascii-: yes">④</span><span><font face="Times New Roman"> 5 </font></span><span style="mso-ascii-: yes">⑥</span><span><font face="Times New Roman"> 7 </font></span><span style="mso-ascii-: yes">⑧</span><span><font face="Times New Roman"> </font></span><span style="mso-ascii-: yes">⑨</span><span><font face="Times New Roman"> </font></span><span style="mso-ascii-: yes">⑩</span><span>……</span><font face="Times New Roman"> </font><br><br><span>具体做法如下：</span>
+
+<span style="mso-ascii-: yes">⑴</span><span>先将</span><span><font face="Times New Roman">1</font></span><span>挖掉（因为</span><span><font face="Times New Roman">1</font></span><span>不是素数）。</span>
+
+<span style="mso-ascii-: yes">⑵</span><span>用</span><span><font face="Times New Roman">2</font></span><span>去除它后面的各个数，把能被</span><span><font face="Times New Roman">2</font></span><span>整除的数挖掉，即把</span><span><font face="Times New Roman">2</font></span><span>的倍数挖掉。</span>
+
+<span style="mso-ascii-: yes">⑶</span><span>用</span><span><font face="Times New Roman">3</font></span><span>去除它后面的各数，把</span><span><font face="Times New Roman">3</font></span><span>的倍数挖掉</span>
+
+<span style="mso-ascii-: yes">⑷</span><span>分别用</span><span><font face="Times New Roman">4</font></span><span>，</span><span><font face="Times New Roman">5</font></span><span>…各数作为除数去除这些数以后的各数。这个过程一直进行到在除数后面的数已经全被挖掉为止。事实上，只需进行到</span>
+
+<span>上面的算法可以表示为：</span>
+
+<span style="mso-ascii-: yes">⑴</span><span>挖去</span><span><font face="Times New Roman">1</font></span>
+
+<span style="mso-ascii-: yes">⑵</span><span>用下一个未被挖去的数</span><span><font face="Times New Roman">p</font></span><span>去除</span><span><font face="Times New Roman">p</font></span><span>后面的各数，把</span><span><font face="Times New Roman">p</font></span><span>的倍数挖掉。</span>
+
+<span style="mso-ascii-: yes">⑶</span><span>检查</span><span><font face="Times New Roman">p</font></span><span>是否小于的整数部分（如果</span><span><font face="Times New Roman">n=1000</font></span><span>，则检查</span><span><font face="Times New Roman">p&lt;31</font></span><span>？），如果是，则返回</span><span style="mso-ascii-: yes">⑵</span><span>继续执行，否则就结束。</span>
+
+<span style="mso-ascii-: yes">⑷</span><span>纸上剩下的就是素数。</span>
+
+<span>解题的基本思路有了，但要变成计算机的操作，还要做进一步的分析，如怎样判断一个数是否已被挖掉，怎样找出一个数</span><span><font face="Times New Roman">p</font></span><span>的倍数，怎样打印出来未被挖掉的数。</span>
+
+<span>用自顶向下逐步细化的方法来处理这个问题，先进行“顶层设计”，见下图。也可以用流程图进行逐步细化。流程图</span><span><font face="Times New Roman">1</font></span><span>表示流程的粗略情况，把要做的三部分工作分别用</span><span><font face="Times New Roman">A</font></span><span>、</span><span><font face="Times New Roman">B</font></span><span>、</span><span><font face="Times New Roman">C</font></span><span>表示。 </span><br><span><br><div forimg="1"><a href="http://hiphotos.baidu.com/qiutao%5F2008/pic/item/50a29d363623c4cea2cc2b28.jpg" target="_blank" rel="noopener"><img src="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/50a29d363623c4cea2cc2b28.jpg" alt=""></a></div></span>
+
+<span>这三部分还不够具体，要进一步细化。</span><span><font face="Times New Roman">A</font></span><span>部分可以细化为图</span><span><font face="Times New Roman">A</font></span><span>。先输入</span><span><font face="Times New Roman">n</font></span><span>，然后将</span><span><font face="Times New Roman">1</font></span><span>输入给</span><span><font face="Times New Roman">X1</font></span><span>，</span><span><font face="Times New Roman">2</font></span><span>输入</span><span><font face="Times New Roman">X2</font></span><span>，</span><span><font face="Times New Roman">1000</font></span><span>输入给</span><font face="Times New Roman"><span>X</span><span style="FONT-SIZE: 7.5pt">1000</span></font><span style="mso-ascii-: 10.5pt">。</span>
+
+<span style="mso-bidi-font-size: 10.5pt"><a href="http://hiphotos.baidu.com/qiutao%5F2008/pic/item/5bb5041bf679f1c6ac6e7529.jpg" target="_blank" rel="noopener"><img src="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/5bb5041bf679f1c6ac6e7529.jpg" alt=""></a></span>
+
+<span style="mso-ascii-: 10.5pt">B部分可以细化为图</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">B</font></span><span style="mso-ascii-: 10.5pt">。</span>
+
+<span style="mso-bidi-font-size: 10.5pt"><a href="http://hiphotos.baidu.com/qiutao%5F2008/pic/item/735064fb189887314e4aea2a.jpg" target="_blank" rel="noopener"><img src="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/735064fb189887314e4aea2a.jpg" alt=""></a></span>
+
+<span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">B</font></span><span style="mso-ascii-: 10.5pt">中的</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">B1</font></span><span style="mso-ascii-: 10.5pt">和</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">B2</font></span><span style="mso-ascii-: 10.5pt">不能再分了。</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">B1</font></span><span style="mso-ascii-: 10.5pt">处理的方法是：使</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">X1=0</font></span><span style="mso-ascii-: 10.5pt">，即哪个数不是素数，就使它等于</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">0</font></span><span style="mso-ascii-: 10.5pt">，以后把不等于</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">0</font></span><span style="mso-ascii-: 10.5pt">的数打印处理就是所求的素鼠表。</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">B3</font></span><span style="mso-ascii-: 10.5pt">中的循环体内以</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">D</font></span><span style="mso-ascii-: 10.5pt">标志的部分还要进一步细化，对</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">D</font></span><span style="mso-ascii-: 10.5pt">细化为图</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">D</font></span><span style="mso-ascii-: 10.5pt">。</span>
+
+<span style="mso-bidi-font-size: 10.5pt"><a href="http://hiphotos.baidu.com/qiutao%5F2008/pic/item/74cd06160bb4410b962b432b.jpg" target="_blank" rel="noopener"><img src="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/74cd06160bb4410b962b432b.jpg" alt=""></a></span>
+
+<div forimg="1"></div>
+
+<p>图<span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">D</font></span><span style="mso-ascii-: 10.5pt">中的</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">E</font></span><span style="mso-ascii-: 10.5pt">部分还不够具体，再进一步细化为图</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">E</font></span><span style="mso-ascii-: 10.5pt">。</span></p>
+<span style="mso-ascii-: 10.5pt"><a href="http://hiphotos.baidu.com/qiutao%5F2008/pic/item/e957c817ac1353124b90a735.jpg" target="_blank" rel="noopener"><img src="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/e957c817ac1353124b90a735.jpg" alt=""></a></span>
+
+<span style="mso-ascii-: 10.5pt">图</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">E</font></span><span style="mso-ascii-: 10.5pt">中的</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">F</font></span><span style="mso-ascii-: 10.5pt">部分又细化为图</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">F</font></span><span style="mso-ascii-: 10.5pt">，因为首先要判断某一个</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">Xj</font></span><span style="mso-ascii-: 10.5pt">是否已经被挖掉，如已被挖掉则不必考虑被</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">Xi</font></span><span style="mso-ascii-: 10.5pt">除。至此，已不能也不需要再分解了。</span>
+
+<span style="mso-bidi-font-size: 10.5pt"><span style="mso-ascii-: 10.5pt"><a href="http://hiphotos.baidu.com/qiutao%5F2008/pic/item/db517951464f5e9c8d543035.jpg" target="_blank" rel="noopener"><img src="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/db517951464f5e9c8d543035.jpg" alt=""></a></span></span>
+
+<span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">图1</font></span><span style="mso-ascii-: 10.5pt">中的</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">C</font></span><span style="mso-ascii-: 10.5pt">部分进行细化，得图</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">C1</font></span><span style="mso-ascii-: 10.5pt">。</span>
+
+<span style="mso-bidi-font-size: 10.5pt"><a href="http://hiphotos.baidu.com/qiutao%5F2008/pic/item/2742ef0180aa521d7aec2c31.jpg" target="_blank" rel="noopener"><img src="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/2742ef0180aa521d7aec2c31.jpg" alt=""></a></span>
+
+<div forimg="1"></div>
+
+<p>再对图<span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">C1</font></span><span style="mso-ascii-: 10.5pt">中的</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">G</font></span><span style="mso-ascii-: 10.5pt">部分进行细化，得图</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">G</font></span><span style="mso-ascii-: 10.5pt">。</span></p>
+<span style="mso-bidi-font-size: 10.5pt"><a href="http://hiphotos.baidu.com/qiutao%5F2008/pic/item/2cd0d4083c67e0c263d98637.jpg" target="_blank" rel="noopener"><img src="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/2cd0d4083c67e0c263d98637.jpg" alt=""></a></span>
+
+<span style="mso-ascii-: 10.5pt">至此，已将图</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">1</font></span><span style="mso-ascii-: 10.5pt">分解为能用三种基本结构表示的基本操作了。将以上这些图组合起来就可以得到最终的总流程图了，根据这个细化了的流程图已经可以用任何高级语言编写程序了。</span>
+
+<p>有时间再把整个流程图组合在一起，然后把对应的程序也写一下，慢慢来吧，要走的路还长呢！&nbsp;&nbsp;&nbsp;</p>
+<p></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2008/05/14/mfc透明控件的超级简单实现/" rel="next" title="MFC透明控件的超级简单实现">
+                <i class="fa fa-chevron-left"></i> MFC透明控件的超级简单实现
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2008/06/12/删除ctoolbar浮动时的菜单/" rel="prev" title="删除CToolBar浮动时的菜单">
+                删除CToolBar浮动时的菜单 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">billowqiu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">152</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/billowqiu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:billowqiu@163.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">billowqiu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

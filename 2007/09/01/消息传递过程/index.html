@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="&amp;lt;DIV class=cnt id=blog_text&amp;gt;   据说是在Run中调用AfxWndProc（侯捷说的我在源码中找了会没找到，也不晓得是哪个间接调用的），在该函数里面接着调用AfxCallWndProc，然后AfxCallWndProc中有这么一段  // special case for WM_INITDIALOG  CRect rectOld;  DWORD dwStyl">
+<meta property="og:type" content="article">
+<meta property="og:title" content="消息传递过程">
+<meta property="og:url" content="http://yoursite.com/2007/09/01/消息传递过程/index.html">
+<meta property="og:site_name" content="taocoding">
+<meta property="og:description" content="&amp;lt;DIV class=cnt id=blog_text&amp;gt;   据说是在Run中调用AfxWndProc（侯捷说的我在源码中找了会没找到，也不晓得是哪个间接调用的），在该函数里面接着调用AfxCallWndProc，然后AfxCallWndProc中有这么一段  // special case for WM_INITDIALOG  CRect rectOld;  DWORD dwStyl">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.programfan.com/upfile/200709/200709010105037.gif">
+<meta property="og:updated_time" content="2018-11-25T10:12:25.567Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="消息传递过程">
+<meta name="twitter:description" content="&amp;lt;DIV class=cnt id=blog_text&amp;gt;   据说是在Run中调用AfxWndProc（侯捷说的我在源码中找了会没找到，也不晓得是哪个间接调用的），在该函数里面接着调用AfxCallWndProc，然后AfxCallWndProc中有这么一段  // special case for WM_INITDIALOG  CRect rectOld;  DWORD dwStyl">
+<meta name="twitter:image" content="http://blog.programfan.com/upfile/200709/200709010105037.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2007/09/01/消息传递过程/">
+
+
+
+
+
+  <title>消息传递过程 | taocoding</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d13234060d812cb98a47e937139083a9";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">taocoding</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2007/09/01/消息传递过程/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">消息传递过程</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2007-09-01T18:36:00+08:00">
+                2007-09-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/VC/" itemprop="url" rel="index">
+                    <span itemprop="name">VC</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <pre><code>&lt;DIV class=cnt id=blog_text&gt;
+</code></pre><font size="3"><span><img src="http://blog.programfan.com/upfile/200709/200709010105037.gif" alt=""><br></span></font>
+
+<font size="3"><span>据说是在</span><span>Run</span><span>中调用</span><span>AfxWndProc</span><span>（侯捷说的我在源码中找了会没找到，也不晓得是哪个间接调用的），在该函数里面接着调用</span><span>AfxCallWndProc</span><span>，然后</span><span>AfxCallWndProc</span><span>中有这么一段</span></font>
+
+<span><font size="3">// special case for WM_INITDIALOG</font></span>
+
+<span><font size="3">CRect rectOld;</font></span>
+
+<span><font size="3">DWORD dwStyle = 0;</font></span>
+
+<span><font size="3">if (nMsg == WM_INITDIALOG)</font></span>
+
+<span><font size="3">_AfxPreInitDialog(pWnd, &amp;rectOld, &amp;dwStyle);</font></span>
+
+<span><font size="3"></font></span>
+
+<span><font size="3">// delegate to object’s WindowProc</font></span>
+
+<span><font size="3">lResult = pWnd-&gt;WindowProc(nMsg, wParam, lParam);</font></span>
+
+<span><font size="3"></font></span>
+
+<span><font size="3">// more special case for WM_INITDIALOG</font></span>
+
+<span><font size="3">if (nMsg == WM_INITDIALOG)</font></span>
+
+<span><font size="3">_AfxPostInitDialog(pWnd, rectOld, dwStyle);</font></span>
+
+<font size="3"><span>如果不是</span><span>WM_INITDIALOG</span><span>消息则调用</span><span>CWnd</span><span>的</span><span>WindowProc</span><span>，这时就有点迷惑了，应该说</span><span>CCmdTarget</span><span>是处理消息的基类其中的</span><span>OnCmdMsg</span><span>为什么不先调用呢，其实我也不清楚，查看了源代码后发现在</span><span>WindowProc</span><span>中会判断消息的类型里面有这么段：</span></font>
+
+<p><strong><span style="FONT-SIZE: 15pt">CWnd::WindowProc</span></strong></p>
+<span><font size="3">if (message == WM_COMMAND)</font></span>
+
+<span><font size="3">{</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>if (OnCommand(wParam, lParam))</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>lResult = 1;</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>goto LReturnTrue;</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>return FALSE;</font></span>
+
+<span><font size="3">}</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><strong>CWnd::OnCommand</strong></font></span>
+
+<font size="3"><span>如果是命令消息加速键等用户接口对象的</span><span>WM_COMMAND</span><span>通知消息（有些控件也会发送此消息比如按钮的单击），则调用</span><span>OnCommand</span><span>处理，而在</span><span>OnCommand</span><span>中会判断是一般命令消息还是控件消息，其中如果不是控件消息的话会调用</span><span>OnCmdMsg(nID, CN_UPDATE_COMMAND_UI, &amp;state, NULL);</span><span>看到了吧这里就调用了从</span><span>CCmdTarget</span><span>继承来的虚函数（我只找到了</span><span>CWnd</span><span>的这个地方调用了改消息）。</span></font>
+
+<span><font size="3">接着是控件消息</font></span>
+
+<span><font size="3">// special case for notifies</font></span>
+
+<span><font size="3">if (message == WM_NOTIFY)</font></span>
+
+<span><font size="3">{</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>NMHDR<em> pNMHDR = (NMHDR</em>)lParam;</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>if (pNMHDR-&gt;hwndFrom != NULL &amp;&amp; OnNotify(wParam, lParam, &amp;lResult))</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>goto LReturnTrue;</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>return FALSE;</font></span>
+
+<span><font size="3">}</font></span>
+
+<font size="3"><span>关于</span><span>WM_NOTIFY</span><span>的一点说明</span><span>: Win32</span><span>使用新的</span><span>WM_NOFITY</span><span>来处理复杂的通知消息。</span><span>WM_COMMAND</span><span>类型的通知消息仅仅能传递一个控制窗口句柄</span><span>(lparam)</span><span>、控制窗</span><span>ID</span><span>和通知代码</span><span>(wparam)</span><span>。</span><span>WM_NOTIFY</span><span>能传递任意复杂的信息。</span></font>
+
+<font size="3"><span>因此控件消息也得以处理，</span><span>WindowProc</span><span>后面的消息处理可想而知了即其他</span><span>WM</span><span>开头的</span><span>Windows</span><span>标准消息。</span></font>
+
+<font size="3"><span>CFrameWnd</span><span>中改写了</span><span>OnCmdMsg</span></font>
+
+<span><font size="3">BOOL CFrameWnd::OnCmdMsg(UINT nID, int nCode, void* pExtra,</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>AFX_CMDHANDLERINFO* pHandlerInfo)</font></span>
+
+<span><font size="3">{</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>CPushRoutingFrame push(this);</font></span>
+
+<span><font size="3"></font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>// pump through current view FIRST</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>CView* pView = GetActiveView();</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>if (pView != NULL &amp;&amp; pView-&gt;OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>return TRUE;</font></span>
+
+<span><font size="3"></font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>// then pump through frame</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>if (CWnd::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>return TRUE;</font></span>
+
+<span><font size="3"></font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>// last but not least, pump through app</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>CWinApp* pApp = AfxGetApp();</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>if (pApp != NULL &amp;&amp; pApp-&gt;OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>return TRUE;</font></span>
+
+<span><font size="3"></font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>return FALSE;</font></span>
+
+<span><font size="3">}</font></span>
+
+<font size="3"><span>由于在</span><span>CFrameWnd</span><span>中产生的消息一般都是</span><span>WM_COMMAND</span><span>消息，因此当</span><span>CWnd::WindowProc</span><span>被调用时会转到</span><span>OnCommand</span><span>而</span><span>CFrameWnd</span><span>又改写了</span><span>CWnd</span><span>的</span><span>OnCommand</span><span>那么</span><span>CFrameWnd</span><span>的</span><span>OnCmdMsg</span><span>是如何被调用的呢，原来在</span><span>CFrameWnd::OnCommand</span><span>中调用了</span><span>CWnd</span><span>的</span><span>OnCommand</span><span>，显然</span><span>CFrameWnd::OnCmdMsg</span><span>就被调用了，由上面的</span><span>CFrameWnd::OnCmdMsg</span><span>可以清楚的看到</span><span>CFrameWnd</span><span>对标准消息传递的过程的改写首先让当前的活动视图处理，通过查看视图的源代码可以发现视图的</span><span>OnCmdMsg</span><span>先让</span><span>CWnd::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo)</span><span>处理（最终就是调用</span><span>CCmdTarget::OnCmdMsg</span><span>，通过查看源代码可以发现</span><span>// look through message map to see if it applies to us</span><span>，其实就是查找此视图及相关基类的消息映射表进行相应的处理），接着是让</span><span>m_pDocument-&gt;OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);</span><span>处理，不用查看文档的代码也可以猜到文档模板的</span><span>OnCmdMsg</span><span>会调用，当视图的</span><span>OnCmdMsg</span><span>返回后如果没有处理的话又会调用</span><span>CWnd::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo)</span><span>（此时是</span><span>CFrameWnd</span><span>处理），最后如果还没有处理的话又给</span><span>App</span><span>对象处理，一直到让</span><span>DefWindowProc</span><span>处理。</span></font>
+
+<span><font size="3">对话框的消息处理与此不同，具体可以根据源代码追踪</font></span>
+
+<p><font size="3"><span>呵呵，第一次跟踪查找</span><span>MFC</span><span>源代码，不知道以上结论正确与否，不过对我理解消息传递的过程还是有点帮助，写下来以免忘了。</span></font><br><br></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2007/08/31/mdisdi创建过程中的一点不同/" rel="next" title="MDI,SDI创建过程中的一点不同">
+                <i class="fa fa-chevron-left"></i> MDI,SDI创建过程中的一点不同
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2007/09/01/float-toolbar-and-dock-toolbar/" rel="prev" title="Float ToolBar and dock ToolBar">
+                Float ToolBar and dock ToolBar <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">billowqiu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">152</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/billowqiu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:billowqiu@163.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">billowqiu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

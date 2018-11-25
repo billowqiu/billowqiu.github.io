@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="学了两天 C++了，基础部分基本上看了一遍，用到一些编译器时发现里面的头文件不一样，有的有后缀名而有的没有后缀名。后来上网看了下才发现好象是标准C++头文件没有后缀名，以下是在网上找到的C++头文件一览：  传统 C++ 　　#include &amp;lt;assert.h&amp;gt;　　　　//设定插入点&amp;nbsp;&amp;nbsp;  　　#include &amp;lt;ctype.h&amp;gt;&amp;nbsp;&amp;nbsp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++头文件">
+<meta property="og:url" content="http://yoursite.com/2006/07/12/c头文件/index.html">
+<meta property="og:site_name" content="taocoding">
+<meta property="og:description" content="学了两天 C++了，基础部分基本上看了一遍，用到一些编译器时发现里面的头文件不一样，有的有后缀名而有的没有后缀名。后来上网看了下才发现好象是标准C++头文件没有后缀名，以下是在网上找到的C++头文件一览：  传统 C++ 　　#include &amp;lt;assert.h&amp;gt;　　　　//设定插入点&amp;nbsp;&amp;nbsp;  　　#include &amp;lt;ctype.h&amp;gt;&amp;nbsp;&amp;nbsp">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-25T10:12:25.521Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C++头文件">
+<meta name="twitter:description" content="学了两天 C++了，基础部分基本上看了一遍，用到一些编译器时发现里面的头文件不一样，有的有后缀名而有的没有后缀名。后来上网看了下才发现好象是标准C++头文件没有后缀名，以下是在网上找到的C++头文件一览：  传统 C++ 　　#include &amp;lt;assert.h&amp;gt;　　　　//设定插入点&amp;nbsp;&amp;nbsp;  　　#include &amp;lt;ctype.h&amp;gt;&amp;nbsp;&amp;nbsp">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2006/07/12/c头文件/">
+
+
+
+
+
+  <title>C++头文件 | taocoding</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d13234060d812cb98a47e937139083a9";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">taocoding</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2006/07/12/c头文件/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">C++头文件</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2006-07-12T18:18:00+08:00">
+                2006-07-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C++</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <pre><code>学了两天 C++了，基础部分基本上看了一遍，用到一些编译器时发现里面的头文件不一样，有的有后缀名而有的没有后缀名。后来上网看了下才发现好象是标准C++头文件没有后缀名，以下是在网上找到的C++头文件一览： 
+</code></pre><p>传统 C++</p>
+<p>　　#include &lt;assert.h&gt;　　　　//设定插入点&nbsp;&nbsp; </p>
+<p>　　#include &lt;ctype.h&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //字符处理</p>
+<p>　　#include &lt;errno.h&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //定义错误码</p>
+<p>　　#include &lt;float.h&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //浮点数处理</p>
+<p>　　#include &lt;fstream.h&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //文件输入／输出</p>
+<p>　　#include &lt;iomanip.h&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //参数化输入／输出</p>
+<p>　　#include &lt;iostream.h&gt;　　　//数据流输入／输出</p>
+<p>　　#include &lt;limits.h&gt;　　　　//定义各种数据类型最值常量</p>
+<p>　　#include &lt;locale.h&gt;　　　　//定义本地化函数</p>
+<p>　　#include &lt;math.h&gt;　　　　　//定义数学函数</p>
+<p>　　#include &lt;stdio.h&gt;　　　　 //定义输入／输出函数</p>
+<p>　　#include &lt;stdlib.h&gt;　　　　//定义杂项函数及内存分配函数</p>
+<p>　　#include &lt;string.h&gt;　　　　//字符串处理</p>
+<p>　　#include &lt;strstrea.h&gt;　　　//基于数组的输入／输出</p>
+<p>　　#include &lt;time.h&gt;　　　　　//定义关于时间的函数</p>
+<p>　　#include &lt;wchar.h&gt;　　　　 //宽字符处理及输入／输出</p>
+<p>　　#include &lt;wctype.h&gt;　　　　//宽字符分类</p>
+<p>标准 C++　（同上的不再注释）</p>
+<p>　　#include &lt;algorithm&gt;　　　 //STL 通用算法</p>
+<p>　　#include &lt;bitset&gt;　　　　　//STL 位集容器</p>
+<p>　　#include &lt;cctype&gt;</p>
+<p>　　#include &lt;cerrno&gt;</p>
+<p>　　#include &lt;clocale&gt;</p>
+<p>　　#include &lt;cmath&gt;</p>
+<p>　　#include &lt;complex&gt;　　　　 //复数类</p>
+<p>　　#include &lt;cstdio&gt;</p>
+<p>　　#include &lt;cstdlib&gt;</p>
+<p>　　#include &lt;cstring&gt;</p>
+<p>　　#include &lt;ctime&gt;</p>
+<p>　　#include &lt;deque&gt;　　　　　 //STL 双端队列容器</p>
+<p>　　#include &lt;exception&gt;　　　 //异常处理类</p>
+<p>　　#include &lt;fstream&gt;</p>
+<p>　　#include &lt;functional&gt;　　　//STL 定义运算函数（代替运算符）</p>
+<p>　　#include &lt;limits&gt;</p>
+<p>　　#include &lt;list&gt;　　　　　　//STL 线性列表容器</p>
+<p>　　#include &lt;map&gt;　　　　　　 //STL 映射容器</p>
+<p>　　#include &lt;iomanip&gt;</p>
+<p>　　#include &lt;ios&gt;　　　　　　 //基本输入／输出支持</p>
+<p>　　#include &lt;iosfwd&gt;　　　　　//输入／输出系统使用的前置声明</p>
+<p>　　#include &lt;iostream&gt;</p>
+<p>　　#include &lt;istream&gt;　　　　 //基本输入流</p>
+<p>　　#include &lt;ostream&gt;　　　　 //基本输出流</p>
+<p>　　#include &lt;queue&gt;　　　　　 //STL 队列容器</p>
+<p>　　#include &lt;set&gt;　　　　　　 //STL 集合容器</p>
+<p>　　#include &lt;sstream&gt;　　　　 //基于字符串的流</p>
+<p>　　#include &lt;stack&gt;　　　　　 //STL 堆栈容器　　　　</p>
+<p>　　#include &lt;stdexcept&gt;　　　 //标准异常类</p>
+<p>　　#include &lt;streambuf&gt;　　　 //底层输入／输出支持</p>
+<p>　　#include &lt;string&gt;　　　　　//字符串类</p>
+<p>　　#include &lt;utility&gt;　　　　 //STL 通用模板类</p>
+<p>　　#include &lt;vector&gt;　　　　　//STL 动态数组容器</p>
+<p>　　#include &lt;cwchar&gt;</p>
+<p>　　#include &lt;cwctype&gt;</p>
+<p>　　using namespace std;</p>
+<p>C99 增加</p>
+<p>&nbsp;&nbsp; #include &lt;complex.h&gt;　　 //复数处理</p>
+<p>&nbsp;&nbsp; #include &lt;fenv.h&gt;　　　　//浮点环境</p>
+<p>&nbsp;&nbsp; #include &lt;inttypes.h&gt;　　//整数格式转换</p>
+<p>&nbsp;&nbsp; #include &lt;stdbool.h&gt;　　 //布尔环境</p>
+<p>&nbsp;&nbsp; #include &lt;stdint.h&gt;　　　//整型环境</p>
+<p>&nbsp;&nbsp; #include &lt;tgmath.h&gt;　　　//通用类型数学宏</p>
+<p></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2006/07/11/学c了/" rel="next" title="学C++了">
+                <i class="fa fa-chevron-left"></i> 学C++了
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2006/08/28/指针与数组-2/" rel="prev" title="指针与数组">
+                指针与数组 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">billowqiu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">152</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/billowqiu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:billowqiu@163.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">billowqiu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Thrift是一个开发跨语言服务的软件框架。编写thrift文件，通过自带的代码生成引擎即可生成各种语言(C++，Java，Python，PHP，Ruby，Erlang，C#等)的对应代码，下面以最经典的hello为例讲述，如何通过thrift编写跨语言的RPC程序：1编写thrift文件，保存为hello.thrift： service Hello{    void Hello()}2生成cpp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="thrift之Hello">
+<meta property="og:url" content="http://yoursite.com/2011/04/17/thrift之hello-python-client-cpp-sever/index.html">
+<meta property="og:site_name" content="taocoding">
+<meta property="og:description" content="Thrift是一个开发跨语言服务的软件框架。编写thrift文件，通过自带的代码生成引擎即可生成各种语言(C++，Java，Python，PHP，Ruby，Erlang，C#等)的对应代码，下面以最经典的hello为例讲述，如何通过thrift编写跨语言的RPC程序：1编写thrift文件，保存为hello.thrift： service Hello{    void Hello()}2生成cpp">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-25T10:12:25.544Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="thrift之Hello">
+<meta name="twitter:description" content="Thrift是一个开发跨语言服务的软件框架。编写thrift文件，通过自带的代码生成引擎即可生成各种语言(C++，Java，Python，PHP，Ruby，Erlang，C#等)的对应代码，下面以最经典的hello为例讲述，如何通过thrift编写跨语言的RPC程序：1编写thrift文件，保存为hello.thrift： service Hello{    void Hello()}2生成cpp">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2011/04/17/thrift之hello-python-client-cpp-sever/">
+
+
+
+
+
+  <title>thrift之Hello | taocoding</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d13234060d812cb98a47e937139083a9";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">taocoding</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2011/04/17/thrift之hello-python-client-cpp-sever/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">thrift之Hello</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2011-04-17T23:35:00+08:00">
+                2011-04-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统编程/" itemprop="url" rel="index">
+                    <span itemprop="name">系统编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Thrift是一个开发跨语言服务的软件框架。编写thrift文件，通过自带的代码生成引擎即可生成各种语言(C++，Java，Python，PHP，Ruby，Erlang，C#等)的对应代码，下面以最经典的hello为例讲述，如何通过thrift编写跨语言的RPC程序：<br>1编写thrift文件，保存为hello.thrift：</p>
+<p><pre class="brush:cpp">service Hello<br>{<br>    void Hello()<br>}</pre><br>2生成cpp和py框架文件<br>在hello.thrift文件所在目录执行：<br>thrift -r –gen cpp hello.thrift<br>thrift -r –gen py hello.thrift<br>会在当前目录下面产生两个文件夹，分别为gen-cpp和gen-py，<br>3编写cpp服务器端代码，拷贝gen-cpp目录中的Hello_server.skeleton.cpp到当前目录，重命名为CppServer.cpp，修改如下：</p>
+<p><pre class="brush:cpp">#include “Hello.h”</pre></p>
+<p>#include &lt;protocol/TBinaryProtocol.h&gt; </p>
+<p>#include &lt;server/TSimpleServer.h&gt;</p>
+<p>#include &lt;transport/TServerSocket.h&gt; </p>
+<p>#include &lt;transport/TBufferTransports.h&gt; </p>
+<p>using namespace ::apache::thrift;<br>using namespace ::apache::thrift::protocol;<br>using namespace ::apache::thrift::transport;<br>using namespace ::apache::thrift::server;<br>using boost::shared_ptr;<br>class HelloHandler : virtual public HelloIf<br>{<br>public:<br>HelloHandler()<br>{<br>// Your initialization goes here<br>}<br>void Hello()<br>{<br>   // Your implementation goes here<br>    printf(“Hello,Thrift/n”);<br>}<br>};<br>int main(int argc, char **argv)<br>{<br>    int port = 9090;<br>    shared_ptr handler(new HelloHandler());<br>    shared_ptr processor(new HelloProcessor(handler));<br>    shared_ptr serverTransport(new TServerSocket(port));<br>    shared_ptr transportFactory(new TBufferedTransportFactory());<br>    shared_ptr protocolFactory(new TBinaryProtocolFactory());<br>    TSimpleServer server(processor, serverTransport, transportFactory, protocolFactory);</p>
+<pre><code>server.serve();
+
+return 0;
+</code></pre><p>}<br>4编写python客户端代码，PythonClient.py如下：</p>
+<p><pre class="brush:python">#!/usr/bin/env python<br>import sys<br>sys.path.append(‘./gen-py’)<br>from hello import Hello<br>from hello.ttypes import *<br>from thrift import Thrift<br>from thrift.transport import TSocket<br>from thrift.transport import TTransport<br>from thrift.protocol import TBinaryProtocol</pre></p>
+<h1 id="Make-socket"><a href="#Make-socket" class="headerlink" title="Make socket"></a>Make socket</h1><p>transport = TSocket.TSocket(‘localhost’, 9090)</p>
+<h1 id="Buffering-is-critical-Raw-sockets-are-very-slow"><a href="#Buffering-is-critical-Raw-sockets-are-very-slow" class="headerlink" title="Buffering is critical. Raw sockets are very slow"></a>Buffering is critical. Raw sockets are very slow</h1><p>transport = TTransport.TBufferedTransport(transport)</p>
+<h1 id="Wrap-in-a-protocol"><a href="#Wrap-in-a-protocol" class="headerlink" title="Wrap in a protocol"></a>Wrap in a protocol</h1><p>protocol = TBinaryProtocol.TBinaryProtocol(transport)</p>
+<h1 id="Create-a-client-to-use-the-protocol-encoder"><a href="#Create-a-client-to-use-the-protocol-encoder" class="headerlink" title="Create a client to use the protocol encoder"></a>Create a client to use the protocol encoder</h1><p>client = Hello.Client(protocol)</p>
+<h1 id="Connect"><a href="#Connect" class="headerlink" title="Connect!"></a>Connect!</h1><p>transport.open()</p>
+<h1 id="Call-Server-services"><a href="#Call-Server-services" class="headerlink" title="Call Server services"></a>Call Server services</h1><p>client.Hello()<br>5编写cpp端Makefile如下：</p>
+<p><pre class="brush:bash">BOOST_DIR = /usr/local/include/boost/<br>THRIFT_DIR = /usr/local/include/thrift<br>LIB_DIR = /usr/local/lib<br>GEN_SRC = ./gen-cpp/hello_types.cpp ./gen-cpp/Hello.cpp<br>default: server<br>server: CppServer.cpp<br>g++ -o CppServer -I${THRIFT_DIR} -I${BOOST_DIR} -I./gen-cpp -L${LIB_DIR} -lthrift CppServer.cpp ${GEN_SRC}<br>clean:<br>$(RM) -r CppServer</pre><br>6编译cpp端，直接make即可生成相应的可执行文件，python端可以直接运行。</p>
+<p>至此一个最简单的跨语言PRC程序即完成了，很简单吧。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2011/04/16/centos5-5下scribe写入数据到hdfs配置方法/" rel="next" title="CentOS5.5下scribe写入数据到HDFS配置方法">
+                <i class="fa fa-chevron-left"></i> CentOS5.5下scribe写入数据到HDFS配置方法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2011/04/30/主备切换之state模式实现/" rel="prev" title="主备切换之State模式实现">
+                主备切换之State模式实现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">billowqiu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">152</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/billowqiu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:billowqiu@163.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Make-socket"><span class="nav-number">1.</span> <span class="nav-text">Make socket</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Buffering-is-critical-Raw-sockets-are-very-slow"><span class="nav-number">2.</span> <span class="nav-text">Buffering is critical. Raw sockets are very slow</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Wrap-in-a-protocol"><span class="nav-number">3.</span> <span class="nav-text">Wrap in a protocol</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Create-a-client-to-use-the-protocol-encoder"><span class="nav-number">4.</span> <span class="nav-text">Create a client to use the protocol encoder</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Connect"><span class="nav-number">5.</span> <span class="nav-text">Connect!</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Call-Server-services"><span class="nav-number">6.</span> <span class="nav-text">Call Server services</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">billowqiu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

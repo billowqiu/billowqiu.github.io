@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="最近看到很多UDP可靠文件传输的文章，其中有提到TFTP协议，在CodeProject上面搜到一个客户端的，觉得很不错，http://www.codeproject.com/KB/IP/tftp_client.aspx 这里模仿者写了个服务器端，只实现了服务器端的接受文件，配合着基本上就可以作为一般的UDP文件接发例子了，大致代码如下 头文件： #pragma comment(lib,&quot;ws2_3">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TFTP服务器接收文件">
+<meta property="og:url" content="http://yoursite.com/2009/12/10/tftp服务器接收文件/index.html">
+<meta property="og:site_name" content="taocoding">
+<meta property="og:description" content="最近看到很多UDP可靠文件传输的文章，其中有提到TFTP协议，在CodeProject上面搜到一个客户端的，觉得很不错，http://www.codeproject.com/KB/IP/tftp_client.aspx 这里模仿者写了个服务器端，只实现了服务器端的接受文件，配合着基本上就可以作为一般的UDP文件接发例子了，大致代码如下 头文件： #pragma comment(lib,&quot;ws2_3">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-25T10:12:25.543Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TFTP服务器接收文件">
+<meta name="twitter:description" content="最近看到很多UDP可靠文件传输的文章，其中有提到TFTP协议，在CodeProject上面搜到一个客户端的，觉得很不错，http://www.codeproject.com/KB/IP/tftp_client.aspx 这里模仿者写了个服务器端，只实现了服务器端的接受文件，配合着基本上就可以作为一般的UDP文件接发例子了，大致代码如下 头文件： #pragma comment(lib,&quot;ws2_3">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2009/12/10/tftp服务器接收文件/">
+
+
+
+
+
+  <title>TFTP服务器接收文件 | taocoding</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d13234060d812cb98a47e937139083a9";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">taocoding</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/12/10/tftp服务器接收文件/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">TFTP服务器接收文件</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-12-10T15:12:00+08:00">
+                2009-12-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统编程/" itemprop="url" rel="index">
+                    <span itemprop="name">系统编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近看到很多UDP可靠文件传输的文章，其中有提到TFTP协议，在CodeProject上面搜到一个客户端的，觉得很不错，<a href="http://www.codeproject.com/KB/IP/tftp_client.aspx" target="_blank" rel="noopener">http://www.codeproject.com/KB/IP/tftp_client.aspx</a></p>
+<p>这里模仿者写了个服务器端，只实现了服务器端的接受文件，配合着基本上就可以作为一般的UDP文件接发例子了，大致代码如下</p>
+<p>头文件：</p>
+<pre style="border: 1px dotted #785;background: #f5f5f5;">#pragma comment(lib,"ws2_32.lib")
+
+#define TFTP_DEFAULT_PORT    69
+
+#define TFTP_OPCODE_READ     1
+#define TFTP_OPCODE_WRITE    2
+#define TFTP_OPCODE_DATA     3
+#define TFTP_OPCODE_ACK      4
+#define TFTP_OPCODE_ERROR    5
+
+#define TFTP_DEFAULT_MODE    "octet"
+
+#define TFTP_DATA_PKT_SIZE   512
+
+#define TFTP_ERROR_MSG_MAX1024
+#define TFTP_PACKET_DATA_MAX1024
+
+#define TFTP_RETRY     3
+
+#define TFTP_RESULT_ERROR1
+#define TFTP_RESULT_CONTINUE    2
+#define TFTP_RESULT_DONE3
+
+#define TFTP_STATUS_NOTHING1
+#define TFTP_STATUS_GET2
+#define TFTP_STATUS_PUT3
+#define TFTP_STATUS_ERROR4
+
+#define TFTP_TIMEOUT5000 //ms,5&Atilde;&euml;
+
+#include &lt;fstream&gt;
+
+class CTFTPServer  
+{
+protected:
+class CPacket
+{
+public:
+CPacket();
+~CPacket();
+bool AddByte(BYTE c);
+bool AddWord(WORD c);
+bool AddString(char* str);
+bool AddMem(char* mem,int len);
+unsigned char* GetData(int pos=0);
+WORD GetWord(int pos);
+BYTE GetByte(int pos);
+bool GetMem(int pos,char* mem,int len);
+int  GetSize();
+void SetSize(int N);
+void Clear();
+bool IsValid();
+bool IsNull();
+bool IsACK(int blocknum);
+bool IsDATA(int blocknum);
+bool IsError();
+bool GetError(char* buf,unsigned int buflen);
+
+void MakeACK(int blocknum);
+void MakeDATA(int blocknum,char* data,int size);
+bool MakeWRQ(int opcode,char* filename);
+
+protected:
+unsigned char n_dataBuf[TFTP_PACKET_DATA_MAX];
+int m_nSize;
+};
+public:
+CTFTPServer();
+virtual ~CTFTPServer();
+bool Start(std::string strIP,USHORT nPort = TFTP_DEFAULT_PORT);
+bool Stop();
+protected:
+static DWORD WINAPI WorkThread(LPVOID lParam);
+HANDLE m_hWorkThread;
+private:
+SOCKETm_sockSvr;
+SOCKADDR_INm_sockAddr;
+SOCKADDR_INm_clientAddr;
+boolm_bRunning;
+CPacketm_packetRecv;
+CPacketm_packetSend;
+
+FILE*m_fileRecv;
+unsigned intm_nPackNum;
+unsigned intm_nTotalBytes;
+charm_chFileName[64];
+std::ofstreamm_logFile;
+void ProcessRecvData();
+};</pre> 
+
+<p>实现文件：</p>
+<p>&nbsp;<pre style="border: 1px dotted #785;background: #f5f5f5;">// TFTPServer.cpp: implementation of the CTFTPServer class.<br>//<br>//////////////////////////////////////////////////////////////////////</pre></p>
+<p>#include “stdafx.h”</p>
+<p>#include “TFTPServer.h”</p>
+<p>//////////////////////////////////////////////////////////////////////<br>// TFTP packet class functions<br>//////////////////////////////////////////////////////////////////////<br>CTFTPServer::CPacket::CPacket()<br>{<br>Clear();<br>}<br>CTFTPServer::CPacket::~CPacket()<br>{</p>
+<p>}</p>
+<p>unsigned char* CTFTPServer::CPacket::GetData(int pos)<br>{<br>return &amp;(n_dataBuf[pos]);<br>}</p>
+<p>int CTFTPServer::CPacket::GetSize()<br>{<br>return m_nSize;<br>}</p>
+<p>void CTFTPServer::CPacket::Clear()<br>{<br>m_nSize=0;<br>memset(n_dataBuf,0,TFTP_PACKET_DATA_MAX);<br>}</p>
+<p>bool CTFTPServer::CPacket::IsValid()<br>{<br>return (m_nSize!=-1);<br>}</p>
+<p>bool CTFTPServer::CPacket::IsNull()<br>{<br>return (m_nSize == 0);<br>}</p>
+<p>void CTFTPServer::CPacket::SetSize(int N)<br>{<br>if ( N &gt; TFTP_PACKET_DATA_MAX)<br>{<br>m_nSize =-1;<br>}<br>else<br>{<br>m_nSize =N;<br>}<br>}</p>
+<p>bool CTFTPServer::CPacket::AddByte(BYTE c)<br>{<br>if (!IsValid()) return false;<br>if (m_nSize &gt;= TFTP_PACKET_DATA_MAX)<br>{<br>m_nSize=-1;<br>return false;<br>}<br>n_dataBuf[m_nSize] = (unsigned char)c;<br>m_nSize++;<br>return true;<br>}</p>
+<p>bool CTFTPServer::CPacket::AddMem(char* mem,int len)<br>{<br>if (!IsValid()) return false;<br>if ( m_nSize+len&gt;= TFTP_PACKET_DATA_MAX)<br>{<br>m_nSize=-1;<br>return false;<br>}<br>memcpy(&amp;(n_dataBuf[m_nSize]),mem,len);<br>m_nSize+=len;<br>return true;<br>}</p>
+<p>bool CTFTPServer::CPacket::AddWord(WORD c)<br>{<br>//一个Word等于两个Byte,先存高一个Byte,再存低Byte<br>if (!AddByte(  <em>(((BYTE</em>)&amp;c)+1) )) return false;<br>return (!AddByte(  <em>((BYTE</em>)&amp;c) ));<br>}</p>
+<p>bool CTFTPServer::CPacket::AddString(char* str)<br>{<br>if ((str==NULL)||(strlen(str)==0)) return true;<br>int n=strlen(str);</p>
+<p>for (int i=0;i&lt;n;i++)<br>if (!AddByte(*(str+i)))<br>return false;<br>return true;//AddByte(0);<br>}</p>
+<p>bool CTFTPServer::CPacket::GetMem(int pos,char* mem,int len)<br>{<br>if (pos&gt;m_nSize) return false;<br>if (len&lt;m_nSize-pos) return false;</p>
+<p>memcpy(mem,&amp;(n_dataBuf[pos]),m_nSize-pos);</p>
+<p>return true;</p>
+<p>}</p>
+<p>WORD CTFTPServer::CPacket::GetWord(int pos)<br>{<br>WORD hi = GetByte(pos);<br>WORD lo = GetByte(pos+1);<br>return ((hi&lt;&lt;8)|lo);<br>}</p>
+<p>BYTE CTFTPServer::CPacket::GetByte(int pos)<br>{<br>return  (BYTE)n_dataBuf[pos];<br>}</p>
+<p>bool CTFTPServer::CPacket::IsACK(int blocknum)<br>{<br>if (GetSize()!=4) return false;<br>WORD opcode =  GetWord(0);<br>WORD block = GetWord(2);<br>if (opcode != TFTP_OPCODE_ACK) return false;<br>if (blocknum != block)  return false;</p>
+<p>return true;<br>}</p>
+<p>bool CTFTPServer::CPacket::IsDATA(int blocknum)<br>{<br>if (GetSize()&lt;4) return false;<br>WORD opcode =  GetWord(0);<br>WORD block = GetWord(2);<br>if (opcode != TFTP_OPCODE_DATA) return false;<br>if (blocknum != block)  return false;</p>
+<p>return true;<br>}</p>
+<p>bool CTFTPServer::CPacket::IsError()<br>{<br>if (GetSize()&lt;4) return false;<br>WORD opcode =  GetWord(0);<br>return  (opcode == TFTP_OPCODE_ERROR);<br>}</p>
+<p>bool CTFTPServer::CPacket::GetError(char<em> buf,unsigned int buflen)<br>{<br>if (!IsError()) return false;<br>WORD errcode = GetWord(2);<br>char</em> errmsg = (char*)GetData(4);<br>if (buf==NULL) return false;<br>if (strlen(errmsg)+10&gt;buflen) return false;<br>sprintf(buf,”#%i:%s”,errcode,errmsg);<br>return true;<br>}</p>
+<p>void CTFTPServer::CPacket::MakeACK(int blocknum)<br>{<br>Clear();<br>AddWord(TFTP_OPCODE_ACK);<br>AddWord(blocknum);<br>}</p>
+<p>bool CTFTPServer::CPacket::MakeWRQ(int opcode,char* filename)<br>{<br>ATLASSERT(filename!=NULL);<br>if (strlen(filename)&gt;TFTP_DATA_PKT_SIZE) return false;<br>Clear();<br>AddWord(opcode);<br>AddString(filename);<br>AddByte(0);<br>AddString(TFTP_DEFAULT_MODE);<br>AddByte(0);<br>return true;<br>}</p>
+<p>void CTFTPServer::CPacket::MakeDATA(int blocknum,char* data,int size)<br>{<br>ATLASSERT(data!=NULL);<br>ATLASSERT(size&lt;=TFTP_DATA_PKT_SIZE);<br>Clear();<br>AddWord(TFTP_OPCODE_DATA);<br>AddWord(blocknum);<br>AddMem(data,size);<br>}<br>//////////////////////////////////////////////////////////////////////<br>// Construction/Destruction<br>//////////////////////////////////////////////////////////////////////</p>
+<p>CTFTPServer::CTFTPServer():m_bRunning(false),m_sockSvr(INVALID_SOCKET)<br>{<br>::ZeroMemory(&amp;m_sockAddr,sizeof(m_sockAddr));<br>::ZeroMemory(m_chFileName,64);<br>m_fileRecv = NULL;</p>
+<p>m_logFile.open(“TFTPSvr.log”);<br>}</p>
+<p>CTFTPServer::~CTFTPServer()<br>{</p>
+<p>}</p>
+<p>bool CTFTPServer::Start(std::string strIP,USHORT nPort/<em> = TFTP_DEFAULT_PORT</em>/)<br>{<br>int nError = 0;<br>int nRet = 0;<br>m_sockSvr = ::socket(AF_INET,SOCK_DGRAM,IPPROTO_UDP);<br>if(INVALID_SOCKET == m_sockSvr)<br>{<br>nError = ::WSAGetLastError();<br>return false;<br>}<br>//绑定到端口<br>m_sockAddr.sin_family = AF_INET;<br>m_sockAddr.sin_addr.s_addr = ::inet_addr(strIP.c_str());<br>m_sockAddr.sin_port = ::htons(nPort);<br>nRet = ::bind(m_sockSvr,(sockaddr*)&amp;m_sockAddr,sizeof(m_sockAddr));<br>if (SOCKET_ERROR == nRet)<br>{<br>nError = ::WSAGetLastError();<br>return false;<br>}<br>m_bRunning = true;</p>
+<p>m_hWorkThread = ::CreateThread(NULL,0,WorkThread,this,0,0);<br>if (m_hWorkThread != NULL)<br>{<br>::CloseHandle(m_hWorkThread);<br>}<br>return true;<br>}</p>
+<p>bool CTFTPServer::Stop()<br>{<br>if (m_bRunning)<br>{<br>m_bRunning = false;<br>::closesocket(m_sockSvr);<br>}</p>
+<p>return true;<br>}</p>
+<p>DWORD WINAPI CTFTPServer::WorkThread( LPVOID lParam )<br>{<br>CTFTPServer <em>pSvr = reinterpret_cast&lt;CTFTPServer</em>&gt;(lParam);</p>
+<p>if (pSvr != NULL)<br>{<br>while (pSvr-&gt;m_bRunning)<br>{<br>int nRecvLen;</p>
+<p>int  SenderAddrSize = sizeof(sockaddr_in);<br>nRecvLen =  recvfrom(<br>pSvr-&gt;m_sockSvr,<br>(char<em>)pSvr-&gt;m_packetRecv.GetData(),<br>TFTP_PACKET_DATA_MAX,<br>0,<br>(SOCKADDR </em>)&amp;pSvr-&gt;m_clientAddr,<br>&amp;SenderAddrSize<br>);</p>
+<p>pSvr-&gt;m_logFile&lt;&lt;”CTFTPServer::WorkThread 接收到来自”&lt;&lt;::inet_ntoa(pSvr-&gt;m_clientAddr.sin_addr)&lt;&lt;”:”&lt;&lt;<br>::ntohs(pSvr-&gt;m_clientAddr.sin_port)&lt;&lt;std::endl;</p>
+<p>if ( ( nRecvLen == 0) || (nRecvLen == WSAECONNRESET ) )<br>{<br>ATLTRACE(“Connection Closed./n”);<br>//break;<br>}<br>if ( nRecvLen == SOCKET_ERROR)<br>{<br>ATLTRACE(“recv error./n”);<br>//break;<br>}<br>char bufTrace[1024] = {0};<br>::sprintf(bufTrace,”%s/n”,pSvr-&gt;m_packetRecv.GetData());<br>ATLTRACE(bufTrace);<br>pSvr-&gt;m_packetRecv.SetSize(nRecvLen);<br>pSvr-&gt;ProcessRecvData();<br>//Sleep(1);<br>}<br>}</p>
+<p>return 0;<br>}</p>
+<p>void CTFTPServer::ProcessRecvData()<br>{<br>//处理接收数据<br>DWORD dwOpCode = m_packetRecv.GetWord(0);<br>switch (dwOpCode)<br>{<br>case TFTP_OPCODE_READ:<br>{<br>ATLTRACE(“客户端下载文件/n”);<br>break;<br>}<br>case TFTP_OPCODE_WRITE:<br>{<br>//获取文件名<br>::strcpy(m_chFileName,(const char*)m_packetRecv.GetData(2));<br>m_packetRecv.Clear();<br>char bufTrace[1024] = {0};<br>::sprintf(bufTrace,”客户端上传文件:%s/n”,m_chFileName);<br>ATLTRACE(bufTrace);<br>if( (m_fileRecv  = fopen( m_chFileName, “wb” )) == NULL )<br>{<br>ATLTRACE(“创建文件失败!/n”);<br>}<br>//上传文件服务器确认包<br>m_packetSend.MakeACK(0);</p>
+<p>//发送数据<br>int nLenSended = ::sendto(m_sockSvr,(char<em>)m_packetSend.GetData(),m_packetSend.GetSize(),<br>0,(SOCKADDR </em>)&amp;m_clientAddr,sizeof(m_clientAddr));<br>m_packetSend.Clear();</p>
+<p>//下一个数据序号为1<br>m_nPackNum = 1;<br>m_nTotalBytes = 0;<br>break;<br>}<br>case TFTP_OPCODE_DATA:<br>{<br>DWORD dwDataNum = m_packetRecv.GetWord(2);</p>
+<p>if (m_nPackNum != dwDataNum)<br>{<br>m_logFile&lt;&lt;”TFTP_OPCODE_DATA 期望数据序号:”&lt;&lt;m_nPackNum&lt;&lt;” 与发过来的不一致:”&lt;&lt;dwDataNum&lt;&lt;std::endl;<br>break;<br>}</p>
+<p>char bufTrace[1024] = {0};<br>::sprintf(bufTrace,”客户端上传文件数据序号:%d/n”,dwDataNum);<br>ATLTRACE(bufTrace);<br>char dataBuf[TFTP_DATA_PKT_SIZE] = {0};<br>if (!m_packetRecv.GetMem(4,dataBuf,TFTP_DATA_PKT_SIZE))<br>{<br>ATLTRACE(“复制数据错误/n”);<br>}<br>//数据前面4个字节为opcode和packnum<br>int nDataLen = m_packetRecv.GetSize() - 4;<br>m_nTotalBytes += nDataLen;<br>m_nPackNum++;<br>//m_logFile&lt;&lt;”CTFTPServer::ProcessRecvData() 接收数据大小为:”&lt;&lt;nDataLen&lt;&lt;std::endl;</p>
+<p>size_t nWrited = fwrite(dataBuf,1,nDataLen,m_fileRecv);</p>
+<p>//m_logFile&lt;&lt;”CTFTPServer::ProcessRecvData() 写入文件大小为:”&lt;&lt;nWrited&lt;&lt;std::endl;<br>//发完了<br>if (nDataLen &lt; TFTP_DATA_PKT_SIZE)<br>{<br>fclose(m_fileRecv);<br>m_logFile&lt;&lt;”CTFTPServer::ProcessRecvData() 文件接收完毕,关闭文件&hellip;&hellip;,接收大小为:”&lt;&lt;m_nTotalBytes&lt;&lt;std::endl;<br>m_logFile&lt;&lt;”CTFTPServer::ProcessRecvData() 文件接收完毕,关闭文件&hellip;&hellip;,接收数据块大小为:”&lt;&lt;m_nPackNum&lt;&lt;std::endl;<br>}<br>m_packetRecv.Clear();<br>m_packetSend.MakeACK(dwDataNum);<br>//发送数据<br>int nLenSended = ::sendto(m_sockSvr,(char<em>)m_packetSend.GetData(),m_packetSend.GetSize(),<br>0,(SOCKADDR </em>)&amp;m_clientAddr,sizeof(m_clientAddr));<br>m_packetSend.Clear();<br>break;<br>}<br>case TFTP_OPCODE_ACK:<br>{<br>ATLTRACE(“确认包/n”);<br>break;<br>}<br>case TFTP_OPCODE_ERROR:<br>{<br>ATLTRACE(“/n”);<br>break;<br>}<br>default:<br>{<br>ATLTRACE(“/n”);<br>break;<br>}<br>}<br>}<br> </p>
+<p>只在本机测试了下，不知道在internet上面是啥效果。</p>
+<p></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2009/11/23/n个数组成最大整数/" rel="next" title="N个数组成最大整数">
+                <i class="fa fa-chevron-left"></i> N个数组成最大整数
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2009/12/10/atl-窗口类源码浅析/" rel="prev" title="ATL 窗口类源码浅析">
+                ATL 窗口类源码浅析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">billowqiu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">152</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/billowqiu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:billowqiu@163.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">billowqiu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

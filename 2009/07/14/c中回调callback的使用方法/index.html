@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="回调函数是一个很有用，也很重要的概念。当发生某种事件时，系统或其他函数将会自动调用你定义的一段函数。回调函数在windows编程使用的场合很多，比如Hook回调函数：MouseProc,GetMsgProc以及EnumWindows,DrawState的回调函数等等，还有很多系统级的回调过程。 一般情况下, 我们使用的回调函数基本都是采用C语言风格. 这里介绍一种C++风格的回调对象方法. 采用t">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++中回调(CallBack)的使用方法">
+<meta property="og:url" content="http://yoursite.com/2009/07/14/c中回调callback的使用方法/index.html">
+<meta property="og:site_name" content="taocoding">
+<meta property="og:description" content="回调函数是一个很有用，也很重要的概念。当发生某种事件时，系统或其他函数将会自动调用你定义的一段函数。回调函数在windows编程使用的场合很多，比如Hook回调函数：MouseProc,GetMsgProc以及EnumWindows,DrawState的回调函数等等，还有很多系统级的回调过程。 一般情况下, 我们使用的回调函数基本都是采用C语言风格. 这里介绍一种C++风格的回调对象方法. 采用t">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-25T10:12:25.521Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C++中回调(CallBack)的使用方法">
+<meta name="twitter:description" content="回调函数是一个很有用，也很重要的概念。当发生某种事件时，系统或其他函数将会自动调用你定义的一段函数。回调函数在windows编程使用的场合很多，比如Hook回调函数：MouseProc,GetMsgProc以及EnumWindows,DrawState的回调函数等等，还有很多系统级的回调过程。 一般情况下, 我们使用的回调函数基本都是采用C语言风格. 这里介绍一种C++风格的回调对象方法. 采用t">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2009/07/14/c中回调callback的使用方法/">
+
+
+
+
+
+  <title>C++中回调(CallBack)的使用方法 | taocoding</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d13234060d812cb98a47e937139083a9";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">taocoding</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/07/14/c中回调callback的使用方法/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">C++中回调(CallBack)的使用方法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-07-14T23:55:00+08:00">
+                2009-07-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C++</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>回调函数是一个很有用，也很重要的概念。当发生某种事件时，系统或其他函数将会自动调用你定义的一段函数。回调函数在windows编程使用的场合很多，比如Hook回调函数：MouseProc,GetMsgProc以及EnumWindows,DrawState的回调函数等等，还有很多系统级的回调过程。 一般情况下, 我们使用的回调函数基本都是采用C语言风格. 这里介绍一种C++风格的回调对象方法. 采用template实现.</p>
+<p>template &lt; class Class, typename ReturnType, typename Parameter &gt;&nbsp;&nbsp;<br>class SingularCallBack&nbsp;&nbsp;<br>{&nbsp;&nbsp;&nbsp;<br>public:&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp;&nbsp; typedef ReturnType (Class::<em>Method)(Parameter);&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp;&nbsp; SingularCallBack(Class</em> _class_instance, Method _method)&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //取得对象实例地址,及调用方法地址&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; class_instance = _class_instance;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; method&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = _method;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp; };&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp;&nbsp; ReturnType operator()(Parameter parameter)&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // 调用对象方法&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (class_instance-&gt;<em>method)(parameter);&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp; };&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp;&nbsp; ReturnType execute(Parameter parameter)&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // 调用对象方法&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return operator()(parameter);&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp; };&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;<br>&nbsp;&nbsp; private:&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp;&nbsp; Class</em>&nbsp; class_instance;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp; Method&nbsp; method;&nbsp;&nbsp;<br>&nbsp;<br>};&nbsp;<br>示例:</p>
+<p>以下是两个类实现.<br>class A&nbsp;&nbsp;<br>{&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp; public:&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp;&nbsp; void output()&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; std::cout &lt;&lt; “I am class A :D” &lt;&lt; std::endl;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp; };&nbsp;&nbsp;<br>&nbsp;<br>};&nbsp;&nbsp;<br>&nbsp;<br>class B&nbsp;&nbsp;<br>{&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp; public:&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp;&nbsp; bool methodB(A a)&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a.output();&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp; }&nbsp;&nbsp;<br>&nbsp;<br>};&nbsp;&nbsp;<br>&nbsp;</p>
+<p>SingularCallBack的各种调用示例:<br>A a;<br>B b;</p>
+<p>SingularCallBack&lt; B,bool,A &gt;* cb;<br>cb = new SingularCallBack&lt; B,bool,A &gt;(&amp;b,&amp;B::methodB);</p>
+<p>if(cb-&gt;execute(a))<br>{<br>&nbsp;&nbsp; std::cout &lt;&lt; “CallBack Fired Successfully!” &lt;&lt; std::endl;<br>}<br>else<br>{<br>&nbsp;&nbsp; std::cout &lt;&lt; “CallBack Fired Unsuccessfully!” &lt;&lt; std::endl;<br>}<br>&nbsp;&nbsp;<br>class AClass&nbsp;&nbsp;<br>{&nbsp;&nbsp;<br>&nbsp;&nbsp; public:&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp; AClass(unsigned int _id): id(_id){};&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp; ~AClass(){};&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp; bool AMethod(std::string str)&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; std::cout &lt;&lt; “AClass[“ &lt;&lt; id &lt;&lt; “]: “ &lt;&lt; str &lt;&lt; std::endl;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp; };&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp; private:&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp;&nbsp; unsigned int id;&nbsp;&nbsp;<br>&nbsp;<br>};&nbsp;&nbsp;&nbsp;</p>
+<p>typedef SingularCallBack &lt; AClass, bool, std::string &gt; ACallBack;&nbsp;&nbsp;&nbsp;<br>&nbsp;&nbsp;</p>
+<p>int main()&nbsp;&nbsp;<br>{&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp; std::vector &lt; ACallBack &gt; callback_list;&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp; AClass a1(1);&nbsp;&nbsp;<br>&nbsp;&nbsp; AClass a2(2);&nbsp;&nbsp;<br>&nbsp;&nbsp; AClass a3(3);&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp; callback_list.push_back(ACallBack(&amp;a1, &amp;AClass::AMethod));&nbsp;&nbsp;<br>&nbsp;&nbsp; callback_list.push_back(ACallBack(&amp;a2, &amp;AClass::AMethod));&nbsp;&nbsp;<br>&nbsp;&nbsp; callback_list.push_back(ACallBack(&amp;a3, &amp;AClass::AMethod));&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp; for (unsigned int i = 0; i &lt; callback_list.size(); i++)&nbsp;&nbsp;<br>&nbsp;&nbsp; {&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; callback_list<a href="&quot;abc&quot;">i</a>;&nbsp;&nbsp;<br>&nbsp;&nbsp; }&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp; for (unsigned int i = 0; i &lt; callback_list.size(); i++)&nbsp;&nbsp;<br>&nbsp;&nbsp; {&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; callback_list[i].execute(“abc”);&nbsp;&nbsp;<br>&nbsp;&nbsp; }&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp; return true;&nbsp;&nbsp;<br>&nbsp;<br>}&nbsp;&nbsp;<br>&nbsp;</p>
+<p>引用:</p>
+<p>C++ Callback Solution </p>
+<p>本文来自CSDN博客，转载请标明出处：<a href="http://blog.csdn.net/force_eagle/archive/2009/07/14/4347329.aspx" target="_blank" rel="noopener">http://blog.csdn.net/force_eagle/archive/2009/07/14/4347329.aspx</a></p>
+<p></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2009/07/09/im的技术原理与发展/" rel="next" title="IM的技术原理与发展">
+                <i class="fa fa-chevron-left"></i> IM的技术原理与发展
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2009/07/21/c设计模式之一-工厂模式（简单工厂、工厂和抽象/" rel="prev" title="C++设计模式之一 工厂模式（简单工厂、工厂和抽象工厂）">
+                C++设计模式之一 工厂模式（简单工厂、工厂和抽象工厂） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">billowqiu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">152</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/billowqiu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:billowqiu@163.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">billowqiu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言：看了好久Effective，但是感觉好多都是看了就忘，现在再看一边，顺便把一些易忘的记录下来，争取每天一记。 概念：Copying函数，包括copy constructor;copy assignment operator，对于默认的编译器生成版，会将被拷贝的对象的所有成员变量都做一份拷贝。 如果你自己声明一个copying函数，编译器就会以一种奇怪的方式回应：当你的实现代码几乎必然出错时却">
+<meta property="og:type" content="article">
+<meta property="og:title" content="复制对象时勿忘其每一个成分">
+<meta property="og:url" content="http://yoursite.com/2009/04/19/复制对象时勿忘其每一个成分/index.html">
+<meta property="og:site_name" content="taocoding">
+<meta property="og:description" content="前言：看了好久Effective，但是感觉好多都是看了就忘，现在再看一边，顺便把一些易忘的记录下来，争取每天一记。 概念：Copying函数，包括copy constructor;copy assignment operator，对于默认的编译器生成版，会将被拷贝的对象的所有成员变量都做一份拷贝。 如果你自己声明一个copying函数，编译器就会以一种奇怪的方式回应：当你的实现代码几乎必然出错时却">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-25T10:12:25.558Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="复制对象时勿忘其每一个成分">
+<meta name="twitter:description" content="前言：看了好久Effective，但是感觉好多都是看了就忘，现在再看一边，顺便把一些易忘的记录下来，争取每天一记。 概念：Copying函数，包括copy constructor;copy assignment operator，对于默认的编译器生成版，会将被拷贝的对象的所有成员变量都做一份拷贝。 如果你自己声明一个copying函数，编译器就会以一种奇怪的方式回应：当你的实现代码几乎必然出错时却">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2009/04/19/复制对象时勿忘其每一个成分/">
+
+
+
+
+
+  <title>复制对象时勿忘其每一个成分 | taocoding</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d13234060d812cb98a47e937139083a9";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">taocoding</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/04/19/复制对象时勿忘其每一个成分/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">复制对象时勿忘其每一个成分</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-04-19T21:56:00+08:00">
+                2009-04-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C++</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>前言：看了好久Effective，但是感觉好多都是看了就忘，现在再看一边，顺便把一些易忘的记录下来，争取每天一记。</p>
+<p>概念：Copying函数，包括copy constructor;copy assignment operator，对于默认的编译器生成版，会将被拷贝的对象的所有成员变量都做一份拷贝。</p>
+<p>如果你自己声明一个copying函数，编译器就会以一种奇怪的方式回应：当你的实现代码几乎必然出错时却不告诉你.(不知道是作者原话还是译者，感觉挺有意思的)</p>
+<p>该条款有两个需要注意的地方：1复制所有local成员变量2调用所有base classes内的copying函数。</p>
+<p>第一个地方还好，比较容易理解，下面主要讲讲第二个-&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp; </p>
+<div class="dp-highlighter  nogutter"><br><div class="bar"><br><div class="tools"><a href="file://C:/Users/QiuTao/Desktop/复制对象时勿忘其每一个成分 - whtuling2006的专栏 - CSDNBlog.mht#" target="_blank" rel="noopener"><span style="color: #336699;">view plain</span></a><a href="file://C:/Users/QiuTao/Desktop/复制对象时勿忘其每一个成分 - whtuling2006的专栏 - CSDNBlog.mht#" target="_blank" rel="noopener"><span style="color: #336699;">copy to clipboard</span></a><a href="file://C:/Users/QiuTao/Desktop/复制对象时勿忘其每一个成分 - whtuling2006的专栏 - CSDNBlog.mht#" target="_blank" rel="noopener"><span style="color: #336699;">print</span></a><a href="file://C:/Users/QiuTao/Desktop/复制对象时勿忘其每一个成分 - whtuling2006的专栏 - CSDNBlog.mht#" target="_blank" rel="noopener"><span style="color: #336699;">?</span></a></div><br></div>
+
+<ol>
+<li><span><span class="keyword">void</span><span>&nbsp;logCall(</span><span class="keyword">const</span><span>&nbsp;std::string&amp;&nbsp;funcName);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;make&nbsp;a&nbsp;log&nbsp;entry </span><span>&nbsp;&nbsp;</span></span></li>
+<li><span class="keyword">class</span><span>&nbsp;Customer&nbsp;{ &nbsp;&nbsp;</span></li>
+<li><span class="keyword">public</span><span>: &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;… &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;Customer(</span><span class="keyword">const</span><span>&nbsp;Customer&amp;&nbsp;rhs); &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;Customer&amp;&nbsp;operator=(</span><span class="keyword">const</span><span>&nbsp;Customer&amp;&nbsp;rhs); &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;… &nbsp;&nbsp;</span></li>
+<li><span class="keyword">private</span><span>: &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;std::string&nbsp;name; &nbsp;&nbsp;</span></li>
+<li><span>}; &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;</span></li>
+<li><span>Customer::Customer(</span><span class="keyword">const</span><span>&nbsp;Customer&amp;&nbsp;rhs) &nbsp;&nbsp;</span></li>
+<li><span>:&nbsp;name(rhs.name)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;copy&nbsp;rhs’s&nbsp;data </span><span>&nbsp;&nbsp;</span></li>
+<li><span>{ &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;logCall(</span><span class="string">“Customer&nbsp;copy&nbsp;constructor”</span><span>); &nbsp;&nbsp;</span></li>
+<li><span>} &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;</span></li>
+<li><span>Customer&amp;&nbsp;Customer::operator=(</span><span class="keyword">const</span><span>&nbsp;Customer&amp;&nbsp;rhs) &nbsp;&nbsp;</span></li>
+<li><span>{ &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;logCall(</span><span class="string">“Customer&nbsp;copy&nbsp;assignment&nbsp;operator”</span><span>); &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;name&nbsp;=&nbsp;rhs.name;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;</span><span class="keyword">return</span><span>&nbsp;*</span><span class="keyword">this</span><span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;</span></li>
+<li><span>} &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;</span></li>
+<li><span class="keyword">class</span><span>&nbsp;Date&nbsp;{&nbsp;…&nbsp;};&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;for&nbsp;dates&nbsp;in&nbsp;time </span><span>&nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;</span></li>
+<li><span class="keyword">class</span><span>&nbsp;Customer&nbsp;{ &nbsp;&nbsp;</span></li>
+<li><span class="keyword">public</span><span>: &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;…&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;as&nbsp;before </span><span>&nbsp;&nbsp;</span></li>
+<li><span class="keyword">private</span><span>: &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;std::string&nbsp;name; &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;Date&nbsp;lastTransaction; &nbsp;&nbsp;</span></li>
+<li><span>}; &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;</span></li>
+<li><span class="keyword">class</span><span>&nbsp;PriorityCustomer:&nbsp;</span><span class="keyword">public</span><span>&nbsp;Customer&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;a&nbsp;derived&nbsp;class </span><span>&nbsp;&nbsp;</span></li>
+<li><span class="keyword">public</span><span>: &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;&nbsp;… &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;&nbsp;PriorityCustomer(</span><span class="keyword">const</span><span>&nbsp;PriorityCustomer&amp;&nbsp;rhs); &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;&nbsp;PriorityCustomer&amp;&nbsp;operator=(</span><span class="keyword">const</span><span>&nbsp;PriorityCustomer&amp;&nbsp;rhs); &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;&nbsp;… &nbsp;&nbsp;</span></li>
+<li><span class="keyword">private</span><span>: &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;&nbsp;</span><span class="datatypes"><strong><span style="color: #2e8b57;">int</span></strong></span><span>&nbsp;priority; &nbsp;&nbsp;</span></li>
+<li><span>}; &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;</span></li>
+<li><span>PriorityCustomer::PriorityCustomer(</span><span class="keyword">const</span><span>&nbsp;PriorityCustomer&amp;&nbsp;rhs) &nbsp;&nbsp;</span></li>
+<li><span>:&nbsp;priority(rhs.priority) &nbsp;&nbsp;</span></li>
+<li><span>{ &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;logCall(</span><span class="string">“PriorityCustomer&nbsp;copy&nbsp;constructor”</span><span>); &nbsp;&nbsp;</span></li>
+<li><span>} &nbsp;&nbsp;</span></li>
+<li><span>PriorityCustomer&amp;&nbsp;PriorityCustomer::operator=(</span><span class="keyword">const</span><span>&nbsp;PriorityCustomer&amp;&nbsp;rhs) &nbsp;&nbsp;</span></li>
+<li><span>{ &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;logCall(</span><span class="string">“PriorityCustomer&nbsp;copy&nbsp;assignment&nbsp;operator”</span><span>); &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;priority&nbsp;=&nbsp;rhs.priority; &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;</span><span class="keyword">return</span><span>&nbsp;*</span><span class="keyword">this</span><span>; &nbsp;&nbsp;</span></li>
+<li><span>}&nbsp;&nbsp;</span></li></ol></div>
+
+<p>PriorityCustomer类的copying函数好像复制了PriorityCustomer内的每一样东西，它复制了PriorityCustomer声明的成员变量，但是其基类Customer成员变量却没有被复制(其实应该是没有按照相应的参数复制，而是使用了这些变量的default构造函数)，这一点是尤其需要注意的，尤其是没有真正写过类似代码时很容易忽视这个问题，正确的写法是下面这样的：</p>
+<p>&nbsp;</p>
+<div class="dp-highlighter  nogutter"><br><div class="bar"><br><div class="tools"><a href="file://C:/Users/QiuTao/Desktop/复制对象时勿忘其每一个成分 - whtuling2006的专栏 - CSDNBlog.mht#" target="_blank" rel="noopener"><span style="color: #336699;">view plain</span></a><a href="file://C:/Users/QiuTao/Desktop/复制对象时勿忘其每一个成分 - whtuling2006的专栏 - CSDNBlog.mht#" target="_blank" rel="noopener"><span style="color: #336699;">copy to clipboard</span></a><a href="file://C:/Users/QiuTao/Desktop/复制对象时勿忘其每一个成分 - whtuling2006的专栏 - CSDNBlog.mht#" target="_blank" rel="noopener"><span style="color: #336699;">print</span></a><a href="file://C:/Users/QiuTao/Desktop/复制对象时勿忘其每一个成分 - whtuling2006的专栏 - CSDNBlog.mht#" target="_blank" rel="noopener"><span style="color: #336699;">?</span></a></div><br></div>
+
+<ol>
+<li><span><span>PriorityCustomer::PriorityCustomer(</span><span class="keyword">const</span><span>&nbsp;PriorityCustomer&amp;&nbsp;rhs) &nbsp;&nbsp;</span></span></li>
+<li><span>:Customer(rhs),&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;invoke&nbsp;base&nbsp;class&nbsp;copy&nbsp;ctor </span><span>&nbsp;&nbsp;</span></li>
+<li><span>&nbsp;priority(rhs.priority) &nbsp;&nbsp;</span></li>
+<li><span>{ &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;logCall(</span><span class="string">“PriorityCustomer&nbsp;copy&nbsp;constructor”</span><span>); &nbsp;&nbsp;</span></li>
+<li><span>} &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;</span></li>
+<li><span>PriorityCustomer&amp;&nbsp;PriorityCustomer::operator=(</span><span class="keyword">const</span><span>&nbsp;PriorityCustomer&amp;&nbsp;rhs) &nbsp;&nbsp;</span></li>
+<li><span>{ &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;logCall(</span><span class="string">“PriorityCustomer&nbsp;copy&nbsp;assignment&nbsp;operator”</span><span>); &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;Customer::operator=(rhs);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="comment">//&nbsp;assign&nbsp;base&nbsp;class&nbsp;parts </span><span>&nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;priority&nbsp;=&nbsp;rhs.priority; &nbsp;&nbsp;</span></li>
+<li><span>&nbsp;&nbsp;</span><span class="keyword">return</span><span>&nbsp;*</span><span class="keyword">this</span><span>; &nbsp;&nbsp;</span></li>
+<li><span>}&nbsp;&nbsp;</span></li></ol></div>
+
+<p>具体内容见Items12。</p>
+<p></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2009/04/18/ws-clipchildren风格窗体控件透明的解决方案/" rel="next" title="WS_CLIPCHILDREN风格窗体控件透明的解决方案">
+                <i class="fa fa-chevron-left"></i> WS_CLIPCHILDREN风格窗体控件透明的解决方案
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2009/04/20/头文件和dll不一致导致的问题/" rel="prev" title="头文件和Dll不一致导致的问题">
+                头文件和Dll不一致导致的问题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">billowqiu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">152</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/billowqiu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:billowqiu@163.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">billowqiu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

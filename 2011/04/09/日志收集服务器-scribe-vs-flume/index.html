@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="I read this  post about Cloudera&amp;rsquo;s Flume with much interest. Flume soundslike a very interesting tool, not to mention that from Cloudera&amp;rsquo;s businessperspective it makes a lot of sense:  We&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="日志收集服务器-scribe vs Flume">
+<meta property="og:url" content="http://yoursite.com/2011/04/09/日志收集服务器-scribe-vs-flume/index.html">
+<meta property="og:site_name" content="taocoding">
+<meta property="og:description" content="I read this  post about Cloudera&amp;rsquo;s Flume with much interest. Flume soundslike a very interesting tool, not to mention that from Cloudera&amp;rsquo;s businessperspective it makes a lot of sense:  We&amp;">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-25T10:12:25.565Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="日志收集服务器-scribe vs Flume">
+<meta name="twitter:description" content="I read this  post about Cloudera&amp;rsquo;s Flume with much interest. Flume soundslike a very interesting tool, not to mention that from Cloudera&amp;rsquo;s businessperspective it makes a lot of sense:  We&amp;">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2011/04/09/日志收集服务器-scribe-vs-flume/">
+
+
+
+
+
+  <title>日志收集服务器-scribe vs Flume | taocoding</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d13234060d812cb98a47e937139083a9";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">taocoding</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2011/04/09/日志收集服务器-scribe-vs-flume/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">日志收集服务器-scribe vs Flume</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2011-04-09T00:03:00+08:00">
+                2011-04-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统编程/" itemprop="url" rel="index">
+                    <span itemprop="name">系统编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>I read this <a href="http://www.cloudera.com/blog/2010/07/whats-new-in-cdh3b2-flume/" target="_blank" rel="noopener"> post</a><br> about Cloudera&rsquo;s Flume with much interest. Flume sounds<br>like a very interesting tool, not to mention that from Cloudera&rsquo;s business<br>perspective it makes a lot of sense:</p>
+<blockquote>
+<p>We&rsquo;ve seen our customers have great success using Hadoop for processing their<br>data, but the question of how to get the data there to process in the first<br>place was often significantly more challenging.</p>
+</blockquote>
+<p>Just in case you didn&rsquo;t have the time to read about Flume yet, here&rsquo;s a short<br>description from the <a href="http://github.com/cloudera/flume" target="_blank" rel="noopener"> GitHub project page</a><br>:</p>
+<blockquote>
+<p>Flume is a distributed, reliable, and available service for efficiently<br>collecting, aggregating, and moving large amounts of log data. It has a simple<br>and flexible architecture based on streaming data flows. It is robust and fault<br>tolerant with tunable reliability mechanisms and many failover and recovery<br>mechanisms. The system is centrally managed and allows for intelligent dynamic<br>management. It uses a simple extensible data model that allows for online<br>analytic applications.</p>
+</blockquote>
+<p>In a way this sounded a bit familiar. I thought I&rsquo;ve seen something kind of<br>similar before: <a href="http://wiki.github.com/facebook/scribe/" target="_blank" rel="noopener"> Scribe</a><br>:</p>
+<blockquote>
+<p>Scribe is a server for aggregating streaming log data. It is designed to<br>scale to a very large number of nodes and be robust to network and node<br>failures. There is a scribe server running on every node in the system,<br>configured to aggregate messages and send them to a central scribe server (or<br>servers) in larger groups. If the central scribe server isn&rsquo;t available the<br>local scribe server writes the messages to a file on local disk and sends them<br>when the central server recovers. The central scribe server(s) can write the<br>messages to the files that are their final destination, typically on an nfs<br>filer or a distributed filesystem, or send them to another layer of scribe<br>servers.</p>
+</blockquote>
+<p>So my question is: <strong>how does Flume and Scribe compare</strong><br>? What<br>are the major differences and what scenarios are good for one or the other?</p>
+<p>If you have the answer to any of these questions, please drop a comment or <a href="mailto:nosql%5B@%5Dmypopescu%5B.%5Dcom" target="_blank" rel="noopener">send me an email</a><br>.</p>
+<p><em>Update</em><br>: Looks like<br>I&rsquo;ve failed to find this <a href="https://groups.google.com/a/cloudera.org/group/flume-user/msg/22676a7e38028fbb" target="_blank" rel="noopener"> useful thread</a><br>, but thanks to <a href="http://nosql.mypopescu.com/post/820711193/how-does-flume-and-scribe-compare#comment-62595276" target="_blank" rel="noopener">this<br>comment</a><br> mistake is corrected:</p>
+<blockquote>
+<p>1. Flume allows you to configure your Flume installation from a central<br>point, without having to ssh into every machine, update a configuration variable<br>and restart a daemon or two. You can start, stop, create, delete and reconfigure<br>logical nodes on any machine running Flume from any command line in your network<br>with the Flume jar available.</p>
+<p>2. Flume also has centralised liveness monitoring. We&rsquo;ve heard a couple of<br>stories of Scribe processes silently failing, but lying undiscovered for days<br>until the rest of the Scribe installation starts creaking under the increased<br>load. Flume allows you to see the health of all your logical nodes in one place<br>(note that this is different from machine liveness monitoring; often the machine<br>stays up while the process might fail). </p>
+<p>3. Flume supports three distinct types of reliability guarantees, allowing<br>you to make tradeoffs between resource usage and reliability. In particular,<br>Flume supports fully ACKed reliability, with the guarantee that all events will<br>eventually make their way through the event flow. </p>
+<p>4. Flume&rsquo;s also really extensible - it&rsquo;s really easy to write your own source<br>or sink and integrate most any system with Flume. If rolling your own is<br>impractical, it&rsquo;s often very straightforward to have your applications output<br>events in a form that Flume can understand (Flume can run Unix processes, for<br>example, so if you can use shell script to get at your data, you&rsquo;re golden). </p>
+<p>&mdash; Henry Robinson</p>
+</blockquote>
+<p>In the same thread, I&rsquo;m reading about another tool <a href="http://wiki.apache.org/hadoop/Chukwa" target="_blank" rel="noopener"><br>Chukwa</a><br>:</p>
+<blockquote>
+<p>Chukwa is a Hadoop subproject devoted to large-scale log collection and<br>analysis. Chukwa is built on top of the Hadoop distributed filesystem (HDFS) and<br>MapReduce framework and inherits Hadoop&rsquo;s scalability and robustness. Chukwa<br>also includes a exible and powerful toolkit for displaying monitoring and<br>analyzing results, in order to make the best use of this collected data.<br></p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2011/04/02/linux-core文件生成及设置/" rel="next" title="Linux core文件生成及设置">
+                <i class="fa fa-chevron-left"></i> Linux core文件生成及设置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2011/04/09/linuxunix系统中ldconfig命令使用详解/" rel="prev" title="linux/unix系统中ldconfig命令使用详解">
+                linux/unix系统中ldconfig命令使用详解 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">billowqiu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">152</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/billowqiu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:billowqiu@163.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">billowqiu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 就像玩War3时对不死族的恐惧一样，做界面时一直都不想去涉及滚动条，借端午节狠下心来把滚动条又看了一遍，再一次印证实践才是真理，把对滚动条的理解写下来，以便于以后查阅。 &amp;nbsp; .gif) 上图是MSDN中对滚动条的描述，很直观，而滚动条相关的消息也不多最常用的也就是WM_VSCROLL和WM_HSCROLL，这两个消息的LOWO">
+<meta property="og:type" content="article">
+<meta property="og:title" content="滚动条-可滚动文字的窗口">
+<meta property="og:url" content="http://yoursite.com/2009/05/30/滚动条-可滚动文字的窗口/index.html">
+<meta property="og:site_name" content="taocoding">
+<meta property="og:description" content="&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 就像玩War3时对不死族的恐惧一样，做界面时一直都不想去涉及滚动条，借端午节狠下心来把滚动条又看了一遍，再一次印证实践才是真理，把对滚动条的理解写下来，以便于以后查阅。 &amp;nbsp; .gif) 上图是MSDN中对滚动条的描述，很直观，而滚动条相关的消息也不多最常用的也就是WM_VSCROLL和WM_HSCROLL，这两个消息的LOWO">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://i.msdn.microsoft.com/Bb787527.csscr_02(en-us,VS.85">
+<meta property="og:updated_time" content="2018-11-25T10:12:25.569Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="滚动条-可滚动文字的窗口">
+<meta name="twitter:description" content="&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 就像玩War3时对不死族的恐惧一样，做界面时一直都不想去涉及滚动条，借端午节狠下心来把滚动条又看了一遍，再一次印证实践才是真理，把对滚动条的理解写下来，以便于以后查阅。 &amp;nbsp; .gif) 上图是MSDN中对滚动条的描述，很直观，而滚动条相关的消息也不多最常用的也就是WM_VSCROLL和WM_HSCROLL，这两个消息的LOWO">
+<meta name="twitter:image" content="http://i.msdn.microsoft.com/Bb787527.csscr_02(en-us,VS.85">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2009/05/30/滚动条-可滚动文字的窗口/">
+
+
+
+
+
+  <title>滚动条-可滚动文字的窗口 | taocoding</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d13234060d812cb98a47e937139083a9";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">taocoding</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/05/30/滚动条-可滚动文字的窗口/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">滚动条-可滚动文字的窗口</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-05-30T21:42:00+08:00">
+                2009-05-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/VC/" itemprop="url" rel="index">
+                    <span itemprop="name">VC</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><span style="font-size: 9pt; font-family: &quot;Verdana&quot;,&quot;sans-serif&quot;;" lang="EN-US">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="font-size: 10.5pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;;">就像玩<span lang="EN-US">War3</span>时对不死族的恐惧一样，做界面时一直都不想去涉及滚动条，借端午节狠下心来把滚动条又看了一遍，再一次印证实践才是真理，把对滚动条的理解写下来，以便于以后查阅。</span></p>
+<p>&nbsp;</p>
+<p><span style="font-size: small;"><span style="font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;;"><img src="http://i.msdn.microsoft.com/Bb787527.csscr_02(en-us,VS.85" alt="滚动条结构">.gif)</span></span></p>
+<p><span style="font-size: small;"><span style="font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;;">上图是<span lang="EN-US">MSDN</span>中对滚动条的描述，很直观，而滚动条相关的消息也不多最常用的也就是</span><span style="font-size: 12pt; color: #010001; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">WM_VSCROLL</span><span style="font-size: 12pt; color: #010001; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;">和<span lang="EN-US">WM_HSCROLL</span>，</span><span style="font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;;">这两个消息的</span><span style="font-size: 12pt; color: #010001; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">LOWORD</span><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"> (<span style="color: #010001;">wParam</span>)</span><span style="font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-size: 10.5pt; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;">参数对应了一系列</span><strong><span style="font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-size: 10.5pt;" lang="EN-US">Request Code</span></strong><span style="font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;;">：</span></span></p>
+<table class="MsoNormalTable" style="background: white; mso-cellspacing: 1.5pt; mso-yfti-tbllook: 1184;" border="0" cellpadding="0"><br><tbody><br><tr style="mso-yfti-irow: 0; mso-yfti-firstrow: yes;"><br><td style="background: #dddddd; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><strong><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">Request</span></strong><br><br></td><br><td style="background: #dddddd; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><strong><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">Action</span></strong><br><br></td><br><td style="background: #dddddd; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><strong><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">Response</span></strong><br><br></td><br></tr><br><tr style="mso-yfti-irow: 1;"><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">SB_LINEUP</span><br><br></td><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">The user clicks the top scroll arrow.</span><br><br></td><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">Decrements the scroll box position; scrolls toward the top of the data by one unit. </span><br><br></td><br></tr><br><tr style="mso-yfti-irow: 2;"><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">SB_LINEDOWN</span><br><br></td><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">The user clicks the bottom scroll arrow.</span><br><br></td><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">Increments the scroll box position; scrolls toward the bottom of the data by one unit. </span><br><br></td><br></tr><br><tr style="mso-yfti-irow: 3;"><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">SB_LINELEFT</span><br><br></td><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">The user clicks the left scroll arrow.</span><br><br></td><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">Decrements the scroll box position; scrolls toward the left end of the data by one unit. </span><br><br></td><br></tr><br><tr style="mso-yfti-irow: 4;"><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">SB_LINERIGHT</span><br><br></td><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">The user clicks the right scroll arrow.</span><br><br></td><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">Increments the scroll box position; scrolls toward the right end of the data by one unit. </span><br><br></td><br></tr><br><tr style="mso-yfti-irow: 5;"><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">SB_PAGEUP</span><br><br></td><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">The user clicks the scroll bar shaft above the scroll box.</span><br><br></td><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">Decrements the scroll box position by the number of data units in the window; scrolls toward the top of the data by the same number of units. </span><br><br></td><br></tr><br><tr style="mso-yfti-irow: 6;"><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">SB_PAGEDOWN</span><br><br></td><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">The user clicks the scroll bar shaft below the scroll box.</span><br><br></td><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">Increments the scroll box position by the number of data units in the window; scrolls toward the bottom of the data by the same number of units. </span><br><br></td><br></tr><br><tr style="mso-yfti-irow: 7;"><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">SB_PAGELEFT</span><br><br></td><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">The user clicks the scroll bar shaft to the left of the scroll box.</span><br><br></td><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">Decrements the scroll box position by the number of data units in the window; scrolls toward the left end of the data by the same number of units. </span><br><br></td><br></tr><br><tr style="mso-yfti-irow: 8;"><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">SB_PAGERIGHT</span><br><br></td><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">The user clicks the scroll bar shaft to the right of the scroll box.</span><br><br></td><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">Increments the scroll box position by the number of data units in the window; scrolls toward the right end of the data by the same number of units. </span><br><br></td><br></tr><br><tr style="mso-yfti-irow: 9;"><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">SB_THUMBPOSITION</span><br><br></td><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">The user releases the scroll box after dragging it.</span><br><br></td><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">Sets the scroll box to the position specified in the message; scrolls the data by the same number of units the scroll box has moved. </span><br><br></td><br></tr><br><tr style="mso-yfti-irow: 10;"><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">SB_THUMBTRACK</span><br><br></td><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">The user drags the scroll box.</span><br><br></td><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">Sets the scroll box to the position specified in the message and scrolls the data by the same number of units the scroll box has moved for applications that draw data quickly. Applications that cannot draw data quickly must wait for the SB_THUMBPOSITION request code before moving the scroll box and scrolling the data. </span><br><br></td><br></tr><br><tr style="mso-yfti-irow: 11; mso-yfti-lastrow: yes;"><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">SB_ENDSCROLL</span><br><br></td><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">The user releases the mouse after holding it on an arrow or in the scroll bar shaft. </span><br><br></td><br><td style="background: #eeeeee; border: #c0c0c0; padding: 1.5pt;" valign="top"><br><br><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">No response is needed. </span><br><br></td><br></tr><br></tbody><br></table>
+
+<p><span style="font-size: small;"><strong><span style="color: red; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;;" lang="EN-US">1</span>**</strong><span style="color: red; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;;">设置滚动条参数</span>**</span></p>
+<p><span style="font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;;"><span style="font-size: small;">一般都是在<span lang="EN-US">WM_SIZE</span>消息中设置滚动条的信息，这样当窗口大小变化时滚动条可以做相应的改变，以显示或者隐藏之或者改变其<span lang="EN-US">ScrollBox</span>的大小。</span></span></p>
+<p><span style="font-size: small;"><span style="font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;;" lang="EN-US">MSDN</span><span style="font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;;">上面有一段说道滚动条的显示问题：</span></span></p>
+<p><strong><span style="font-size: 10pt; font-family: &quot;Verdana&quot;,&quot;sans-serif&quot;; mso-fareast-font-family: 宋体; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">Scroll Bar Visibility</span></strong></p>
+<p><strong><span style="font-size: 9pt; color: red; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">The system hides and disables a standard scroll bar when equal minimum and maximum values are specified. The system also hides and disables a standard scroll bar if you specify a page size that includes the entire scroll range of the scroll bar. This is the way to temporarily hide a scroll bar when it is not needed for the content of the client area.</span></strong><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US"> There is no need to make scrolling requests through the scroll bar when it is hidden. The system enables the scroll bar and shows it again when you set the minimum and maximum values to unequal values or when the page size that does not include the entire scroll range. The ShowScrollBar function can also be used to hide or show a scroll bar. It does not affect the scroll bar’s range, page size, or scroll box position. </span></p>
+<p><span style="font-size: 9pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-family: 宋体; mso-font-kerning: 0pt;" lang="EN-US">The EnableScrollBar function can be used to disable one or both arrows of a scroll bar. An application displays disabled arrows in gray and does not respond to user input. </span></p>
+<p><span style="font-size: small;"><span style="font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;;">红色标记的地方说道，系统会在两种情况下隐藏并禁用滚动条，</span><span style="font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-size: 10.5pt;" lang="EN-US">1</span><span style="font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-size: 10.5pt;">是在</span><span style="color: #010001; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-size: 10.5pt; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">SCROLLINFO</span><span style="color: #010001; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-size: 10.5pt; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;">中的<span lang="EN-US">nMin</span></span><span style="font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-size: 10.5pt; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">==<span style="color: #010001;">nMax</span></span><span style="color: #010001; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-size: 10.5pt; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;">时，由于最小滚动位置和最大滚动位置相等当然没有必要显示滚动条了，<span lang="EN-US">2</span>是在指定的<span lang="EN-US">nPage</span>，也就是当前窗口客户区可以显示的单位数据的大小，包含整个滚动范围<span lang="EN-US">,</span>这时当前客户区可以显示所有的数据，因此不需要滚动条。<span lang="EN-US">MSDN</span>上面是这样描述<span lang="EN-US">page size</span>的：</span></span></p>
+<p><span style="font-size: small;"><span style="font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-size: 10.5pt; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">page size</span><span style="font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-size: 10.5pt; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;">代表滚动条的<span lang="EN-US">Ower</span>窗口的当前客户区大小可以容纳单位数据的大小，例如如果客户区可以容纳<span lang="EN-US">16</span>行文字，那么应该将<span lang="EN-US">page size</span>设置为<span lang="EN-US">16</span>，系统使用<span lang="EN-US">page size</span>，以及滚动范围以及滚动条长度，来设置<span lang="EN-US">scroll box</span>的大小，当一个包含滚动条的窗口改变大小时，应该通过<span lang="EN-US">SetScrollInfo</span>设置<span lang="EN-US">page size</span>。</span></span></p>
+<p><span style="font-size: small;"><strong><span style="color: red; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-size: 10.5pt; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">2</span>**</strong><span style="color: red; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-size: 10.5pt; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;">滚动窗口</span>**</span></p>
+<p><span style="font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-size: 10.5pt; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;"><span style="font-size: small;">进行窗口滚动的操作是在<span style="color: #010001;" lang="EN-US">WM_VSCROLL</span><span style="color: #010001;">或者<span lang="EN-US">WM_HSCROLL</span>中完成的，先根据相应的<span lang="EN-US">Request Code</span>对<span lang="EN-US">nPos</span>进行调整，然后调用</span><span lang="EN-US">SetScrollInfo</span>对<span lang="EN-US">nPos</span>这一项进行调整，之后通过<span style="color: #010001;" lang="EN-US">ScrollWindowEx</span><span style="color: #010001;">滚动窗口，根据<span lang="EN-US">MSDN</span>上面的例子可以看出，先保存先前的<span lang="EN-US">nPos</span>，然后用调整后的<span lang="EN-US">nPos</span>与之想减，再乘上水平或者垂直方向的单位尺寸，即为滚动的区域。</span></span></span></p>
+<p><span style="font-size: small;"><strong><span style="color: red; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-size: 10.5pt; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">3</span>**</strong><span style="color: red; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-size: 10.5pt; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;">滚动后可见的窗口区域的绘制</span>**</span></p>
+<p><span style="font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-size: 10.5pt; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;"><span style="font-size: small;">当窗口滚动后，面对的首要问题就是如何显示之前不可见现在可见的区域，对于滚动文字，需要处理当然是需要<span lang="EN-US">WM_PAINT</span>了。这里看得不是很懂，但是通过<span lang="EN-US">TRACE</span>可以发现的是<span lang="EN-US">WM_PAINT</span>确实是在<span lang="EN-US">Invalide</span>区域中重绘，当单击垂直滚动条的三角按钮时系统只重绘一行文字，具体方法可以看下面的源码。</span></span></p>
+<p><span style="font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-bidi-font-size: 10.5pt; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;"><span style="font-size: small;">下面的源码是<span lang="EN-US">MSDN</span>的例子：</span></span></p>
+<p><span style="font-size: 12pt; color: #010001; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">LRESULT</span><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"> <span style="color: #010001;">CALLBACK</span> <span style="color: #010001;">WndProc</span>(<span style="color: #010001;">HWND</span> <span style="color: #010001;">hWnd</span>, <span style="color: #010001;">UINT</span> <span style="color: #010001;">message</span>, <span style="color: #010001;">WPARAM</span> <span style="color: #010001;">wParam</span>, <span style="color: #010001;">LPARAM</span> <span style="color: #010001;">lParam</span>)</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">{</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">int</span> <span style="color: #010001;">wmId</span>, <span style="color: #010001;">wmEvent</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">//////////////////////////////////////////////////////////////////////////</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">HDC</span> <span style="color: #010001;">hdc</span>; </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">PAINTSTRUCT</span> <span style="color: #010001;">ps</span>; </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">TEXTMETRIC</span> <span style="color: #010001;">tm</span>; </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">SCROLLINFO</span> <span style="color: #010001;">si</span>; </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">&nbsp;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// These variables are required to display text. </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">static</span> <span style="color: blue;">int</span> <span style="color: #010001;">xClient</span>;<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// width of client area </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">static</span> <span style="color: blue;">int</span> <span style="color: #010001;">yClient</span>;<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// height of client area </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">static</span> <span style="color: blue;">int</span> <span style="color: #010001;">xClientMax</span>;<span style="mso-spacerun: yes;">&nbsp; </span><span style="color: green;">// maximum width of client area </span></span></p>
+<p><span style="font-size: 12pt; color: green; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">&nbsp;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">static</span> <span style="color: blue;">int</span> <span style="color: #010001;">xChar</span>;<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// horizontal scrolling unit </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">static</span> <span style="color: blue;">int</span> <span style="color: #010001;">yChar</span>;<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// vertical scrolling unit </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">static</span> <span style="color: blue;">int</span> <span style="color: #010001;">xUpper</span>;<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// average width of uppercase letters </span></span></p>
+<p><span style="font-size: 12pt; color: green; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">&nbsp;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">static</span> <span style="color: blue;">int</span> <span style="color: #010001;">xPos</span>;<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// current horizontal scrolling position </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">static</span> <span style="color: blue;">int</span> <span style="color: #010001;">yPos</span>;<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// current vertical scrolling position </span></span></p>
+<p><span style="font-size: 12pt; color: green; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">&nbsp;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">int</span> <span style="color: #010001;">i</span>;<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// loop counter </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">int</span> <span style="color: #010001;">x</span>, <span style="color: #010001;">y</span>;<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// horizontal and vertical coordinates</span></span></p>
+<p><span style="font-size: 12pt; color: green; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">&nbsp;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">int</span> <span style="color: #010001;">FirstLine</span>;<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// first line in the invalidated area </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">int</span> <span style="color: #010001;">LastLine</span>;<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// last line in the invalidated area </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">HRESULT</span> <span style="color: #010001;">hr</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">size_t</span><span style="mso-spacerun: yes;">&nbsp; </span><span style="color: #010001;">abcLength</span>=0;<span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// length of an abc[] item</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// Create an array of lines to display. </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">#define</span> <span style="color: #010001;">LINES</span> 28 </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">static</span> <span style="color: #010001;">TCHAR</span> *<span style="color: #010001;">abc</span>[] = { </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“anteater”</span>),<span style="mso-spacerun: yes;">&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“bear”</span>),<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“cougar”</span>), </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“dingo”</span>),<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“elephant”</span>),<span style="mso-spacerun: yes;">&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“falcon”</span>), </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“gazelle”</span>),<span style="mso-spacerun: yes;">&nbsp;&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“hyena”</span>),<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“iguana”</span>), </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“jackal”</span>),<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“kangaroo”</span>),<span style="mso-spacerun: yes;">&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“llama”</span>), </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“moose”</span>),<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“newt”</span>),<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“octopus”</span>), </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“penguin”</span>),<span style="mso-spacerun: yes;">&nbsp;&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“quail”</span>),<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“rat”</span>), </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“squid”</span>),<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“tortoise”</span>),<span style="mso-spacerun: yes;">&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“urus”</span>), </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“vole”</span>),<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“walrus”</span>),<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“xylophone”</span>), </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“yak”</span>),<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“zebra”</span>),</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“This line contains words, but no character. Go figure.”</span>),</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">TEXT</span>(<span style="color: #a31515;">“”</span>)</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}; </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">&nbsp;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">//////////////////////////////////////////////////////////////////////////</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">switch</span> (<span style="color: #010001;">message</span>)</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">case</span> <span style="color: #010001;">WM_CREATE</span>:</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">CreateWindowEx</span>( </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0L,<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// no extended styles </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">_T</span>(<span style="color: #a31515;">“SCROLLBAR”</span>),<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// scroll bar control class </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>(<span style="color: #010001;">LPCWSTR</span>) <span style="color: #010001;">NULL</span>,<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// text for window title bar </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">WS_CHILD</span> | <span style="color: #010001;">SBS_HORZ</span>,<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// scroll bar styles </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0,<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// horizontal position </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>0,<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// vertical position </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>200,<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// width of the scroll bar </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>50,<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// default height </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">hWnd</span>,<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// handle to main window </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>(<span style="color: #010001;">HMENU</span>) <span style="color: #010001;">NULL</span>,<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// no menu for a scroll bar </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">hInst</span>,<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// instance owning this window </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>(<span style="color: #010001;">LPVOID</span>) <span style="color: #010001;">NULL</span><span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// pointer not needed </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>); </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">//////////////////////////////////////////////////////////////////////////</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// Get the handle to the client area’s device context. </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">hdc</span> = <span style="color: #010001;">GetDC</span> (<span style="color: #010001;">hWnd</span>); </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// Extract font dimensions from the text metrics. </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">GetTextMetrics</span> (<span style="color: #010001;">hdc</span>, &amp;<span style="color: #010001;">tm</span>); </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">xChar</span> = <span style="color: #010001;">tm</span>.<span style="color: #010001;">tmAveCharWidth</span>; </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">xUpper</span> = (<span style="color: #010001;">tm</span>.<span style="color: #010001;">tmPitchAndFamily</span> &amp; 1 ? 3 : 2) * <span style="color: #010001;">xChar</span>/2; </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">yChar</span> = <span style="color: #010001;">tm</span>.<span style="color: #010001;">tmHeight</span> + <span style="color: #010001;">tm</span>.<span style="color: #010001;">tmExternalLeading</span>; </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// Free the device context. </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">ReleaseDC</span> (<span style="color: #010001;">hWnd</span>, <span style="color: #010001;">hdc</span>); </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// Set an arbitrary maximum width for client area. </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// (xClientMax is the sum of the widths of 48 average </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// lowercase letters and 12 uppercase letters.) </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">xClientMax</span> = 48 <em> <span style="color: #010001;">xChar</span> + 12 </em> <span style="color: #010001;">xUpper</span>; </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">return</span> 0;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">//////////////////////////////////////////////////////////////////////////</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">case</span> <span style="color: #010001;">WM_COMMAND</span>:</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">wmId</span><span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp; </span>= <span style="color: #010001;">LOWORD</span>(<span style="color: #010001;">wParam</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">wmEvent</span> = <span style="color: #010001;">HIWORD</span>(<span style="color: #010001;">wParam</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// </span></span><span style="font-size: 12pt; color: green; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;">分析菜单选择<span lang="EN-US">:</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">switch</span> (<span style="color: #010001;">wmId</span>)</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">case</span> <span style="color: #010001;">IDM_ABOUT</span>:</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">DialogBox</span>(<span style="color: #010001;">hInst</span>, <span style="color: #010001;">MAKEINTRESOURCE</span>(<span style="color: #010001;">IDD_ABOUTBOX</span>), <span style="color: #010001;">hWnd</span>, <span style="color: #010001;">About</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">break</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">case</span> <span style="color: #010001;">IDM_EXIT</span>:</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">DestroyWindow</span>(<span style="color: #010001;">hWnd</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">break</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">default</span>:</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">return</span> <span style="color: #010001;">DefWindowProc</span>(<span style="color: #010001;">hWnd</span>, <span style="color: #010001;">message</span>, <span style="color: #010001;">wParam</span>, <span style="color: #010001;">lParam</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">break</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">case</span> <span style="color: #010001;">WM_SIZE</span>: </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// Retrieve the dimensions of the client area. </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">yClient</span> = <span style="color: #010001;">HIWORD</span> (<span style="color: #010001;">lParam</span>); </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">xClient</span> = <span style="color: #010001;">LOWORD</span> (<span style="color: #010001;">lParam</span>); </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">&nbsp;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// Set the vertical scrolling range and page size</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">cbSize</span> = <span style="color: blue;">sizeof</span>(<span style="color: #010001;">si</span>); </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">fMask</span><span style="mso-spacerun: yes;">&nbsp; </span>= <span style="color: #010001;">SIF_RANGE</span> | <span style="color: #010001;">SIF_PAGE</span>; </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">nMin</span><span style="mso-spacerun: yes;">&nbsp;&nbsp; </span>= 0; </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">nMax</span><span style="mso-spacerun: yes;">&nbsp;&nbsp; </span>= <span style="color: #010001;">LINES</span> - 1; </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">nPage</span><span style="mso-spacerun: yes;">&nbsp; </span>= <span style="color: #010001;">yClient</span> / <span style="color: #010001;">yChar</span>; </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">SetScrollInfo</span>(<span style="color: #010001;">hWnd</span>, <span style="color: #010001;">SB_VERT</span>, &amp;<span style="color: #010001;">si</span>, <span style="color: #010001;">TRUE</span>); </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">&nbsp;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// Set the horizontal scrolling range and page size. </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">cbSize</span> = <span style="color: blue;">sizeof</span>(<span style="color: #010001;">si</span>); </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">fMask</span><span style="mso-spacerun: yes;">&nbsp; </span>= <span style="color: #010001;">SIF_RANGE</span> | <span style="color: #010001;">SIF_PAGE</span>; </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">nMin</span><span style="mso-spacerun: yes;">&nbsp;&nbsp; </span>= 0; </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">nMax</span><span style="mso-spacerun: yes;">&nbsp;&nbsp; </span>= 2 + <span style="color: #010001;">xClientMax</span> / <span style="color: #010001;">xChar</span>; </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">nPage</span><span style="mso-spacerun: yes;">&nbsp; </span>= <span style="color: #010001;">xClient</span> / <span style="color: #010001;">xChar</span>; </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">SetScrollInfo</span>(<span style="color: #010001;">hWnd</span>, <span style="color: #010001;">SB_HORZ</span>, &amp;<span style="color: #010001;">si</span>, <span style="color: #010001;">TRUE</span>); </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">return</span> 0; </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">case</span> <span style="color: #010001;">WM_HSCROLL</span>:</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// Get all the vertial scroll bar information</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">cbSize</span> = <span style="color: blue;">sizeof</span> (<span style="color: #010001;">si</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">fMask</span><span style="mso-spacerun: yes;">&nbsp; </span>= <span style="color: #010001;">SIF_ALL</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// Save the position for comparison later on</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">GetScrollInfo</span> (<span style="color: #010001;">hWnd</span>, <span style="color: #010001;">SB_HORZ</span>, &amp;<span style="color: #010001;">si</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">xPos</span> = <span style="color: #010001;">si</span>.<span style="color: #010001;">nPos</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">switch</span> (<span style="color: #010001;">LOWORD</span> (<span style="color: #010001;">wParam</span>))</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// user clicked left arrow</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">case</span> <span style="color: #010001;">SB_LINELEFT</span>: </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">nPos</span> -= 1;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">break</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// user clicked right arrow</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">case</span> <span style="color: #010001;">SB_LINERIGHT</span>: </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">nPos</span> += 1;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">break</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// user clicked the scroll bar shaft left of the scroll box</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">case</span> <span style="color: #010001;">SB_PAGELEFT</span>:</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">nPos</span> -= <span style="color: #010001;">si</span>.<span style="color: #010001;">nPage</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">break</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// user clicked the scroll bar shaft right of the scroll box</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">case</span> <span style="color: #010001;">SB_PAGERIGHT</span>:</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">nPos</span> += <span style="color: #010001;">si</span>.<span style="color: #010001;">nPage</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">break</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// user dragged the scroll box</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">case</span> <span style="color: #010001;">SB_THUMBTRACK</span>: </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">nPos</span> = <span style="color: #010001;">si</span>.<span style="color: #010001;">nTrackPos</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">break</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">default</span> :</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">break</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// Set the position and then retrieve it.<span style="mso-spacerun: yes;">&nbsp; </span>Due to adjustments</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">//<span style="mso-spacerun: yes;">&nbsp;&nbsp; </span>by Windows it may not be the same as the value set.</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">fMask</span> = <span style="color: #010001;">SIF_POS</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">SetScrollInfo</span> (<span style="color: #010001;">hWnd</span>, <span style="color: #010001;">SB_HORZ</span>, &amp;<span style="color: #010001;">si</span>, <span style="color: #010001;">TRUE</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">GetScrollInfo</span> (<span style="color: #010001;">hWnd</span>, <span style="color: #010001;">SB_HORZ</span>, &amp;<span style="color: #010001;">si</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">&nbsp;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// If the position has changed, scroll the window </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">if</span> (<span style="color: #010001;">si</span>.<span style="color: #010001;">nPos</span> != <span style="color: #010001;">xPos</span>)</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">ScrollWindowEx</span>(<span style="color: #010001;">hWnd</span>, <span style="color: #010001;">xChar</span> * (<span style="color: #010001;">xPos</span> - <span style="color: #010001;">si</span>.<span style="color: #010001;">nPos</span>), 0, <span style="color: #010001;">NULL</span>, <span style="color: #010001;">NULL</span>,</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 5;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="mso-spacerun: yes;">&nbsp;</span><span style="color: #010001;">NULL</span>, <span style="color: #010001;">NULL</span>,<span style="color: #010001;">SW_INVALIDATE</span>|<span style="color: #010001;">SW_ERASE</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">//ScrollWindow(hWnd, xChar * (xPos - si.nPos), 0, NULL, NULL);</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">return</span> 0;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">case</span> <span style="color: #010001;">WM_VSCROLL</span>:</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// Get all the vertial scroll bar information</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">cbSize</span> = <span style="color: blue;">sizeof</span> (<span style="color: #010001;">si</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">fMask</span><span style="mso-spacerun: yes;">&nbsp; </span>= <span style="color: #010001;">SIF_ALL</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">GetScrollInfo</span> (<span style="color: #010001;">hWnd</span>, <span style="color: #010001;">SB_VERT</span>, &amp;<span style="color: #010001;">si</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// Save the position for comparison later on</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">yPos</span> = <span style="color: #010001;">si</span>.<span style="color: #010001;">nPos</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">switch</span> (<span style="color: #010001;">LOWORD</span> (<span style="color: #010001;">wParam</span>))</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// user clicked the HOME keyboard key</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">case</span> <span style="color: #010001;">SB_TOP</span>:</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">nPos</span> = <span style="color: #010001;">si</span>.<span style="color: #010001;">nMin</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">break</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">&nbsp;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// user clicked the END keyboard key</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">case</span> <span style="color: #010001;">SB_BOTTOM</span>:</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">nPos</span> = <span style="color: #010001;">si</span>.<span style="color: #010001;">nMax</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">break</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">&nbsp;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// user clicked the top arrow</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">case</span> <span style="color: #010001;">SB_LINEUP</span>:</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">nPos</span> -= 1;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">break</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">&nbsp;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// user clicked the bottom arrow</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">case</span> <span style="color: #010001;">SB_LINEDOWN</span>:</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">nPos</span> += 1;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">break</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">&nbsp;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// user clicked the scroll bar shaft above the scroll box</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">case</span> <span style="color: #010001;">SB_PAGEUP</span>:</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">nPos</span> -= <span style="color: #010001;">si</span>.<span style="color: #010001;">nPage</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">break</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">&nbsp;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// user clicked the scroll bar shaft below the scroll box</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">case</span> <span style="color: #010001;">SB_PAGEDOWN</span>:</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">nPos</span> += <span style="color: #010001;">si</span>.<span style="color: #010001;">nPage</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">break</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">&nbsp;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// user dragged the scroll box</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">case</span> <span style="color: #010001;">SB_THUMBTRACK</span>:</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">nPos</span> = <span style="color: #010001;">si</span>.<span style="color: #010001;">nTrackPos</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">break</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">&nbsp;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">default</span>:</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">break</span>; </span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// Set the position and then retrieve it.<span style="mso-spacerun: yes;">&nbsp; </span>Due to adjustments</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">//<span style="mso-spacerun: yes;">&nbsp;&nbsp; </span>by Windows it may not be the same as the value set.</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">fMask</span> = <span style="color: #010001;">SIF_POS</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">SetScrollInfo</span> (<span style="color: #010001;">hWnd</span>, <span style="color: #010001;">SB_VERT</span>, &amp;<span style="color: #010001;">si</span>, <span style="color: #010001;">TRUE</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">GetScrollInfo</span> (<span style="color: #010001;">hWnd</span>, <span style="color: #010001;">SB_VERT</span>, &amp;<span style="color: #010001;">si</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// If the position has changed, scroll window and update it</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">if</span> (<span style="color: #010001;">si</span>.<span style="color: #010001;">nPos</span> != <span style="color: #010001;">yPos</span>)</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{<span style="mso-spacerun: yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">ScrollWindow</span>(<span style="color: #010001;">hWnd</span>, 0, <span style="color: #010001;">yChar</span> * (<span style="color: #010001;">yPos</span> - <span style="color: #010001;">si</span>.<span style="color: #010001;">nPos</span>), <span style="color: #010001;">NULL</span>, <span style="color: #010001;">NULL</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">UpdateWindow</span> (<span style="color: #010001;">hWnd</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">return</span> 0;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">case</span> <span style="color: #010001;">WM_PAINT</span>:</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// Prepare the window for painting</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">hdc</span> = <span style="color: #010001;">BeginPaint</span> (<span style="color: #010001;">hWnd</span>, &amp;<span style="color: #010001;">ps</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// Get vertical scroll bar position</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">cbSize</span> = <span style="color: blue;">sizeof</span> (<span style="color: #010001;">si</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">si</span>.<span style="color: #010001;">fMask</span><span style="mso-spacerun: yes;">&nbsp; </span>= <span style="color: #010001;">SIF_POS</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">GetScrollInfo</span> (<span style="color: #010001;">hWnd</span>, <span style="color: #010001;">SB_VERT</span>, &amp;<span style="color: #010001;">si</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">yPos</span> = <span style="color: #010001;">si</span>.<span style="color: #010001;">nPos</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// Get horizontal scroll bar position</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">GetScrollInfo</span> (<span style="color: #010001;">hWnd</span>, <span style="color: #010001;">SB_HORZ</span>, &amp;<span style="color: #010001;">si</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">xPos</span> = <span style="color: #010001;">si</span>.<span style="color: #010001;">nPos</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// Find painting limits</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">FirstLine</span> = <span style="color: #010001;">max</span> (0, <span style="color: #010001;">yPos</span> + <span style="color: #010001;">ps</span>.<span style="color: #010001;">rcPaint</span>.<span style="color: #010001;">top</span> / <span style="color: #010001;">yChar</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">LastLine</span> = <span style="color: #010001;">min</span> (<span style="color: #010001;">LINES</span> - 1, <span style="color: #010001;">yPos</span> + <span style="color: #010001;">ps</span>.<span style="color: #010001;">rcPaint</span>.<span style="color: #010001;">bottom</span> / <span style="color: #010001;">yChar</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">sprintf</span>(<span style="color: #010001;">szDebug</span>,(<span style="color: #a31515;">“%d,%d,%d,%d/r/n”</span>),<span style="color: #010001;">ps</span>.<span style="color: #010001;">rcPaint</span>.<span style="color: #010001;">left</span>,<span style="color: #010001;">ps</span>.<span style="color: #010001;">rcPaint</span>.<span style="color: #010001;">top</span>,<span style="color: #010001;">ps</span>.<span style="color: #010001;">rcPaint</span>.<span style="color: #010001;">right</span>,<span style="color: #010001;">ps</span>.<span style="color: #010001;">rcPaint</span>.<span style="color: #010001;">bottom</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">OutputDebugStringA</span>(<span style="color: #010001;">szDebug</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">ZeroMemory</span>(<span style="color: #010001;">szDebug</span>,0);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">sprintf</span>(<span style="color: #010001;">szDebug</span>,<span style="color: #a31515;">“FirstLine=%d,LastLine=%d/r/n”</span>,<span style="color: #010001;">FirstLine</span>,<span style="color: #010001;">LastLine</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">OutputDebugStringA</span>(<span style="color: #010001;">szDebug</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">for</span> (<span style="color: #010001;">i</span> = <span style="color: #010001;">FirstLine</span>; <span style="color: #010001;">i</span> &lt;= <span style="color: #010001;">LastLine</span>; <span style="color: #010001;">i</span>++)</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">x</span> = <span style="color: #010001;">xChar</span> * (1 - <span style="color: #010001;">xPos</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">y</span> = <span style="color: #010001;">yChar</span> * (<span style="color: #010001;">i</span> - <span style="color: #010001;">yPos</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// Note that “55” in the following depends on the </span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// maximum size of an abc[] item.</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">//</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">hr</span> = <span style="color: #010001;">StringCchLength</span>(<span style="color: #010001;">abc</span>[<span style="color: #010001;">i</span>], 100, &amp;<span style="color: #010001;">abcLength</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">if</span> ((<span style="color: #010001;">FAILED</span>(<span style="color: #010001;">hr</span>)) | (&amp;<span style="color: #010001;">abcLength</span> == <span style="color: #010001;">NULL</span>))</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 5;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">/<em>MessageBox(hWnd,_T(“</em></span></span><span style="font-size: 12pt; color: green; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;">字符串长度为<span lang="EN-US">!”),_T(“</span>错误<span lang="EN-US">“),MB_ICONERROR);/</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">else</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 5;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">TextOut</span>(<span style="color: #010001;">hdc</span>,<span style="color: #010001;">x</span>,<span style="color: #010001;">y</span>,<span style="color: #010001;">abc</span>[<span style="color: #010001;">i</span>],<span style="color: #010001;">abcLength</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 4;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: green;">// Indicate that painting is finished</span></span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">EndPaint</span> (<span style="color: #010001;">hWnd</span>, &amp;<span style="color: #010001;">ps</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 3;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">return</span> 0;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">case</span> <span style="color: #010001;">WM_DESTROY</span>:</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: #010001;">PostQuitMessage</span>(0);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">break</span>;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">default</span>:</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">return</span> <span style="color: #010001;">DefWindowProc</span>(<span style="color: #010001;">hWnd</span>, <span style="color: #010001;">message</span>, <span style="color: #010001;">wParam</span>, <span style="color: #010001;">lParam</span>);</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US"><span style="mso-tab-count: 1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color: blue;">return</span> 0;</span></p>
+<p><span style="font-size: 12pt; font-family: &quot;微软雅黑&quot;,&quot;sans-serif&quot;; mso-hansi-font-family: 'Times New Roman'; mso-bidi-font-family: 'Times New Roman'; mso-font-kerning: 0pt; mso-no-proof: yes;" lang="EN-US">}</span></p>
+<p></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2009/05/18/function-object-and-binders/" rel="next" title="Function object And Binders">
+                <i class="fa fa-chevron-left"></i> Function object And Binders
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2009/06/08/使用tinyxml解析xml/" rel="prev" title="使用TinyXML解析XML">
+                使用TinyXML解析XML <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">billowqiu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">152</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/billowqiu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:billowqiu@163.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">billowqiu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

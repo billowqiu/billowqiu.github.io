@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一直对GID 不是很懂，今天狠下心来看了一天的GDI，主要是参照着MSDN看，感觉还是有点收获的。根据MSDN写了一个小小的程序，仅仅就是截取屏幕，另外可以将其保存到剪贴板里。  以下为源代码： // Capturing_Image.cpp : 定义应用程序的入口点。// #include “stdafx.h” #include “Capturing_Image.h” #define MAX_LO">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VC截取屏幕">
+<meta property="og:url" content="http://yoursite.com/2007/08/18/vc截取屏幕/index.html">
+<meta property="og:site_name" content="taocoding">
+<meta property="og:description" content="一直对GID 不是很懂，今天狠下心来看了一天的GDI，主要是参照着MSDN看，感觉还是有点收获的。根据MSDN写了一个小小的程序，仅仅就是截取屏幕，另外可以将其保存到剪贴板里。  以下为源代码： // Capturing_Image.cpp : 定义应用程序的入口点。// #include “stdafx.h” #include “Capturing_Image.h” #define MAX_LO">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.programfan.com/upfile/200708/20070818012327.gif">
+<meta property="og:updated_time" content="2018-11-25T10:12:25.545Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="VC截取屏幕">
+<meta name="twitter:description" content="一直对GID 不是很懂，今天狠下心来看了一天的GDI，主要是参照着MSDN看，感觉还是有点收获的。根据MSDN写了一个小小的程序，仅仅就是截取屏幕，另外可以将其保存到剪贴板里。  以下为源代码： // Capturing_Image.cpp : 定义应用程序的入口点。// #include “stdafx.h” #include “Capturing_Image.h” #define MAX_LO">
+<meta name="twitter:image" content="http://blog.programfan.com/upfile/200708/20070818012327.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2007/08/18/vc截取屏幕/">
+
+
+
+
+
+  <title>VC截取屏幕 | taocoding</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d13234060d812cb98a47e937139083a9";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">taocoding</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2007/08/18/vc截取屏幕/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">VC截取屏幕</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2007-08-18T18:33:00+08:00">
+                2007-08-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/VC/" itemprop="url" rel="index">
+                    <span itemprop="name">VC</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <pre><code>一直对GID 不是很懂，今天狠下心来看了一天的GDI，主要是参照着MSDN看，感觉还是有点收获的。根据MSDN写了一个小小的程序，仅仅就是截取屏幕，另外可以将其保存到剪贴板里。 
+</code></pre><p>以下为源代码：</p>
+<p>// Capturing_Image.cpp : 定义应用程序的入口点。<br>//</p>
+<p>#include “stdafx.h”</p>
+<p>#include “Capturing_Image.h”</p>
+<p>#define MAX_LOADSTRING 100</p>
+<p>// 全局变量:<br>HINSTANCE hInst;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // 当前实例<br>TCHAR szTitle[MAX_LOADSTRING];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // 标题栏文本<br>TCHAR szWindowClass[MAX_LOADSTRING];&nbsp;&nbsp;&nbsp; // 主窗口类名</p>
+<p>// 此代码模块中包含的函数的前向声明:<br>ATOM&nbsp;&nbsp;&nbsp;&nbsp; MyRegisterClass(HINSTANCE hInstance);<br>BOOL&nbsp;&nbsp;&nbsp;&nbsp; InitInstance(HINSTANCE, int);<br>LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);<br>INT_PTR CALLBACK About(HWND, UINT, WPARAM, LPARAM);</p>
+<p>void CaptureScreen(HWND,HDC);</p>
+<p>int APIENTRY _tWinMain(HINSTANCE hInstance,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HINSTANCE hPrevInstance,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LPTSTR&nbsp;&nbsp;&nbsp; lpCmdLine,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nCmdShow)<br>{<br>UNREFERENCED_PARAMETER(hPrevInstance);<br>UNREFERENCED_PARAMETER(lpCmdLine);</p>
+<p>&nbsp;&nbsp; // TODO: 在此放置代码。<br>MSG msg;<br>HACCEL hAccelTable;</p>
+<p>// 初始化全局字符串<br>LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);<br>LoadString(hInstance, IDC_CAPTURING_IMAGE, szWindowClass, MAX_LOADSTRING);<br>MyRegisterClass(hInstance);</p>
+<p>// 执行应用程序初始化:<br>if (!InitInstance (hInstance, nCmdShow))<br>{<br>&nbsp;&nbsp; return FALSE;<br>}</p>
+<p>hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CAPTURING_IMAGE));</p>
+<p>// 主消息循环:<br>while (GetMessage(&amp;msg, NULL, 0, 0))<br>{<br>&nbsp;&nbsp; if (!TranslateAccelerator(msg.hwnd, hAccelTable, &amp;msg))<br>&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; TranslateMessage(&amp;msg);<br>&nbsp;&nbsp;&nbsp; DispatchMessage(&amp;msg);<br>&nbsp;&nbsp; }<br>}</p>
+<p>return (int) msg.wParam;<br>}</p>
+<p>//<br>// 函数: MyRegisterClass()<br>//<br>// 目的: 注册窗口类。<br>//<br>// 注释:<br>//<br>//&nbsp;&nbsp;&nbsp; 仅当希望<br>//&nbsp;&nbsp;&nbsp; 此代码与添加到 Windows 95 中的“RegisterClassEx”<br>//&nbsp;&nbsp;&nbsp; 函数之前的 Win32 系统兼容时，才需要此函数及其用法。调用此函数十分重要，<br>//&nbsp;&nbsp;&nbsp; 这样应用程序就可以获得关联的<br>//&nbsp;&nbsp;&nbsp; “格式正确的”小图标。<br>//<br>ATOM MyRegisterClass(HINSTANCE hInstance)<br>{<br>WNDCLASSEX wcex;</p>
+<p>wcex.cbSize = sizeof(WNDCLASSEX);</p>
+<p>wcex.style&nbsp;&nbsp;&nbsp; = CS_HREDRAW | CS_VREDRAW|CS_OWNDC;<br>wcex.lpfnWndProc = WndProc;<br>wcex.cbClsExtra&nbsp;&nbsp; = 0;<br>wcex.cbWndExtra&nbsp;&nbsp; = 0;<br>wcex.hInstance&nbsp;&nbsp; = hInstance;<br>wcex.hIcon&nbsp;&nbsp;&nbsp; = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CAPTURING_IMAGE));<br>wcex.hCursor&nbsp;&nbsp; = LoadCursor(NULL, IDC_ARROW);<br>wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);<br>wcex.lpszMenuName = MAKEINTRESOURCE(IDC_CAPTURING_IMAGE);<br>wcex.lpszClassName = szWindowClass;<br>wcex.hIconSm&nbsp;&nbsp; = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));</p>
+<p>return RegisterClassEx(&amp;wcex);<br>}</p>
+<p>//<br>//&nbsp;&nbsp; 函数: InitInstance(HINSTANCE, int)<br>//<br>//&nbsp;&nbsp; 目的: 保存实例句柄并创建主窗口<br>//<br>//&nbsp;&nbsp; 注释:<br>//<br>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在此函数中，我们在全局变量中保存实例句柄并<br>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 创建和显示主程序窗口。<br>//<br>BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)<br>{<br>&nbsp;&nbsp; HWND hWnd;</p>
+<p>&nbsp;&nbsp; hInst = hInstance; // 将实例句柄存储在全局变量中</p>
+<p>&nbsp;&nbsp; hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, hInstance, NULL);</p>
+<p>&nbsp;&nbsp; if (!hWnd)<br>&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return FALSE;<br>&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp; ShowWindow(hWnd, nCmdShow);<br>&nbsp;&nbsp; UpdateWindow(hWnd);</p>
+<p>&nbsp;&nbsp; return TRUE;<br>}</p>
+<p>//<br>// 函数: WndProc(HWND, UINT, WPARAM, LPARAM)<br>//<br>// 目的: 处理主窗口的消息。<br>//<br>// WM_COMMAND - 处理应用程序菜单<br>// WM_PAINT - 绘制主窗口<br>// WM_DESTROY - 发送退出消息并返回<br>//<br>//<br>LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)<br>{<br>int wmId, wmEvent;<br>PAINTSTRUCT ps;<br>HDC hdc=NULL;<br>switch (message)<br>{<br>case WM_COMMAND:<br>&nbsp;&nbsp; wmId&nbsp;&nbsp;&nbsp; = LOWORD(wParam);<br>&nbsp;&nbsp; wmEvent = HIWORD(wParam);<br>&nbsp;&nbsp; // 分析菜单选择:<br>&nbsp;&nbsp; switch (wmId)<br>&nbsp;&nbsp; {<br>&nbsp;&nbsp; case IDM_CAPTUR:<br>&nbsp;&nbsp;&nbsp;&nbsp; CaptureScreen(hWnd,hdc);<br>&nbsp;&nbsp;&nbsp;&nbsp; break;<br>&nbsp;&nbsp; case IDM_ABOUT:<br>&nbsp;&nbsp;&nbsp; DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);<br>&nbsp;&nbsp;&nbsp; break;<br>&nbsp;&nbsp; case IDM_EXIT:<br>&nbsp;&nbsp;&nbsp; DestroyWindow(hWnd);<br>&nbsp;&nbsp;&nbsp; break;<br>&nbsp;&nbsp; default:<br>&nbsp;&nbsp;&nbsp; return DefWindowProc(hWnd, message, wParam, lParam);<br>&nbsp;&nbsp; }<br>&nbsp;&nbsp; break;<br>case WM_PAINT:<br>&nbsp;&nbsp; hdc = BeginPaint(hWnd, &amp;ps);<br>&nbsp;&nbsp; // TODO: 在此添加任意绘图代码…<br>&nbsp;&nbsp; CaptureScreen(hWnd,hdc);<br>&nbsp;&nbsp; EndPaint(hWnd, &amp;ps);<br>&nbsp;&nbsp; break;<br>case WM_DESTROY:<br>&nbsp;&nbsp; PostQuitMessage(0);<br>&nbsp;&nbsp; break;<br>default:<br>&nbsp;&nbsp; return DefWindowProc(hWnd, message, wParam, lParam);<br>}<br>return 0;<br>}</p>
+<p>// “关于”框的消息处理程序。<br>INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)<br>{<br>UNREFERENCED_PARAMETER(lParam);<br>switch (message)<br>{<br>case WM_INITDIALOG:<br>&nbsp;&nbsp; return (INT_PTR)TRUE;</p>
+<p>case WM_COMMAND:<br>&nbsp;&nbsp; if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)<br>&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; EndDialog(hDlg, LOWORD(wParam));<br>&nbsp;&nbsp;&nbsp; return (INT_PTR)TRUE;<br>&nbsp;&nbsp; }<br>&nbsp;&nbsp; break;<br>}<br>return (INT_PTR)FALSE;<br>}</p>
+<p>void CaptureScreen(HWND hWnd,HDC hdc)<br>{<br>hdc=GetDC(hWnd);<br>RECT clientRect;<br>GetClientRect(hWnd,&amp;clientRect);</p>
+<p>HDC hdcScreen;<br>HDC hdcCompatible;<br>HBITMAP hbmScreen;<br>// 创建一个普通的包含整个显示器屏幕的设备描述表和一个与之兼容<br>// 的内存设备描述表，普通的设备描述表提供一个屏幕内容的快照<br>// 内存设备描述表将该快照的一份拷贝与一个bitmap相连，但是该bitmap<br>//的表面显示的是一个单色的一个像素的bitmap，因此应该选入一个何时的<br>//bitmap到该内存设备描述表<br>//以下摘自MSDN<br>//A memory DC exists only in memory. When the memory DC is created,its display<br>//surface is exactly one monochrome pixel wide and one monochrome pixel high.<br>//Before an application can use a memory DC for drawing operations, it must select a<br>//bitmap of the correct width and height into the DC.</p>
+<p>hdcScreen = CreateDC(“DISPLAY”, NULL, NULL, NULL);<br>hdcCompatible = CreateCompatibleDC(hdcScreen);</p>
+<p>// 创建一个与屏幕设备描述表相兼容的bitmap，然后将其选入先前创建的<br>// 内存设备描述表<br>&nbsp;&nbsp;&nbsp;&nbsp;<br>hbmScreen = CreateCompatibleBitmap(hdcScreen,<br>&nbsp;&nbsp;&nbsp; GetDeviceCaps(hdcScreen, HORZRES),<br>&nbsp;&nbsp;&nbsp; GetDeviceCaps(hdcScreen, VERTRES)); </p>
+<p>if (hbmScreen == 0)<br>MessageBox(hWnd,”hbmScreen”,”错误”,MB_OK); </p>
+<p>if (!SelectObject(hdcCompatible, hbmScreen))<br>MessageBox(hWnd,”Compatible Bitmap Selection”, “错误”,MB_OK); </p>
+<p>//将与屏幕设备描述表相关的颜色信息拷贝到内存设备描述表相关<br>if (!BitBlt(hdcCompatible,<br>0,0,<br>GetDeviceCaps(hdcScreen, HORZRES),GetDeviceCaps(hdcScreen, VERTRES),<br>hdcScreen,<br>0,0,<br>SRCCOPY))<br>MessageBox(hWnd,”Screen to Compat Blt Failed”,”错误”,MB_OK);</p>
+<p>StretchBlt(hdc,<br>&nbsp;&nbsp;&nbsp; 0, 0,<br>&nbsp;&nbsp;&nbsp; clientRect.right-clientRect.left, clientRect.bottom-clientRect.top,<br>&nbsp;&nbsp;&nbsp; hdcCompatible,<br>&nbsp;&nbsp;&nbsp; 0, 0,<br>&nbsp;&nbsp;&nbsp; GetDeviceCaps(hdcScreen, HORZRES), GetDeviceCaps(hdcScreen, VERTRES),<br>&nbsp;&nbsp;&nbsp; SRCCOPY); </p>
+<p>if (OpenClipboard(hWnd))<br>&nbsp;&nbsp;&nbsp;&nbsp; //hWnd为程序窗口句柄<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //清空剪贴板<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EmptyClipboard();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //把屏幕内容粘贴到剪贴板上,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetClipboardData(CF_BITMAP, hbmScreen);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //关闭剪贴板<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CloseClipboard();<br>&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>DeleteObject(hbmScreen);<br>DeleteDC(hdcCompatible);<br>DeleteDC(hdcScreen);<br>ReleaseDC(hWnd,hdc);<br>}</p>
+<p>附上一个截图：</p>
+<p><img src="http://blog.programfan.com/upfile/200708/20070818012327.gif" alt=""></p>
+<p></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2007/07/26/关于虚函数表的一点内容/" rel="next" title="关于虚函数表的一点内容">
+                <i class="fa fa-chevron-left"></i> 关于虚函数表的一点内容
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2007/08/25/cwnd及窗口产生和销毁过程/" rel="prev" title="CWnd及窗口产生和销毁过程">
+                CWnd及窗口产生和销毁过程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">billowqiu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">152</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/billowqiu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:billowqiu@163.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">billowqiu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="翻译的一篇SGI STL文档还要好多不太会翻译，以后在慢慢领悟吧！ Introduction to the Standard Template Library标准模板库简介The Standard Template Library, or STL, is a C++ library of container classes, algorithms, and iterators; it provid">
+<meta property="og:type" content="article">
+<meta property="og:title" content="STL介绍">
+<meta property="og:url" content="http://yoursite.com/2008/04/13/stl介绍/index.html">
+<meta property="og:site_name" content="taocoding">
+<meta property="og:description" content="翻译的一篇SGI STL文档还要好多不太会翻译，以后在慢慢领悟吧！ Introduction to the Standard Template Library标准模板库简介The Standard Template Library, or STL, is a C++ library of container classes, algorithms, and iterators; it provid">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-25T10:12:25.543Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="STL介绍">
+<meta name="twitter:description" content="翻译的一篇SGI STL文档还要好多不太会翻译，以后在慢慢领悟吧！ Introduction to the Standard Template Library标准模板库简介The Standard Template Library, or STL, is a C++ library of container classes, algorithms, and iterators; it provid">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2008/04/13/stl介绍/">
+
+
+
+
+
+  <title>STL介绍 | taocoding</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d13234060d812cb98a47e937139083a9";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">taocoding</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2008/04/13/stl介绍/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">STL介绍</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2008-04-13T15:36:00+08:00">
+                2008-04-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C++</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>翻译的一篇SGI STL文档还要好多不太会翻译，以后在慢慢领悟吧！</p>
+<h1 id="Introduction-to-the-Standard-Template-Library"><a href="#Introduction-to-the-Standard-Template-Library" class="headerlink" title="Introduction to the Standard Template Library"></a><span><font face="宋体">Introduction to the Standard Template Library</font></span></h1><h1 id="标准模板库简介"><a href="#标准模板库简介" class="headerlink" title="标准模板库简介"></a><font face="宋体">标准模板库简介</font></h1><span><font face="宋体" size="3">The Standard Template Library, or <em>STL</em>, is a C++ library of container classes, algorithms, and iterators; it provides many of the basic algorithms and data structures of computer science. The STL is a <em>generic</em> library, meaning that its components are heavily parameterized: almost every component in the STL is a template. You should make sure that you understand how templates work in C++ before you use the STL.</font></span>
+
+<font face="宋体" size="3">标准模板库，或<span>STL</span>，是一个包括容器类，算法和迭代器的<span>C++</span>库；它提供了许多计算机的基本算法和数据结构。<span>STL</span>是一个泛型库，这意味这它是由很深的参数机制实现的：几乎每一个<span>STL</span>的组件都是模板。你在使用<span>STL</span>之前应该确信你已经懂得了<span>C++</span>的模板。</font>
+
+<h2 id="Containers-and-algorithms"><a href="#Containers-and-algorithms" class="headerlink" title="Containers and algorithms"></a><span><font face="宋体">Containers and algorithms</font></span></h2><h2 id="容器和算法"><a href="#容器和算法" class="headerlink" title="容器和算法"></a><font face="宋体">容器和算法</font></h2><span><font face="宋体" size="3">Like many class libraries, the STL includes <em>container</em> classes: classes whose purpose is to contain other objects. The STL includes the classes <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/Vector.html" target="_blank" rel="noopener"><font color="#0000ee"><u>vector</u></font></a></tt>, <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/List.html" target="_blank" rel="noopener"><font color="#0000ee"><u>list</u></font></a></tt>, <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/Deque.html" target="_blank" rel="noopener"><font color="#0000ee"><u>deque</u></font></a></tt>, <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/set.html" target="_blank" rel="noopener"><font color="#0000ee"><u>set</u></font></a></tt>, <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/multiset.html" target="_blank" rel="noopener"><font color="#0000ee"><u>multiset</u></font></a></tt>, <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/Map.html" target="_blank" rel="noopener"><font color="#0000ee"><u>map</u></font></a></tt>, <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/Multimap.html" target="_blank" rel="noopener"><font color="#0000ee"><u>multimap</u></font></a></tt>, <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/hash_set.html" target="_blank" rel="noopener"><font color="#0000ee"><u>hash_set</u></font></a></tt>, <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/hash_multiset.html" target="_blank" rel="noopener"><font color="#0000ee"><u>hash_multiset</u></font></a></tt>, <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/hash_map.html" target="_blank" rel="noopener"><font color="#0000ee"><u>hash_map</u></font></a></tt>, and <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/hash_multimap.html" target="_blank" rel="noopener"><font color="#0000ee"><u>hash_multimap</u></font></a></tt>. Each of these classes is a template, and can be instantiated to contain any type of object. You can, for example, use a <tt>vector&lt;int&gt;</tt> in much the same way as you would use an ordinary C array, except that <tt>vector</tt> eliminates the chore of managing dynamic memory allocation by hand.</font></span>
+
+<font face="宋体" size="3">像许多类库，<span>STL</span>包括容器类：用于包含其他类对象的类。<span>STL</span>包括的容器类有<tt><span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/Vector.html" target="_blank" rel="noopener"><font color="#0000ee"><u>vector</u></font></a></span></tt><span>, <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/List.html" target="_blank" rel="noopener"><font color="#0000ee"><u>list</u></font></a></tt>, <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/Deque.html" target="_blank" rel="noopener"><font color="#0000ee"><u>deque</u></font></a></tt>, <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/set.html" target="_blank" rel="noopener"><font color="#0000ee"><u>set</u></font></a></tt>, <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/multiset.html" target="_blank" rel="noopener"><font color="#0000ee"><u>multiset</u></font></a></tt>, <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/Map.html" target="_blank" rel="noopener"><font color="#0000ee"><u>map</u></font></a></tt>, <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/Multimap.html" target="_blank" rel="noopener"><font color="#0000ee"><u>multimap</u></font></a></tt>, <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/hash_set.html" target="_blank" rel="noopener"><font color="#0000ee"><u>hash_set</u></font></a></tt>, <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/hash_multiset.html" target="_blank" rel="noopener"><font color="#0000ee"><u>hash_multiset</u></font></a></tt>, <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/hash_map.html" target="_blank" rel="noopener"><font color="#0000ee"><u>hash_map</u></font></a></tt>,</span>和<tt><span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/hash_multimap.html" target="_blank" rel="noopener"><font color="#0000ee"><u>hash_multimap</u></font></a></span></tt>。每一个容器类都是模板，而且可以被实例化去包含任何类型的对象。例如你可以使用<span>vector&lt;int&gt;</span>像使用一个原生的<span>C</span>数组，出此之外<span>vector</span>还消除了一些手动动态内存管理的琐碎事情。</font><br><pre><span><font size="3"><font face="宋体"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>vector&lt;int&gt; v(3);<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>// Declare a vector of 3 elements.</font></font></span></pre><pre><span><font size="3"><font face="宋体"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>v[0] = 7;</font></font></span></pre><pre><span><font size="3"><font face="宋体"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>v[1] = v[0] + 3;</font></font></span></pre><pre><span><font size="3"><font face="宋体"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>v[2] = v[0] + v[1];<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>// v[0] == 7, v[1] == 10, v[2] == 17<span style="mso-spacerun: yes">  </span></font></font></span></pre><pre><font size="3"><font face="宋体"><span><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>vector&lt;int&gt; v(3);<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>// </span>声明一个包含三个元素的<span>vector.</span></font></font></pre><pre><span><font size="3"><font face="宋体"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>v[0] = 7;</font></font></span></pre><pre><span><font size="3"><font face="宋体"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>v[1] = v[0] + 3;</font></font></span></pre><pre><span><font size="3"><font face="宋体"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>v[2] = v[0] + v[1];<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>// v[0] == 7, v[1] == 10, v[2] == 17<span style="mso-spacerun: yes">  </span></font></font></span></pre><pre><span><font face="宋体" size="3"> </font></span></pre><br><br><span><font face="宋体" size="3">The STL also includes a large collection of <em>algorithms</em> that manipulate the data stored in containers. You can reverse the order of elements in a <tt>vector</tt>, for example, by using the <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/reverse.html" target="_blank" rel="noopener"><font color="#0000ee"><u>reverse</u></font></a></tt> algorithm. </font></span><br><br><font size="3"><font face="宋体"><span>STL</span>也包括一个很大的算法集合用于处理存储在容器的数据。例如你可以通过使用<tt><span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/reverse.html" target="_blank" rel="noopener"><font color="#0000ee"><u>reverse</u></font></a></span>算法</tt>倒序保存在<span>vector</span>中的元素。</font></font><br><pre><span><font size="3"><font face="宋体"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>reverse(v.begin(), v.end()); // v[0] == 17, v[1] == 10, v[2] == 7</font></font></span></pre><br><br><span><font size="3"><font face="宋体">There are two important points to notice about this call to <tt>reverse</tt>. First, it is a global function, not a member function. Second, it takes two arguments rather than one: it operates on a <em>range</em> of elements, rather than on a container. In this particular case the range happens to be the entire container <tt>v.</tt></font></font></span><br><br><font face="宋体" size="3">在使用<tt><span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/reverse.html" target="_blank" rel="noopener"><font color="#0000ee"><u>reverse</u></font></a></span>时</tt>有两个重要点值得注意<span>,</span>第一点是它是一个全局函数，而不是一个成员函数；第二点是它包括两个参数而不是一个参数，容器元素的边界而不是容器。在我们这个例子中，边界即为整个容器。</font>
+
+<span><font face="宋体" size="3">The reason for both of these facts is the same: <tt>reverse</tt>, like other STL algorithms, is decoupled from the STL container classes. This means that <tt>reverse</tt> can be used not only to reverse elements in vectors, but also to reverse elements in lists, and even elements in C arrays. The following program is also valid.</font></span>
+
+<font size="3"><font face="宋体">这两点其实是一样的：<tt><span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/reverse.html" target="_blank" rel="noopener"><font color="#0000ee"><u>reverse</u></font></a></span>，像其他的<span>STL</span>算法，是与<span>STL</span>容器类，这意味这<span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/reverse.html" target="_blank" rel="noopener"><font color="#0000ee"><u>reverse</u></font></a></span>不仅可以用于倒序<span>vectors</span>中的元素，还可以用于<span>lists</span>，甚至用于<span>C</span>数组。下面的程序是合法的。</tt></font></font><br><pre><span><font size="3"><font face="宋体"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>double A[6] = { 1.2, 1.3, 1.4, 1.5, 1.6, 1.7 };</font></font></span></pre><pre><span><font size="3"><font face="宋体"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>reverse(A, A + 6);</font></font></span></pre><pre><span><font size="3"><font face="宋体"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>for (int i = 0; i &lt; 6; ++i)</font></font></span></pre><pre><span><font size="3"><font face="宋体"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>cout &lt;&lt; “A[“ &lt;&lt; i &lt;&lt; “] = “ &lt;&lt; A[i];</font></font></span></pre><br><br><span><font face="宋体" size="3">This example uses a <em>range</em>, just like the example of reversing a <tt>vector</tt>: the first argument to reverse is a pointer to the beginning of the range, and the second argument points one element past the end of the range. This range is denoted <tt>[A, A + 6)</tt>; the asymmetrical notation is a reminder that the two endpoints are different, that the first is the beginning of the range and the second is <em>one past</em> the end of the range. </font></span><br><br><font face="宋体" size="3">这个例子中使用的区间，就像在倒序<span>vector</span>中使用的：第一个参数是指向倒序的区间的开始，第二个参数是指向超过区间的第一个元素。这个区间表示的是<span>[A</span>，<span>A+6],</span>非对称的符号提示两点区间端点是不同的，第一个端点是区间的起始点，第二个是超过区间的第一个点。</font>
+
+<h2 id="Iterators"><a href="#Iterators" class="headerlink" title="Iterators"></a><span><font face="宋体">Iterators</font></span></h2><h2 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a><font face="宋体">迭代器</font></h2><span><font face="宋体" size="3">In the example of reversing a C array, the arguments to <tt>reverse</tt> are clearly of type <tt>double*</tt>. What are the arguments to reverse if you are reversing a <tt>vector</tt>, though, or a <tt>list</tt>? That is, what exactly does <tt>reverse</tt> declare its arguments to be, and what exactly do <tt>v.begin()</tt> and <tt>v.end()</tt> return? </font></span>
+
+<font size="3"><font face="宋体">在倒序<span>C</span>数组的例子中，传递给<tt><span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/reverse.html" target="_blank" rel="noopener"><font color="#0000ee"><u>reverse</u></font></a></span>的参数比较清晰就是<span>double*</span>。那么当你倒序一个<span>vector</span>或者<span>list</span>时传递给<span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/reverse.html" target="_blank" rel="noopener"><font color="#0000ee"><u>reverse</u></font></a></span>的参数是什么呢？也就是，<span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/reverse.html" target="_blank" rel="noopener"><font color="#0000ee"><u>reverse</u></font></a></span>声明的参数类型到底是什么，<span>v.begin()</span>和<span>v.end()</span>返回的是什么呢？</tt></font></font>
+
+<span><font face="宋体" size="3">The answer is that the arguments to <tt>reverse</tt> are <em>iterators</em>, which are a generalization of pointers. Pointers themselves are iterators, which is why it is possible to reverse the elements of a C array. Similarly, <tt>vector</tt> declares the nested types <tt>iterator</tt> and <tt>const_iterator</tt>. In the example above, the type returned by <tt>v.begin()</tt> and <tt>v.end()</tt> is <tt>vector&lt;int&gt;::iterator</tt>. There are also some iterators, such as <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/istream_iterator.html" target="_blank" rel="noopener"><font color="#0000ee"><u>istream_iterator</u></font></a></tt> and <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/ostream_iterator.html" target="_blank" rel="noopener"><font color="#0000ee"><u>ostream_iterator</u></font></a></tt>, that aren’t associated with containers at all. </font></span>
+
+<font size="3"><font face="宋体">答案是传递给<tt><span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/reverse.html" target="_blank" rel="noopener"><font color="#0000ee"><u>reverse</u></font></a></span>的参数是迭代器，一个泛型指针。指向它们自己的是迭代器，为什么可以倒序<span>C</span>数组中的元素呢。类似地，<span>vector</span>声明了内嵌类型的<span>iterator</span></tt><span> and <tt>const_iterator</tt></span>。在上面的例子中，<tt><span>v.begin()</span></tt>和<tt><span>v.end()</span>返回的类型是<span>vector&lt;int&gt;::iterator</span>。还有一些其他的迭代器，比如<span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/istream_iterator.html" target="_blank" rel="noopener"><font color="#0000ee"><u>istream_iterator</u></font></a></span></tt>和<tt><span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/ostream_iterator.html" target="_blank" rel="noopener"><font color="#0000ee"><u>ostream_iterator</u></font></a></span>，它们并没有和容器相关联。</tt></font></font>
+
+<span><font face="宋体" size="3">Iterators are the mechanism that makes it possible to decouple algorithms from containers: algorithms are templates, and are parameterized by the type of iterator, so they are not restricted to a single type of container. Consider, for example, how to write an algorithm that performs linear search through a range. This is the STL’s <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/find.html" target="_blank" rel="noopener"><font color="#0000ee"><u>find</u></font></a></tt> algorithm. </font></span>
+
+<font size="3"><font face="宋体">迭代器是一种使得算法与容器分离的机制：算法是模板，被迭代器的类型参数化，所以他们没有限制非要在一个单独类型的容器上。考虑这样一个例子，怎么写一个算法实现在一个区间上线性查找。<span>STL</span>的<tt><span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/find.html" target="_blank" rel="noopener"><font color="#0000ee"><u>find</u></font></a></span>即是这样的算法：<span></span></tt></font></font>
+
+<span><font size="3"><font face="宋体"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>template &lt;class InputIterator, class T&gt;</font></font></span><br><pre><span><font size="3"><font face="宋体"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>InputIterator find(InputIterator first, InputIterator last, const T&amp; value) {</font></font></span></pre><pre><span><font size="3"><font face="宋体"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>while (first != last &amp;&amp; <em>first != value) ++first;</em></font></font></span></pre><pre><span><font size="3"><font face="宋体"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>return first;</font></font></span></pre><pre><span><font size="3"><font face="宋体"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>}</font></font></span></pre><pre><tt><span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/find.html" target="_blank" rel="noopener"><font face="宋体" color="#0000ee" size="3"><u>find</u></font></a></span><font face="宋体" size="3">要求三个参数：两个迭代器定义了一个区间，一个<span>value</span>用于在区间中查找。它在区间<span>[first,last)</span>中检查每一个迭代器，从开始到结束，在找到一个指向<span>value</span>的迭代器或者到达区间尾时停止。</font></tt></pre><br><br><font size="3"><font face="宋体"><tt><span>Find</span></tt><span> takes three arguments: two iterators that define a range, and a value to search for in that range. It examines each iterator in the range <tt>[first, last)</tt>, proceeding from the beginning to the end, and stops either when it finds an iterator that points to <tt>value</tt> or when it reaches the end of the range. </span></font></font><br><br><font size="3"><font face="宋体"><tt><span>First</span></tt><span> and <tt>last</tt> are declared to be of type <tt>InputIterator</tt>, and <tt>InputIterator</tt> is a template parameter. That is, there isn’t actually any type called <tt>InputIterator</tt>: when you call <tt>find</tt>, the compiler substitutes the actual type of the arguments for the formal type parameters <tt>InputIterator</tt> and <tt>T</tt>. If the first two arguments to <tt>find</tt> are of type <tt>int</tt> and the third is of type <tt>int</tt>, then it is as if you had called the following function.</span></font></font><br><br><font size="3"><font face="宋体"><span>First</span>和<span>last</span>被声明为<span>InputIterator</span>类型，是一个模板参数类型。实际上并没有叫做<span>InputItearot</span>的类型：当你调用<tt><span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/find.html" target="_blank" rel="noopener"><font color="#0000ee"><u>find</u></font></a></span>时，编译器会用实参类型替换型参<span>InputIteartor</span>和<span>T</span>。假如传递给<span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/find.html" target="_blank" rel="noopener"><font color="#0000ee"><u>find</u></font></a></span>的前面两个参数是<span>int<em></em></span>，第三个参数是<span>int</span>的话，实际上你调用的函数是下面这样的：</tt></font></font><br><pre><span><font size="3"><font face="宋体"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>int find(int<em> first, int</em> last, const int&amp; value) {</font></font></span></pre><pre><span><font size="3"><font face="宋体"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>while (first != last &amp;&amp; *first != value) ++first;</font></font></span></pre><pre><span><font size="3"><font face="宋体"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>return first;</font></font></span></pre><pre><span><font size="3"><font face="宋体"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </span>}</font></font></span></pre><br><br>## <span><font face="宋体">Concepts and Modeling</font></span>
+
+<h2 id="概念和模型"><a href="#概念和模型" class="headerlink" title="概念和模型"></a><font face="宋体">概念和模型</font></h2><span><font face="宋体" size="3">One very important question to ask about any template function, not just about STL algorithms, is what the set of types is that may correctly be substituted for the formal template parameters. Clearly, for example, <tt>int<em></em></tt> or <tt>double</tt> may be substituted for <tt>find</tt>‘s formal template parameter <tt>InputIterator</tt>. Equally clearly, <tt>int</tt> or <tt>double</tt> may not: <tt>find</tt> uses the expression <tt>*first</tt>, and the dereference operator makes no sense for an object of type <tt>int</tt> or of type <tt>double</tt>. The basic answer, then, is that <tt>find</tt> implicitly defines a set of requirements on types, and that it may be instantiated with any type that satisfies those requirements. Whatever type is substituted for <tt>InputIterator</tt> must provide certain operations: it must be possible to compare two objects of that type for equality, it must be possible to increment an object of that type, it must be possible to dereference an object of that type to obtain the object that it points to, and so on. </font></span>
+
+<font size="3"><font face="宋体">一个关于模板函数的非常重要的问题，不仅仅是<span>STL</span>算法，是正确的替换形式模板参。明显地，例如，<span>int<em></em></span>和<span>double</span>也许会替换<tt><span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/find.html" target="_blank" rel="noopener"><font color="#0000ee"><u>find</u></font></a></span>的形式模板参数<span>Input-</span></tt></font></font>
+
+<tt><font size="3"><font face="宋体"><span>Iterato</span>。同样地，<span>int</span>或者<span>double</span>也许不会：<span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/find.html" target="_blank" rel="noopener"><font color="#0000ee"><u>find</u></font></a></span>使用表达式<span>*first</span>，解引用运算符对一个<span>int</span>或者<span>double</span>类型没有任何意义。一个简单的答案是，<span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/find.html" target="_blank" rel="noopener"><font color="#0000ee"><u>find</u></font></a></span>也许显示定义了一个需求类型集合，它会这些参数能满足需求的时候被实例化（也就是不满足要求的会报错了）。能够替换<span>InputIterator</span>的参数必须提供能够以下操作：它必须可以比较两个类型是否相等，它必须可以自增，而且还可以解引用获得它指向的元素，等等。</font></font></tt>
+
+<font size="3"><font face="宋体"><tt><span>Find</span></tt><span> isn’t the only STL algorithm that has such a set of requirements; the arguments to <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/for_each.html" target="_blank" rel="noopener"><font color="#0000ee"><u>for_each</u></font></a></tt> and <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/count.html" target="_blank" rel="noopener"><font color="#0000ee"><u>count</u></font></a></tt>, and other algorithms, must satisfy the same requirements. These requirements are sufficiently important that we give them a name: we call such a set of type requirements a <em>concept</em>, and we call this particular concept <strong><a href="http://hi.baidu.com/fc/桌面/SGI-STL/InputIterator.html" target="_blank" rel="noopener"><font color="#0000ee"><u>Input Iterator</u></font></a></strong>. We say that a type <em>conforms to a concept</em>, or that it <em>is a model of a concept</em>, if it satisfies all of those requirements. We say that <tt>int<em></em></tt> is a model of <strong>Input Iterator</strong> because <tt>int</tt> provides all of the operations that are specified by the <strong>Input Iterator</strong> requirements. </span></font></font>
+
+<font size="3"><font face="宋体"><span>STL</span>算法中并不是只要<span>Find</span>有这样的一个需求集合，<tt><span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/for_each.html" target="_blank" rel="noopener"><font color="#0000ee"><u>for_each</u></font></a></span></tt>和<tt><span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/count.html" target="_blank" rel="noopener"><font color="#0000ee"><u>count</u></font></a></span>的参数，还要其他的算法同样需要满足同样的要求。这些需求是足够重要的，我们给他们起个名字：我们称这样的类型需求集合为概念，这样一个特殊的概念叫做输入迭代器。我们称满足这样要求的概念为一个模型。<span>Int<em></em></span>是一个</tt><strong><span>Input Iterator</span></strong>因为<span>int</span>提供了所有<strong><span>Input Iterator</span></strong>要求的的操作。</font></font>
+
+<span><font face="宋体" size="3">Concepts are not a part of the C++ language; there is no way to declare a concept in a program, or to declare that a particular type is a model of a concept. Nevertheless, concepts are an extremely important part of the STL. Using concepts makes it possible to write programs that cleanly separate interface from implementation: the author of <tt>find</tt> only has to consider the interface specified by the concept <strong>Input Iterator</strong>, rather than the implementation of every possible type that conforms to that concept. Similarly, if you want to use <tt>find</tt>, you need only to ensure that the arguments you pass to it are models of <strong>Input Iterator. </strong>This is the reason why <tt>find</tt> and <tt>reverse</tt> can be used with <tt>list</tt>s, <tt>vector</tt>s, C arrays, and many other types: programming in terms of concepts, rather than in terms of specific types, makes it possible to reuse software components and to combine components together. </font></span>
+
+<h2 id="Refinement"><a href="#Refinement" class="headerlink" title="Refinement"></a><span><font face="宋体">Refinement</font></span></h2><h2 id="精巧"><a href="#精巧" class="headerlink" title="精巧"></a><font face="宋体">精巧</font></h2><font size="3"><font face="宋体"><strong><span>Input Iterator</span></strong><span> is, in fact, a rather weak concept: that is, it imposes very few requirements. An <strong>Input Iterator</strong> must support a subset of pointer arithmetic (it must be possible to increment an <strong>Input Iterator</strong> using prefix and postfix <tt>operator++</tt>), but need not support all operations of pointer arithmetic. This is sufficient for <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/find.html" target="_blank" rel="noopener"><font color="#0000ee"><u>find</u></font></a></tt>, but some other algorithms require that their arguments satisfy additional requirements. <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/reverse.html" target="_blank" rel="noopener"><font color="#0000ee"><u>Reverse</u></font></a></tt>, for example, must be able to decrement its arguments as well as increment them; it uses the expression <tt>–last</tt>. In terms of concepts, we say that <tt>reverse</tt>‘s arguments must be models of <strong><a href="http://hi.baidu.com/fc/桌面/SGI-STL/BidirectionalIterator.html" target="_blank" rel="noopener"><font color="#0000ee"><u>Bidirectional Iterator</u></font></a></strong> rather than <strong>Input Iterator</strong>. </span></font></font>
+
+<font size="3"><font face="宋体"><strong><span>Input Iterator</span></strong>事实上是一个非常弱的概念：它强加了很少的要求。一个<strong><span>Input Iterator</span></strong>必须提供一个指针算术的子集（它必须可以去通过前缀或者后缀的<span>++</span>递增一个<strong><span>Input Iterator</span></strong>），但是不需要提供所以的指针运算。这些对于<span>find</span>来说已经足够了，但是其他的一些算法需要一些额外的要求。例如<tt><span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/reverse.html" target="_blank" rel="noopener"><font color="#0000ee"><u>Reverse</u></font></a></span>必须可以通过<span>–</span>实现递减。按照概念的说法，我们说<span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/reverse.html" target="_blank" rel="noopener"><font color="#0000ee"><u>Reverse</u></font></a></span>的参数为</tt><strong><span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/BidirectionalIterator.html" target="_blank" rel="noopener"><font color="#0000ee"><u>Bidirectional Iterator</u></font></a></span></strong>模型而非<strong><span>Input Iterator</span></strong>。</font></font>
+
+<span><font face="宋体" size="3">The <strong>Bidirectional Iterator</strong> concept is very similar to the <strong>Input Iterator</strong> concept: it simply imposes some additional requirements. The types that are models of <strong>Bidirectional Iterator</strong> are a subset of the types that are models of<strong> Input Iterator</strong>: every type that is a model of <strong>Bidirectional Iterator</strong> is also a model of <strong>Input Iterator</strong>. <tt>Int*</tt>, for example, is both a model of <strong>Bidirectional Iterator</strong> and a model of <strong>Input Iterator</strong>, but <tt><a href="http://hi.baidu.com/fc/桌面/SGI-STL/istream_iterator.html" target="_blank" rel="noopener"><font color="#0000ee"><u>istream_iterator</u></font></a></tt>, is only a model of <strong>Input Iterator</strong>: it does not conform to the more stringent <strong>Bidirectional Iterator</strong> requirements. </font></span>
+
+<font size="3"><font face="宋体"><strong><span>Bidirectional Iterator</span></strong>的概念和<strong><span>Input Iterator</span></strong>非常相似<span>: </span>它仅仅加了一些额外的要求。<strong><span>Bidirectional Iterator</span></strong>的模型也是一个<strong><span>Input Iterator</span></strong>的子集<span>: </span></font></font>
+
+<font face="宋体" size="3">任何<strong><span>Bidirectional Iterator</span></strong><span> </span>的模型同时也是一个<strong><span>Input Iterator</span></strong><span> </span>的模型。 例如<span>,<tt> Int*</tt>,</span>既是 <strong><span>Bidirectional Iterator</span></strong><span> </span>的模型也是一个<strong><span>Input Iterator </span></strong>的模型<span>, </span>但是<tt><span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/istream_iterator.html" target="_blank" rel="noopener"><font color="#0000ee"><u>istream_iterator</u></font></a></span></tt>仅仅是一个的模型<strong><span>Input Iterator</span></strong><span>: </span>它并没有符合<strong><span>Bidirectional Iterator</span></strong>更严格的要求。</font>
+
+<span><font face="宋体" size="3">We describe the relationship between <strong>Input Iterator</strong> and <strong>Bidirectional Iterator</strong> by saying that <strong>Bidirectional Iterator</strong> is a <em>refinement</em> of <strong>Input Iterator</strong>. Refinement of concepts is very much like inheritance of C++ classes; the main reason we use a different word, instead of just calling it “inheritance”, is to emphasize that refinement applies to concepts rather than to actual types.</font></span>
+
+<font face="宋体" size="3">我们描述<strong><span>Input Iterator</span></strong>和<strong><span>Bidirectional Iterator</span></strong>的关系时说<strong><span>Bidirectional Iterator</span></strong>是一个更精巧的<strong><span>InputIterator</span></strong>。精巧概念非常像<span>C++</span>类的派生，我们用一个不同的词的主要原因是强调精巧是应用与概念而不是实际的类型。</font>
+
+<span><font face="宋体" size="3">There are actually three more iterator concepts in addition to the two that we have already discussed: the five iterator concepts are <strong><a href="http://hi.baidu.com/fc/桌面/SGI-STL/OutputIterator.html" target="_blank" rel="noopener"><font color="#0000ee"><u>Output Iterator</u></font></a></strong>, <strong><a href="http://hi.baidu.com/fc/桌面/SGI-STL/InputIterator.html" target="_blank" rel="noopener"><font color="#0000ee"><u>Input Iterator</u></font></a></strong>, <strong><a href="http://hi.baidu.com/fc/桌面/SGI-STL/ForwardIterator.html" target="_blank" rel="noopener"><font color="#0000ee"><u>Forward Iterator</u></font></a></strong>, <strong><a href="http://hi.baidu.com/fc/桌面/SGI-STL/BidirectionalIterator.html" target="_blank" rel="noopener"><font color="#0000ee"><u>Bidirectional Iterator</u></font></a></strong>, and <strong><a href="http://hi.baidu.com/fc/桌面/SGI-STL/RandomAccessIterator.html" target="_blank" rel="noopener"><font color="#0000ee"><u>Random Access Iterator</u></font></a>;</strong> <strong>Forward Iterator</strong> is a refinement of <strong>Input Iterator</strong>, <strong>Bidirectional Iterator</strong> is a refinement of <strong>Forward Iterator</strong>, and <strong>Random Access Iterator</strong> is a refinement of <strong>Bidirectional Iterator</strong>. (<strong><a href="http://hi.baidu.com/fc/桌面/SGI-STL/OutputIterator.html" target="_blank" rel="noopener"><font color="#0000ee"><u>Output Iterator</u></font></a></strong> is related to the other four concepts, but it is not part of the hierarchy of refinement: it is not a refinement of any of the other iterator concepts, and none of the other iterator concepts are refinements of it.) The <em><a href="http://hi.baidu.com/fc/桌面/SGI-STL/Iterators.html" target="_blank" rel="noopener"><font color="#0000ee"><u>Iterator Overview</u></font></a></em> has more information about iterators in general. </font></span>
+
+<font size="3"><font face="宋体">除了我们已经讨论的两个外实际上还要更多的迭代器类型：五种迭代器类型分别为<span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/OutputIterator.html" target="_blank" rel="noopener"><strong><font color="#0000ee"><u>Output Iterator</u></font></strong></a>, <a href="http://hi.baidu.com/fc/桌面/SGI-STL/InputIterator.html" target="_blank" rel="noopener"><strong><font color="#0000ee"><u>Input Iterator</u></font></strong></a>, <a href="http://hi.baidu.com/fc/桌面/SGI-STL/ForwardIterator.html" target="_blank" rel="noopener"><strong><font color="#0000ee"><u>Forward Iterator</u></font></strong></a>, <a href="http://hi.baidu.com/fc/桌面/SGI-STL/BidirectionalIterator.html" target="_blank" rel="noopener"><strong><font color="#0000ee"><u>Bidirectional Iterator</u></font></strong></a></span>和<span><a href="http://hi.baidu.com/fc/桌面/SGI-STL/RandomAccessIterator.html" target="_blank" rel="noopener"><strong><font color="#0000ee"><u>Random Access Iterator</u></font></strong></a>; <strong>Forward Iterator</strong> </span>是一个精巧的<strong><span>Input Itearot</span></strong><span>,<strong> Bidirectional Iterator</strong></span>是一个更精巧的 <strong><span>Forward Iterator</span></strong><span>, <strong>Random Access Iterator</strong> </span>是一个更精巧的<strong><span>Bidirectional Iterator</span></strong><span>. (<strong><a href="http://hi.baidu.com/fc/桌面/SGI-STL/OutputIterator.html" target="_blank" rel="noopener"><font color="#0000ee"><u>Output Iterator</u></font></a></strong> </span>和其他四中迭代器相关，但不是派生和精巧关系<span>) <em><a href="http://hi.baidu.com/fc/桌面/SGI-STL/Iterators.html" target="_blank" rel="noopener"><font color="#0000ee"><u>Iterator Overview</u></font></a></em> </span>有更多的关于<span>iterators</span>的一般信息<span>. </span></font></font>
+
+<span><font face="Times New Roman"></font></span>
+
+<span><font face="宋体" size="3">Container classes, like iterators, are organized into a hierarchy of concepts. All containers are models of the concept <strong><a href="http://hi.baidu.com/fc/桌面/SGI-STL/Container.html" target="_blank" rel="noopener"><font color="#0000ee"><u>Container</u></font></a></strong>; more refined concepts, such as <strong><a href="http://hi.baidu.com/fc/桌面/SGI-STL/Sequence.html" target="_blank" rel="noopener"><font color="#0000ee"><u>Sequence</u></font></a></strong> and <strong><a href="http://hi.baidu.com/fc/桌面/SGI-STL/AssociativeContainer.html" target="_blank" rel="noopener"><font color="#0000ee"><u>Associative Container</u></font></a></strong>, describe specific types of containers. </font></span>
+
+<p><font face="宋体" size="3">容器类，像迭代器一样被组织进一个概念中。所以的容器都是概念<strong><span><a href="file:///E:/System_Document/桌面/SGI-STL/Container.html" target="_blank" rel="noopener"><font color="#800080"><u>Container</u></font></a></span></strong>的模型；更加精巧的概念，比如说<strong><span><a href="file:///E:/System_Document/桌面/SGI-STL/Sequence.html" target="_blank" rel="noopener"><font color="#800080"><u>Sequence</u></font></a></span></strong><span> and <strong><a href="file:///E:/System_Document/桌面/SGI-STL/AssociativeContainer.html" target="_blank" rel="noopener"><font color="#0000ee"><u>Associative Container</u></font></a></strong>, </span>描述了更特别的容器。</font></p>
+<font size="3">
+
+<p>## </p>
+<h2 id="下面这部分暂时不翻译，以后看需要时在看。"><a href="#下面这部分暂时不翻译，以后看需要时在看。" class="headerlink" title="下面这部分暂时不翻译，以后看需要时在看。"></a><span><font face="宋体">下面这部分暂时不翻译，以后看需要时在看。</font></span></h2><h2 id="Other-parts-of-the-STL"><a href="#Other-parts-of-the-STL" class="headerlink" title="Other parts of the STL"></a><span><font face="宋体">Other parts of the STL</font></span></h2><span><font face="宋体">If you understand algorithms, iterators, and containers, then you understand almost everything there is to know about the STL. The STL does, however, include several other types of components. </font></span>
+
+<span><font face="宋体">First, the STL includes several <em>utilities</em>: very basic concepts and functions that are used in many different parts of the library. The concept<strong> <a href="http://hi.baidu.com/fc/桌面/SGI-STL/Assignable.html" target="_blank" rel="noopener"><font color="#0000ee"><u>Assignable</u></font></a></strong>, for example, describes types that have assignment operators and copy constructors; almost all STL classes are models of <strong>Assignable</strong>, and almost all STL algorithms require their arguments to be models of <strong>Assignable</strong>. </font></span>
+
+<span><font face="宋体">Second, the STL includes some low-level mechanisms for allocating and deallocating memory. <em><a href="http://hi.baidu.com/fc/桌面/SGI-STL/Allocators.html" target="_blank" rel="noopener"><font color="#0000ee"><u>Allocators</u></font></a></em> are very specialized, and you can safely ignore them for almost all purposes. </font></span>
+
+<p><span><font face="宋体">Finally, the STL includes a large collection of <em><a href="http://hi.baidu.com/fc/桌面/SGI-STL/functors.html" target="_blank" rel="noopener"><font color="#0000ee"><u>function objects</u></font></a></em>, also known as <em>functors</em>. Just as iterators are a generalization of pointers, function objects are a generalization of functions: a function object is anything that you can call using the ordinary function call syntax. There are several different concepts relating to function objects, including <strong><a href="http://hi.baidu.com/fc/桌面/SGI-STL/UnaryFunction.html" target="_blank" rel="noopener"><font color="#0000ee"><u>Unary Function</u></font></a></strong> (a function object that takes a single argument, <em>i.e.</em> one that is called as <tt>f(x)</tt>) and <strong><a href="http://hi.baidu.com/fc/桌面/SGI-STL/BinaryFunction.html" target="_blank" rel="noopener"><font color="#0000ee"><u>Binary Function</u></font></a></strong> (a function object that takes two arguments, <em>i.e.</em> one that is called as <tt>f(x, y)</tt>). Function objects are an important part of generic programming because they allow abstraction not only over the types of objects, but also over the operations that are being performed.</font></span><br></p></font><br><p></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2008/04/13/循环不变式-发表日期2008-04-13-0151/" rel="next" title="循环不变式">
+                <i class="fa fa-chevron-left"></i> 循环不变式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2008/04/24/模板代替虚函数实现多态/" rel="prev" title="模板代替虚函数实现多态">
+                模板代替虚函数实现多态 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">billowqiu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">152</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/billowqiu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:billowqiu@163.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction-to-the-Standard-Template-Library"><span class="nav-number">1.</span> <span class="nav-text">Introduction to the Standard Template Library</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#标准模板库简介"><span class="nav-number">2.</span> <span class="nav-text">标准模板库简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Containers-and-algorithms"><span class="nav-number">2.1.</span> <span class="nav-text">Containers and algorithms</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器和算法"><span class="nav-number">2.2.</span> <span class="nav-text">容器和算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Iterators"><span class="nav-number">2.3.</span> <span class="nav-text">Iterators</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迭代器"><span class="nav-number">2.4.</span> <span class="nav-text">迭代器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#概念和模型"><span class="nav-number">2.5.</span> <span class="nav-text">概念和模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Refinement"><span class="nav-number">2.6.</span> <span class="nav-text">Refinement</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#精巧"><span class="nav-number">2.7.</span> <span class="nav-text">精巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下面这部分暂时不翻译，以后看需要时在看。"><span class="nav-number">2.8.</span> <span class="nav-text">下面这部分暂时不翻译，以后看需要时在看。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Other-parts-of-the-STL"><span class="nav-number">2.9.</span> <span class="nav-text">Other parts of the STL</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">billowqiu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
