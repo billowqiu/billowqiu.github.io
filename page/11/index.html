@@ -269,6 +269,246 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/05/17/neat-stuff-custom-draw/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2009/05/17/neat-stuff-custom-draw/" itemprop="url">Neat Stuff Custom Draw</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-05-17T23:20:00+08:00">
+                2009-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/VC/" itemprop="url" rel="index">
+                    <span itemprop="name">VC</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 专门做界面已经有半年了，期间用得最多也就是Owner Draw，对于Cutom Draw只是知之一二，没有具体用过，其实Ower Draw用得最多也就是Button，ListBox两个，由于项目中有个同事把TreeCtrl进行Custom Draw了，效果很不错，这才意识到其强大及易用，相比较而言Ower Draw就复杂多了，今天再次把CP上那篇经典的关于Custom Draw文章看了一篇，用了半个小时写了Slider的Custom Draw，也算是为了练习使用WTL和GDI+：</p>
+<pre style="border: 1px dotted #785;background: #f5f5f5;">class CCDSliderCtrl :  public CWindowImpl&lt;CCDSliderCtrl,CTrackBarCtrl&gt;,
+public CCustomDraw&lt;CCDSliderCtrl&gt;
+{
+public:
+BEGIN_MSG_MAP(CCDSliderCtrl)    
+CHAIN_MSG_MAP_ALT(CCustomDraw&lt; CCDSliderCtrl &gt;, 1)
+DEFAULT_REFLECTION_HANDLER()
+END_MSG_MAP()
+public:
+CCDSliderCtrl():m_pImageThumb(NULL),m_pImageChannel(NULL)
+{
+
+}
+~CCDSliderCtrl()
+{
+if (NULL!=m_pImageThumb)
+{
+delete m_pImageThumb;
+m_pImageThumb=NULL;
+}
+
+if (NULL!=m_pImageChannel)
+{
+delete m_pImageChannel;
+m_pImageChannel=NULL;
+}
+}
+void SetImage(LPCTSTR lpszThumb,LPCTSTR lpszChannel)
+{
+if (NULL!=m_pImageThumb)
+{
+delete m_pImageThumb;
+m_pImageThumb=NULL;
+}
+m_pImageThumb=new Image((WCHAR*)lpszThumb);
+
+if (NULL!=m_pImageChannel)
+{
+delete m_pImageChannel;
+m_pImageChannel=NULL;
+}
+m_pImageChannel=new Image((WCHAR*)lpszChannel);
+}
+DWORD OnPrePaint( int idCtrl, LPNMCUSTOMDRAW lpNMCustomDraw )
+{
+return CDRF_NOTIFYITEMDRAW;
+}
+DWORD OnItemPrePaint( int idCtrl, LPNMCUSTOMDRAW lpNMCustomDraw )
+{
+Graphics graphics(lpNMCustomDraw-&gt;hdc);
+CRect rcThumb(lpNMCustomDraw-&gt;rc);
+
+switch ( lpNMCustomDraw-&gt;dwItemSpec )
+{
+case TBCD_CHANNEL:
+{
+CRect rcClient;
+GetClientRect( &amp;rcClient);
+
+ImageAttributes imAtt;
+imAtt.SetColorKey(
+Color(255, 0,255),
+Color(255, 0,255),
+ColorAdjustTypeBitmap);
+
+graphics.DrawImage(
+m_pImageChannel, 
+Rect(0, 0, rcClient.Width(),rcClient.Height()),  // dest rect
+0, 0, m_pImageChannel-&gt;GetWidth(),m_pImageChannel-&gt;GetHeight(),          // source rect
+UnitPixel,
+&amp;imAtt);
+
+break;
+}
+
+case TBCD_TICS:
+return CDRF_DODEFAULT;
+case TBCD_THUMB:
+{
+graphics.DrawImage(m_pImageThumb,Rect(rcThumb.left,rcThumb.top,rcThumb.Width(),rcThumb.Height()));
+
+break;
+}
+
+default:
+ATLASSERT( FALSE );
+};
+
+return CDRF_SKIPDEFAULT;
+}
+protected:
+Gdiplus::Image* m_pImageThumb;
+Gdiplus::Image* m_pImageChannel;
+};</pre> 
+
+<p>下面是效果图：</p>
+<p><img src="http://p.blog.csdn.net/images/p_blog_csdn_net/ToCpp/EntryImages/20090517/SliderCtrl.gif" alt=""></p>
+<p></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/05/15/另一种界面闪烁解决方案/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1771,157 +2011,6 @@ That's it. You can make near every control flicker free in this way, but for som
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/01/28/如何防止任务栏上出现一个窗口/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2009/01/28/如何防止任务栏上出现一个窗口/" itemprop="url">如何防止任务栏上出现一个窗口</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-01-28T13:10:00+08:00">
-                2009-01-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/VC/" itemprop="url" rel="index">
-                    <span itemprop="name">VC</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>有时，可能需要为应用程序可以防止其主窗口出现在任务栏上。 本文介绍了可以完成这两种方法。</p>
-<p>&nbsp;</p>
-<p>有两种方法，若要防止一个窗口显示外壳的任务栏上和按 Alt+Tab 时出现的任务列表窗口中。 </p>
-<ul>
-<li>提供扩展的 WS_EX_TOOLWINDOW 样式窗口，并删除 WS_EX_APPWINDOW 样式。 一个的副作用窗口会较小比正常的窗口标题。*   为 WS_POPUP 样式窗口，并使拥有隐藏的窗口的其。</li>
-</ul>
-<p>如果一个窗口是创建或显示，因此其显示在任务栏中，然后在窗口应为相同的状态损坏或隐藏时。 如果在任务栏上的可见性不同步，然后任务栏可能最终与它认为应仍然显示该窗口的空白按钮。 </p>
-<p>&nbsp;</p>
-<p>原文:<a href="http://support.microsoft.com/kb/205158/" target="_blank" rel="noopener">http://support.microsoft.com/kb/205158/</a></p>
-<p></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1972,7 +2061,7 @@ That's it. You can make near every control flicker free in this way, but for som
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">152</span>
+                  <span class="site-state-item-count">153</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2047,7 +2136,7 @@ That's it. You can make near every control flicker free in this way, but for som
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

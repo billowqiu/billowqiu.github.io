@@ -269,6 +269,214 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/12/10/atl-窗口类源码浅析/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2009/12/10/atl-窗口类源码浅析/" itemprop="url">ATL 窗口类源码浅析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-12-10T17:38:00+08:00">
+                2009-12-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/VC/" itemprop="url" rel="index">
+                    <span itemprop="name">VC</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><img src="http://p.blog.csdn.net/images/p_blog_csdn_net/ToCpp/EntryImages/20091210/ATLClass.PNG" alt=""></p>
+<p>图1</p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">对于典型的<span style="font-family: Times New Roman;">Win32</span><span style="font-family: 宋体;">应用程序而言，一般包括</span><span style="font-family: Times New Roman;">WinMain</span><span style="font-family: 宋体;">，窗口类注册，创建显示窗口，消息循环，消息处理。</span></span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">下面是<span style="font-family: Times New Roman;">ATL&nbsp;Internals</span><span style="font-family: 宋体;">上面对上图的说明：</span></span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">ATL</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">对<span style="font-family: Times New Roman;">Win32</span><span style="font-family: 宋体;">窗口</span><span style="font-family: Times New Roman;">API</span><span style="font-family: 宋体;">的封装如上图，其中粗体子的类比较重要，而其它的则是作为一般的辅助类，当然这个图并没有包括所有的内容，比如窗口类注册，消息循环等，下面我会一一道来。</span></span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">1WinMain<span style="font-family: 宋体;">在</span><span style="font-family: Times New Roman;">ATL</span><span style="font-family: 宋体;">窗口程序中没有太大的变化，并没有先</span><span style="font-family: Times New Roman;">MFC</span><span style="font-family: 宋体;">那样直接</span><span style="font-family: Times New Roman;">Link</span><span style="font-family: 宋体;">到</span><span style="font-family: Times New Roman;">exe</span><span style="font-family: 宋体;">中，而是暴露给程序使用。</span></span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">2<span style="font-family: 宋体;">窗口类注册在</span><span style="font-family: Times New Roman;">ATL</span><span style="font-family: 宋体;">中使用了一个如下的结构</span></span><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">:</span><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">struct&nbsp;_ATL_WNDCLASSINFO</span><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">{</span><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">WNDCLASSEX&nbsp;m_wc;</span><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">LPCSTR&nbsp;m_lpszOrigName;</span><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">WNDPROC&nbsp;pWndProc;</span><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">LPCSTR&nbsp;m_lpszCursorID;</span><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">BOOL&nbsp;m_bSystemCursor;</span><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">ATOM&nbsp;m_atom;</span><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">CHAR&nbsp;m_szAutoName[5+sizeof(void<em>)</em>CHAR_BIT];</span><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">ATOM&nbsp;Register(WNDPROC*&nbsp;p)</span><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">{</span><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">return&nbsp;AtlWinModuleRegisterWndClassInfoA(&amp;_AtlWinModule,&nbsp;&amp;_AtlBaseModule,&nbsp;this,&nbsp;p);</span><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">}</span><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">};</span><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">另外在通过<span style="font-family: Times New Roman;">typedef</span><span style="font-family: 宋体;">定义为：</span><span style="font-family: Times New Roman;">typedef&nbsp;_ATL_WNDCLASSINFOW&nbsp;CWndClassInfo;</span></span><span style="FONT-FAMILY: 'Times New Roman'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">此结构是通过下面的<span style="font-family: Times New Roman;">define</span><span style="font-family: 宋体;">引入的</span><span style="font-family: Times New Roman;">:</span></span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">/////////////////////////////////////////////////////////////////////////////</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">//&nbsp;CWndClassInfo&nbsp;-&nbsp;Manages&nbsp;Windows&nbsp;class&nbsp;information</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">#define&nbsp;DECLARE_WND_CLASS(WndClassName)&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">static&nbsp;ATL::CWndClassInfo&amp;&nbsp;GetWndClassInfo()&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">{&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">static&nbsp;ATL::CWndClassInfo&nbsp;wc&nbsp;=&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">{&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">{&nbsp;sizeof(WNDCLASSEX),&nbsp;CS_HREDRAW&nbsp;|&nbsp;CS_VREDRAW&nbsp;|&nbsp;CS_DBLCLKS,&nbsp;StartWindowProc,&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">&nbsp;&nbsp;0,&nbsp;0,&nbsp;NULL,&nbsp;NULL,&nbsp;NULL,&nbsp;(HBRUSH)(COLOR_WINDOW&nbsp;+&nbsp;1),&nbsp;NULL,&nbsp;WndClassName,&nbsp;NULL&nbsp;},&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">NULL,&nbsp;NULL,&nbsp;IDC_ARROW,&nbsp;TRUE,&nbsp;0,&nbsp;_T(“”)&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">};&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">return&nbsp;wc;&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">}</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">#define&nbsp;DECLARE_WND_CLASS_EX(WndClassName,&nbsp;style,&nbsp;bkgnd)&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">static&nbsp;ATL::CWndClassInfo&amp;&nbsp;GetWndClassInfo()&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">{&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">static&nbsp;ATL::CWndClassInfo&nbsp;wc&nbsp;=&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">{&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">{&nbsp;sizeof(WNDCLASSEX),&nbsp;style,&nbsp;StartWindowProc,&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">&nbsp;&nbsp;0,&nbsp;0,&nbsp;NULL,&nbsp;NULL,&nbsp;NULL,&nbsp;(HBRUSH)(bkgnd&nbsp;+&nbsp;1),&nbsp;NULL,&nbsp;WndClassName,&nbsp;NULL&nbsp;},&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">NULL,&nbsp;NULL,&nbsp;IDC_ARROW,&nbsp;TRUE,&nbsp;0,&nbsp;_T(“”)&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">};&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">return&nbsp;wc;&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">}</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">#define&nbsp;DECLARE_WND_SUPERCLASS(WndClassName,&nbsp;OrigWndClassName)&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">static&nbsp;ATL::CWndClassInfo&amp;&nbsp;GetWndClassInfo()&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">{&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">static&nbsp;ATL::CWndClassInfo&nbsp;wc&nbsp;=&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">{&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">{&nbsp;sizeof(WNDCLASSEX),&nbsp;0,&nbsp;StartWindowProc,&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">&nbsp;&nbsp;0,&nbsp;0,&nbsp;NULL,&nbsp;NULL,&nbsp;NULL,&nbsp;NULL,&nbsp;NULL,&nbsp;WndClassName,&nbsp;NULL&nbsp;},&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">OrigWndClassName,&nbsp;NULL,&nbsp;NULL,&nbsp;TRUE,&nbsp;0,&nbsp;_T(“”)&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">};&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">return&nbsp;wc;&nbsp;/</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">}</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">在<span style="font-family: Times New Roman;">CWindowImpl</span><span style="font-family: 宋体;">中有定义</span><span style="font-family: Times New Roman;">DECLARE_WND_CLASS(NULL)</span><span style="font-family: 宋体;">，因此任何从</span><span style="font-family: Times New Roman;">CWindowImpl</span><span style="font-family: 宋体;">派生的类都包含一个</span><span style="font-family: Times New Roman;">GetWndClassInfo</span><span style="font-family: 宋体;">函数并返回一个</span><span style="font-family: Times New Roman;">static&nbsp;CWndClassInfo</span><span style="font-family: 宋体;">用于注册窗口类，这也比较符合所有的窗口类产生的窗口对象都是一个样式的，比如你用</span><span style="font-family: Times New Roman;">BUTTON</span><span style="font-family: 宋体;">作为窗口类创建的肯定就是一个按钮了。上面第三个</span><span style="font-family: Times New Roman;">define</span><span style="font-family: 宋体;">是用来</span><span style="font-family: Times New Roman;">SuperClass</span><span style="font-family: 宋体;">用的，至于</span><span style="font-family: Times New Roman;">SuperClass</span><span style="font-family: 宋体;">和</span><span style="font-family: Times New Roman;">SubClass</span><span style="font-family: 宋体;">的区别可以在</span><span style="font-family: Times New Roman;">MSDN</span><span style="font-family: 宋体;">上面找到，主要就是前者对整个窗口类而言，而后者只对某个窗口而言。</span></span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<p><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'">整个窗口类的注册比较复杂，下面是我根据源码分析的流程</span><span style="FONT-FAMILY: '宋体'; FONT-SIZE: 10.5pt; mso-spacerun: 'yes'"></span></p>
+<!--EndFragment-->
+<p>&nbsp;</p>
+<p><img src="http://p.blog.csdn.net/images/p_blog_csdn_net/ToCpp/EntryImages/20091210/ATL窗口类注册.PNG" alt=""></p>
+<p>图2</p>
+<div class="Section0" style="layout-grid: 15.6pt none;"><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">3<span style="font-family: 宋体;">窗口创建及显示部分，这里主要由</span><span style="font-family: Times New Roman;">CWindow</span><span style="font-family: 宋体;">来实现，这个和</span><span style="font-family: Times New Roman;">MFC</span><span style="font-family: 宋体;">的</span><span style="font-family: Times New Roman;">CWnd</span><span style="font-family: 宋体;">不同处在于，</span><span style="font-family: Times New Roman;">CWnd</span><span style="font-family: 宋体;">把不仅包括对</span><span style="font-family: Times New Roman;">HWND</span><span style="font-family: 宋体;">形式</span><span style="font-family: Times New Roman;">API</span><span style="font-family: 宋体;">的封装还包括内部的</span><span style="font-family: Times New Roman;">CWnd</span><span style="font-family: 宋体;">和</span><span style="font-family: Times New Roman;">HWND</span><span style="font-family: 宋体;">之间的映射，消息映射，</span><span style="font-family: Times New Roman;">OLE</span><span style="font-family: 宋体;">等等，而</span><span style="font-family: Times New Roman;">CWindow</span><span style="font-family: 宋体;">仅仅只包括一个</span><span style="font-family: Times New Roman;">HWND</span><span style="font-family: 宋体;">数据成员，只对</span><span style="font-family: Times New Roman;">API</span><span style="font-family: 宋体;">进行了很浅的封装基本上就是一些</span><span style="font-family: Times New Roman;">ShowWindow</span><span style="font-family: 宋体;">，</span><span style="font-family: Times New Roman;">SetWindowText</span><span style="font-family: 宋体;">之类的</span><span style="font-family: Times New Roman;">API</span><span style="font-family: 宋体;">的一个包装，而且</span><span style="font-family: Times New Roman;">CWindow</span><span style="font-family: 宋体;">在析构时也不会销毁窗口，对于窗口的消息映射等方面没有做了任何处理。</span></span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">4<span style="font-family: 宋体;">消息映射部分，这里从图</span><span style="font-family: Times New Roman;">1</span><span style="font-family: 宋体;">可以看到一个</span><span style="font-family: Times New Roman;">CMessageMap</span><span style="font-family: 宋体;">的类，它负责窗口的消息映射</span></span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">class&nbsp;ATL_NO_VTABLE&nbsp;CMessageMap</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">{&nbsp;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">public:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">virtual&nbsp;BOOL&nbsp;ProcessWindowMessage(HWND&nbsp;hWnd,&nbsp;UINT&nbsp;uMsg,&nbsp;WPARAM&nbsp;wParam,&nbsp;LPARAM&nbsp;lParam,</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">LRESULT&amp;&nbsp;lResult,&nbsp;DWORD&nbsp;dwMsgMapID)&nbsp;=&nbsp;0;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">};</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">CWindowImplRoot<span style="font-family: 宋体;">直接从</span><span style="font-family: Times New Roman;">CWindow</span><span style="font-family: 宋体;">和</span><span style="font-family: Times New Roman;">CMessageMap</span><span style="font-family: 宋体;">派生，因此基本上具体有了窗口和处理消息的功能，但是为了减少模板带来的代码膨胀，这个类以及下面的</span><span style="font-family: Times New Roman;">CWindowImplBaseT</span><span style="font-family: 宋体;">只是起辅助作用，其中前者实现了对消息反射以及消息转发，消息反射是为了将子窗口中的通知消息反射回去以便于实现复用的控件，消息转发主要是在实现组合窗口中传递通知消息用的，当一个子窗口的父窗口还有父窗口，而这时子窗口消息又是要在最外层窗口中处理时就可以通过转发消息，两者的实现也不复杂：</span></span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">template&nbsp;&lt;class&nbsp;TBase&gt;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">LRESULT&nbsp;CWindowImplRoot&lt;&nbsp;TBase&nbsp;&gt;::ForwardNotifications(UINT&nbsp;uMsg,&nbsp;WPARAM&nbsp;wParam,&nbsp;LPARAM&nbsp;lParam,&nbsp;BOOL&amp;&nbsp;bHandled)</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">{</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">LRESULT&nbsp;lResult&nbsp;=&nbsp;0;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">switch(uMsg)</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">{</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_COMMAND:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_NOTIFY:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_PARENTNOTIFY:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_DRAWITEM:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_MEASUREITEM:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_COMPAREITEM:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_DELETEITEM:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_VKEYTOITEM:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_CHARTOITEM:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_HSCROLL:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_VSCROLL:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_CTLCOLORBTN:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_CTLCOLORDLG:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_CTLCOLOREDIT:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_CTLCOLORLISTBOX:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_CTLCOLORMSGBOX:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_CTLCOLORSCROLLBAR:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_CTLCOLORSTATIC:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">lResult&nbsp;=&nbsp;GetParent().SendMessage(uMsg,&nbsp;wParam,&nbsp;lParam);</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">break;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">default:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">bHandled&nbsp;=&nbsp;FALSE;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">break;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">}</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">return&nbsp;lResult;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">}</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">template&nbsp;&lt;class&nbsp;TBase&gt;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">LRESULT&nbsp;CWindowImplRoot&lt;&nbsp;TBase&nbsp;&gt;::ReflectNotifications(UINT&nbsp;uMsg,&nbsp;WPARAM&nbsp;wParam,&nbsp;LPARAM&nbsp;lParam,&nbsp;BOOL&amp;&nbsp;bHandled)</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">{</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">HWND&nbsp;hWndChild&nbsp;=&nbsp;NULL;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">switch(uMsg)</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">{</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_COMMAND:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">if(lParam&nbsp;!=&nbsp;NULL)</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"> </span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">//&nbsp;not&nbsp;from&nbsp;a&nbsp;menu</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">hWndChild&nbsp;=&nbsp;(HWND)lParam;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">break;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_NOTIFY:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">hWndChild&nbsp;=&nbsp;((LPNMHDR)lParam)-&gt;hwndFrom;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">break;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_PARENTNOTIFY:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">switch(LOWORD(wParam))</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">{</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_CREATE:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_DESTROY:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">hWndChild&nbsp;=&nbsp;(HWND)lParam;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">break;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">default:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">hWndChild&nbsp;=&nbsp;GetDlgItem(HIWORD(wParam));</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">break;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">}</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">break;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_DRAWITEM:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">if(wParam)</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"> </span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">//&nbsp;not&nbsp;from&nbsp;a&nbsp;menu</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">hWndChild&nbsp;=&nbsp;((LPDRAWITEMSTRUCT)lParam)-&gt;hwndItem;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">break;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_MEASUREITEM:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">if(wParam)</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"> </span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">//&nbsp;not&nbsp;from&nbsp;a&nbsp;menu</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">hWndChild&nbsp;=&nbsp;GetDlgItem(((LPMEASUREITEMSTRUCT)lParam)-&gt;CtlID);</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">break;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_COMPAREITEM:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">if(wParam)</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"> </span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">//&nbsp;not&nbsp;from&nbsp;a&nbsp;menu</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">hWndChild&nbsp;=&nbsp;&nbsp;((LPCOMPAREITEMSTRUCT)lParam)-&gt;hwndItem;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">break;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_DELETEITEM:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">if(wParam)</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"> </span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">//&nbsp;not&nbsp;from&nbsp;a&nbsp;menu&nbsp;&nbsp;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">hWndChild&nbsp;=&nbsp;&nbsp;((LPDELETEITEMSTRUCT)lParam)-&gt;hwndItem;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">&nbsp;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">break;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_VKEYTOITEM:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_CHARTOITEM:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_HSCROLL:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_VSCROLL:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">hWndChild&nbsp;=&nbsp;(HWND)lParam;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">break;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_CTLCOLORBTN:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_CTLCOLORDLG:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_CTLCOLOREDIT:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_CTLCOLORLISTBOX:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_CTLCOLORMSGBOX:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_CTLCOLORSCROLLBAR:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;WM_CTLCOLORSTATIC:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">hWndChild&nbsp;=&nbsp;(HWND)lParam;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">break;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">default:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">break;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">}</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">if(hWndChild&nbsp;==&nbsp;NULL)</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">{</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">bHandled&nbsp;=&nbsp;FALSE;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">return&nbsp;1;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">}</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">ATLASSERT(::IsWindow(hWndChild));</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">return&nbsp;::SendMessage(hWndChild,&nbsp;OCM__BASE&nbsp;+&nbsp;uMsg,&nbsp;wParam,&nbsp;lParam);</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">}</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">template&nbsp;&lt;class&nbsp;TBase&gt;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">BOOL&nbsp;CWindowImplRoot&lt;&nbsp;TBase&nbsp;&gt;::DefaultReflectionHandler(HWND&nbsp;hWnd,&nbsp;UINT&nbsp;uMsg,&nbsp;WPARAM&nbsp;wParam,&nbsp;LPARAM&nbsp;lParam,&nbsp;LRESULT&amp;&nbsp;lResult)</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">{</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">switch(uMsg)</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">{</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;OCM_COMMAND:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;OCM_NOTIFY:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;OCM_PARENTNOTIFY:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;OCM_DRAWITEM:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;OCM_MEASUREITEM:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;OCM_COMPAREITEM:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;OCM_DELETEITEM:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;OCM_VKEYTOITEM:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;OCM_CHARTOITEM:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;OCM_HSCROLL:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;OCM_VSCROLL:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;OCM_CTLCOLORBTN:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;OCM_CTLCOLORDLG:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;OCM_CTLCOLOREDIT:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;OCM_CTLCOLORLISTBOX:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;OCM_CTLCOLORMSGBOX:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;OCM_CTLCOLORSCROLLBAR:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">case&nbsp;OCM_CTLCOLORSTATIC:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">lResult&nbsp;=&nbsp;::DefWindowProc(hWnd,&nbsp;uMsg&nbsp;-&nbsp;OCM__BASE,&nbsp;wParam,&nbsp;lParam);</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">return&nbsp;TRUE;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">default:</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">break;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">}</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">return&nbsp;FALSE;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">}</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">上面的<span style="font-family: Times New Roman;">DefaultReflectionHandler</span><span style="font-family: 宋体;">是在子窗口中对不感兴趣的反射消息进行默认的处理。</span></span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">CWindowImplBaseT<span style="font-family: 宋体;">你用</span><span style="font-family: Times New Roman;">Thunk(</span><span style="font-family: 宋体;">这个原理也不是很懂大致就是用一些汇编方式的技巧修改内存中的某些数据吧</span><span style="font-family: Times New Roman;">)</span><span style="font-family: 宋体;">实现了窗口消息和对应的</span><span style="font-family: Times New Roman;">CWindowImplBaseT</span><span style="font-family: 宋体;">对象成员函数之间的消息映射，还有就是窗口的</span><span style="font-family: Times New Roman;">subclass</span><span style="font-family: 宋体;">和创建等。最后的</span><span style="font-family: Times New Roman;">CWindowImpl</span><span style="font-family: 宋体;">仅仅提供了一个</span><span style="font-family: Times New Roman;">Create</span><span style="font-family: 宋体;">函数在调用基类</span><span style="font-family: Times New Roman;">Create</span><span style="font-family: 宋体;">之前先进行窗口类的注册也就是图</span><span style="font-family: Times New Roman;">2</span><span style="font-family: 宋体;">的一系列流程。</span></span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">这里还有<span style="font-family: Times New Roman;">CWinTraits</span><span style="font-family: 宋体;">和</span><span style="font-family: Times New Roman;">CWinTraitsOR</span><span style="font-family: 宋体;">它们主要是进行窗口样式的辅助设置。</span></span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">5<span style="font-family: 宋体;">程序结构</span></span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">int&nbsp;WINAPI&nbsp;WinMain(HINSTANCE&nbsp;hInst,&nbsp;HINSTANCE&nbsp;hInstPrev,</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LPSTR&nbsp;szCmdLine,&nbsp;int&nbsp;nCmdShow)</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">{</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">CMyWindow&nbsp;wndMain; //<span style="font-family: 宋体;">这里</span><span style="font-family: Times New Roman;">CMyWindow</span><span style="font-family: 宋体;">派生自</span><span style="font-family: Times New Roman;">CWindowImpl</span></span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">MSG&nbsp;msg;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">&nbsp;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Create&nbsp;&amp;&nbsp;show&nbsp;our&nbsp;main&nbsp;window</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(&nbsp;NULL&nbsp;==&nbsp;wndMain.Create&nbsp;(&nbsp;NULL,&nbsp;CWindow::rcDefault,&nbsp;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>T(“My&nbsp;First&nbsp;ATL&nbsp;Window”)&nbsp;))</em></span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;{</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Bad&nbsp;news,&nbsp;window&nbsp;creation&nbsp;failed</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;1;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;}</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">&nbsp;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;wndMain.ShowWindow(nCmdShow);</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;wndMain.UpdateWindow();</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">&nbsp;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Run&nbsp;the&nbsp;message&nbsp;loop</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;while&nbsp;(&nbsp;GetMessage(&amp;msg,&nbsp;NULL,&nbsp;0,&nbsp;0)&nbsp;&gt;&nbsp;0&nbsp;)</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;{</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TranslateMessage(&amp;msg);</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DispatchMessage(&amp;msg);</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;}</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">&nbsp;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;msg.wParam;</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">}</span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';">差不多大部分的<span style="font-family: Times New Roman;">ATL&nbsp;Window</span><span style="font-family: 宋体;">部分分析完了，虽然没怎么写文字，但是看一大串模板代码还是够呛的，尤其是注册窗口那部分绕来绕去的，</span><span style="font-family: Times New Roman;">++</span><span style="font-family: 宋体;">。</span></span><span style="font-family: '宋体'; font-size: 10.5pt; mso-spacerun: 'yes';"></span><br><br></div><br><!--EndFragment--><br>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/12/10/tftp服务器接收文件/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1982,190 +2190,6 @@ MyClass* receiver = new MyClass;
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/10/12/dib数据转换为ddb/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2009/10/12/dib数据转换为ddb/" itemprop="url">DIB数据转换为DDB</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-10-12T15:55:00+08:00">
-                2009-10-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/VC/" itemprop="url" rel="index">
-                    <span itemprop="name">VC</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>前段时间做视频拍照时，需要将接受到的视频数据进行拍照，由于传输过来的是原始的DIB数据，因此需要将其转换为DDB，经过查找MSDN得出如下片段，比较实用，留个记号</p>
-<pre style="border: 1px dotted #785;background: #f5f5f5;">HDC hdc = ::GetDC(NULL);
-HBITMAP hbmpFriend = NULL;
-
-BITMAPINFO bmi; 
-memset(&amp;bmi,sizeof(BITMAPINFO),0);
-bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER); 
-bmi.bmiHeader.biWidth = nwidth; 
-bmi.bmiHeader.biHeight = nheight; 
-bmi.bmiHeader.biPlanes =1; 
-bmi.bmiHeader.biBitCount = 24; 
-
-// If the bitmap is not compressed, set the BI_RGB flag. 
-bmi.bmiHeader.biCompression = BI_RGB; 
-
-// Compute the number of bytes in the array of color 
-// indices and store the result in biSizeImage. 
-// For Windows NT, the width must be DWORD aligned unless 
-// the bitmap is RLE compressed. This example shows this. 
-// For Windows 95/98/Me, the width must be WORD aligned unless the 
-// bitmap is RLE compressed.
-bmi.bmiHeader.biSizeImage = ((bmi.bmiHeader.biWidth * 24 +31) &amp; ~31) /8
-* bmi.bmiHeader.biHeight; 
-// Set biClrImportant to 0, indicating that all of the 
-// device colors are important. 
-bmi.bmiHeader.biClrImportant = 0; 
-bmi.bmiHeader.biXPelsPerMeter = 0;
-bmi.bmiHeader.biYPelsPerMeter = 0;
-
-hbmpFriend = ::CreateCompatibleBitmap(hdc,nwidth,nheight);
-
-int nRetCopyLines = SetDIBits(hdc, (HBITMAP)hbmpFriend, 
-0, nheight, (LPVOID)pRGB, (BITMAPINFO*)&amp;bmi, DIB_RGB_COLORS);
-
-if (hbmpFriend &amp;&amp; nRetCopyLines)
-{
-//该干啥就干啥
-}
-
-::DeleteObject(hbmpFriend);
-::ReleaseDC(NULL, hdc);</pre> 
-
-<p></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2216,7 +2240,7 @@ if (hbmpFriend &amp;&amp; nRetCopyLines)
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">152</span>
+                  <span class="site-state-item-count">153</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2291,7 +2315,7 @@ if (hbmpFriend &amp;&amp; nRetCopyLines)
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

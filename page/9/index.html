@@ -269,6 +269,190 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/10/12/dib数据转换为ddb/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2009/10/12/dib数据转换为ddb/" itemprop="url">DIB数据转换为DDB</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-10-12T15:55:00+08:00">
+                2009-10-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/VC/" itemprop="url" rel="index">
+                    <span itemprop="name">VC</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>前段时间做视频拍照时，需要将接受到的视频数据进行拍照，由于传输过来的是原始的DIB数据，因此需要将其转换为DDB，经过查找MSDN得出如下片段，比较实用，留个记号</p>
+<pre style="border: 1px dotted #785;background: #f5f5f5;">HDC hdc = ::GetDC(NULL);
+HBITMAP hbmpFriend = NULL;
+
+BITMAPINFO bmi; 
+memset(&amp;bmi,sizeof(BITMAPINFO),0);
+bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER); 
+bmi.bmiHeader.biWidth = nwidth; 
+bmi.bmiHeader.biHeight = nheight; 
+bmi.bmiHeader.biPlanes =1; 
+bmi.bmiHeader.biBitCount = 24; 
+
+// If the bitmap is not compressed, set the BI_RGB flag. 
+bmi.bmiHeader.biCompression = BI_RGB; 
+
+// Compute the number of bytes in the array of color 
+// indices and store the result in biSizeImage. 
+// For Windows NT, the width must be DWORD aligned unless 
+// the bitmap is RLE compressed. This example shows this. 
+// For Windows 95/98/Me, the width must be WORD aligned unless the 
+// bitmap is RLE compressed.
+bmi.bmiHeader.biSizeImage = ((bmi.bmiHeader.biWidth * 24 +31) &amp; ~31) /8
+* bmi.bmiHeader.biHeight; 
+// Set biClrImportant to 0, indicating that all of the 
+// device colors are important. 
+bmi.bmiHeader.biClrImportant = 0; 
+bmi.bmiHeader.biXPelsPerMeter = 0;
+bmi.bmiHeader.biYPelsPerMeter = 0;
+
+hbmpFriend = ::CreateCompatibleBitmap(hdc,nwidth,nheight);
+
+int nRetCopyLines = SetDIBits(hdc, (HBITMAP)hbmpFriend, 
+0, nheight, (LPVOID)pRGB, (BITMAPINFO*)&amp;bmi, DIB_RGB_COLORS);
+
+if (hbmpFriend &amp;&amp; nRetCopyLines)
+{
+//该干啥就干啥
+}
+
+::DeleteObject(hbmpFriend);
+::ReleaseDC(NULL, hdc);</pre> 
+
+<p></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/10/11/clearcase一点心得/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1731,180 +1915,6 @@ return 0;
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/07/06/vs2005内存泄漏检测方法/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2009/07/06/vs2005内存泄漏检测方法/" itemprop="url">VS2005内存泄漏检测方法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-07-06T00:55:00+08:00">
-                2009-07-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/VC/" itemprop="url" rel="index">
-                    <span itemprop="name">VC</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <pre><code>&lt;div&gt;
-</code></pre><p>原文地址：&nbsp;<a href="http://ufownl.blog.163.com/blog/static/1250122200861912757566/" target="_blank" rel="noopener">http://ufownl.blog.163.com/blog/static/1250122200861912757566/</a></p>
-<p>非MFC程序可以用以下方法检测内存泄露：</p>
-<p>&nbsp;</p>
-<p>1.程序开始包含如下定义：</p>
-<p>#define _CRTDBG_MAP_ALLOC</p>
-<p>#include &lt;stdlib.h&gt;</p>
-<p>#include &lt;crtdbg.h&gt;</p>
-<p>&nbsp;</p>
-<p>2.程序退出前添加下面的函数：</p>
-<p>_CrtDumpMemoryLeaks();</p>
-<p>&nbsp;</p>
-<p>Debug版本程序运行结束后如有内存泄漏，输出窗口中会显示类似信息：<br>Detected memory leaks!<br>Dumping objects -&gt;<br>e:/microsoft visual studio 8/vc/include/crtdbg.h(1150) : {48} normal block at 0x00382F50, 12 bytes long.<br>&nbsp;Data: &lt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &gt; 01 00 00 00 02 00 00 00 03 00 00 00<br>Object dump complete.</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>MFC程序内存泄漏检测方法：</p>
-<p>&nbsp;</p>
-<p>1.在 CMyApp 中添加如下三个 CMemoryState 类的成员变量：</p>
-<p>#ifdef _DEBUG<br>protected:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CMemoryState m_msOld, m_msNew, m_msDiff;</p>
-<p>#endif&nbsp; // _DEBUG</p>
-<p>&nbsp;</p>
-<p>2.在 CMyApp::InitInstance() 中添加如下代码：</p>
-<p>#ifdef _DEBUG<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_msOld.Checkpoint();</p>
-<p>#endif&nbsp; // _DEBUG</p>
-<p>&nbsp;</p>
-<p>3.在 CMyApp::ExitInstance() 中添加如下代码：</p>
-<p>#ifdef _DEBUG<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_msNew.Checkpoint();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (m_msDiff.Difference(m_msOld, m_msNew))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; afxDump&lt;&lt;”/nMemory Leaked :/n”;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_msDiff.DumpStatistics();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; afxDump&lt;&lt;”Dump Complete !/n/n”;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
-<p>#endif&nbsp; // _DEBUG</p>
-<p>&nbsp;</p>
-<p>Debug版本程序运行结束后如有内存泄漏，输出窗口中会显示类似信息：</p>
-<p>Memory Leaked :<br>0 bytes in 0 Free Blocks.<br>8 bytes in 1 Normal Blocks.<br>0 bytes in 0 CRT Blocks.<br>0 bytes in 0 Ignore Blocks.<br>0 bytes in 0 Client Blocks.<br>Largest number used: 8825 bytes.<br>Total allocations: 47506 bytes.<br>Dump Complete !</p>
-<p>Detected memory leaks!<br>Dumping objects -&gt;<br>g:/programs/chat/chatdlg.cpp(120) : {118} normal block at 0x00D98150, 8 bytes long.<br>&nbsp;Data: &lt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &gt; A8 7F D9 00 01 00 00 00<br>Object dump complete.</p>
-<p><br></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1955,7 +1965,7 @@ return 0;
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">152</span>
+                  <span class="site-state-item-count">153</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2030,7 +2040,7 @@ return 0;
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

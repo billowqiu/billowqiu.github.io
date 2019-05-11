@@ -269,6 +269,180 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/07/06/vs2005内存泄漏检测方法/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2009/07/06/vs2005内存泄漏检测方法/" itemprop="url">VS2005内存泄漏检测方法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-07-06T00:55:00+08:00">
+                2009-07-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/VC/" itemprop="url" rel="index">
+                    <span itemprop="name">VC</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <pre><code>&lt;div&gt;
+</code></pre><p>原文地址：&nbsp;<a href="http://ufownl.blog.163.com/blog/static/1250122200861912757566/" target="_blank" rel="noopener">http://ufownl.blog.163.com/blog/static/1250122200861912757566/</a></p>
+<p>非MFC程序可以用以下方法检测内存泄露：</p>
+<p>&nbsp;</p>
+<p>1.程序开始包含如下定义：</p>
+<p>#define _CRTDBG_MAP_ALLOC</p>
+<p>#include &lt;stdlib.h&gt;</p>
+<p>#include &lt;crtdbg.h&gt;</p>
+<p>&nbsp;</p>
+<p>2.程序退出前添加下面的函数：</p>
+<p>_CrtDumpMemoryLeaks();</p>
+<p>&nbsp;</p>
+<p>Debug版本程序运行结束后如有内存泄漏，输出窗口中会显示类似信息：<br>Detected memory leaks!<br>Dumping objects -&gt;<br>e:/microsoft visual studio 8/vc/include/crtdbg.h(1150) : {48} normal block at 0x00382F50, 12 bytes long.<br>&nbsp;Data: &lt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &gt; 01 00 00 00 02 00 00 00 03 00 00 00<br>Object dump complete.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>MFC程序内存泄漏检测方法：</p>
+<p>&nbsp;</p>
+<p>1.在 CMyApp 中添加如下三个 CMemoryState 类的成员变量：</p>
+<p>#ifdef _DEBUG<br>protected:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CMemoryState m_msOld, m_msNew, m_msDiff;</p>
+<p>#endif&nbsp; // _DEBUG</p>
+<p>&nbsp;</p>
+<p>2.在 CMyApp::InitInstance() 中添加如下代码：</p>
+<p>#ifdef _DEBUG<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_msOld.Checkpoint();</p>
+<p>#endif&nbsp; // _DEBUG</p>
+<p>&nbsp;</p>
+<p>3.在 CMyApp::ExitInstance() 中添加如下代码：</p>
+<p>#ifdef _DEBUG<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_msNew.Checkpoint();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (m_msDiff.Difference(m_msOld, m_msNew))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; afxDump&lt;&lt;”/nMemory Leaked :/n”;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_msDiff.DumpStatistics();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; afxDump&lt;&lt;”Dump Complete !/n/n”;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>#endif&nbsp; // _DEBUG</p>
+<p>&nbsp;</p>
+<p>Debug版本程序运行结束后如有内存泄漏，输出窗口中会显示类似信息：</p>
+<p>Memory Leaked :<br>0 bytes in 0 Free Blocks.<br>8 bytes in 1 Normal Blocks.<br>0 bytes in 0 CRT Blocks.<br>0 bytes in 0 Ignore Blocks.<br>0 bytes in 0 Client Blocks.<br>Largest number used: 8825 bytes.<br>Total allocations: 47506 bytes.<br>Dump Complete !</p>
+<p>Detected memory leaks!<br>Dumping objects -&gt;<br>g:/programs/chat/chatdlg.cpp(120) : {118} normal block at 0x00D98150, 8 bytes long.<br>&nbsp;Data: &lt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &gt; A8 7F D9 00 01 00 00 00<br>Object dump complete.</p>
+<p><br></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/07/05/代理类surrogate/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2248,246 +2422,6 @@ return 0;
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/05/17/neat-stuff-custom-draw/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2009/05/17/neat-stuff-custom-draw/" itemprop="url">Neat Stuff Custom Draw</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-05-17T23:20:00+08:00">
-                2009-05-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/VC/" itemprop="url" rel="index">
-                    <span itemprop="name">VC</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 专门做界面已经有半年了，期间用得最多也就是Owner Draw，对于Cutom Draw只是知之一二，没有具体用过，其实Ower Draw用得最多也就是Button，ListBox两个，由于项目中有个同事把TreeCtrl进行Custom Draw了，效果很不错，这才意识到其强大及易用，相比较而言Ower Draw就复杂多了，今天再次把CP上那篇经典的关于Custom Draw文章看了一篇，用了半个小时写了Slider的Custom Draw，也算是为了练习使用WTL和GDI+：</p>
-<pre style="border: 1px dotted #785;background: #f5f5f5;">class CCDSliderCtrl :  public CWindowImpl&lt;CCDSliderCtrl,CTrackBarCtrl&gt;,
-public CCustomDraw&lt;CCDSliderCtrl&gt;
-{
-public:
-BEGIN_MSG_MAP(CCDSliderCtrl)    
-CHAIN_MSG_MAP_ALT(CCustomDraw&lt; CCDSliderCtrl &gt;, 1)
-DEFAULT_REFLECTION_HANDLER()
-END_MSG_MAP()
-public:
-CCDSliderCtrl():m_pImageThumb(NULL),m_pImageChannel(NULL)
-{
-
-}
-~CCDSliderCtrl()
-{
-if (NULL!=m_pImageThumb)
-{
-delete m_pImageThumb;
-m_pImageThumb=NULL;
-}
-
-if (NULL!=m_pImageChannel)
-{
-delete m_pImageChannel;
-m_pImageChannel=NULL;
-}
-}
-void SetImage(LPCTSTR lpszThumb,LPCTSTR lpszChannel)
-{
-if (NULL!=m_pImageThumb)
-{
-delete m_pImageThumb;
-m_pImageThumb=NULL;
-}
-m_pImageThumb=new Image((WCHAR*)lpszThumb);
-
-if (NULL!=m_pImageChannel)
-{
-delete m_pImageChannel;
-m_pImageChannel=NULL;
-}
-m_pImageChannel=new Image((WCHAR*)lpszChannel);
-}
-DWORD OnPrePaint( int idCtrl, LPNMCUSTOMDRAW lpNMCustomDraw )
-{
-return CDRF_NOTIFYITEMDRAW;
-}
-DWORD OnItemPrePaint( int idCtrl, LPNMCUSTOMDRAW lpNMCustomDraw )
-{
-Graphics graphics(lpNMCustomDraw-&gt;hdc);
-CRect rcThumb(lpNMCustomDraw-&gt;rc);
-
-switch ( lpNMCustomDraw-&gt;dwItemSpec )
-{
-case TBCD_CHANNEL:
-{
-CRect rcClient;
-GetClientRect( &amp;rcClient);
-
-ImageAttributes imAtt;
-imAtt.SetColorKey(
-Color(255, 0,255),
-Color(255, 0,255),
-ColorAdjustTypeBitmap);
-
-graphics.DrawImage(
-m_pImageChannel, 
-Rect(0, 0, rcClient.Width(),rcClient.Height()),  // dest rect
-0, 0, m_pImageChannel-&gt;GetWidth(),m_pImageChannel-&gt;GetHeight(),          // source rect
-UnitPixel,
-&amp;imAtt);
-
-break;
-}
-
-case TBCD_TICS:
-return CDRF_DODEFAULT;
-case TBCD_THUMB:
-{
-graphics.DrawImage(m_pImageThumb,Rect(rcThumb.left,rcThumb.top,rcThumb.Width(),rcThumb.Height()));
-
-break;
-}
-
-default:
-ATLASSERT( FALSE );
-};
-
-return CDRF_SKIPDEFAULT;
-}
-protected:
-Gdiplus::Image* m_pImageThumb;
-Gdiplus::Image* m_pImageChannel;
-};</pre> 
-
-<p>下面是效果图：</p>
-<p><img src="http://p.blog.csdn.net/images/p_blog_csdn_net/ToCpp/EntryImages/20090517/SliderCtrl.gif" alt=""></p>
-<p></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2538,7 +2472,7 @@ Gdiplus::Image* m_pImageChannel;
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">152</span>
+                  <span class="site-state-item-count">153</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2613,7 +2547,7 @@ Gdiplus::Image* m_pImageChannel;
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

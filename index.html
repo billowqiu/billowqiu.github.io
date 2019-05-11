@@ -269,6 +269,174 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/11/jaeger-practice/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/11/jaeger-practice/" itemprop="url">jaeger实战</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-11T20:12:56+08:00">
+                2019-04-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>做tracing选型时发现除了Zipkin(这个其实很久之前就有所闻，但是一直没实操过)，还有Uber开源的<a href="https://www.jaegertracing.io" target="_blank" rel="noopener">Jaeger</a>，看到官网就感觉这是一个用心的产品，这个应该离不开Uber有专门的团队维护。</p>
+<h4 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h4><p>官网列了几个特性：</p>
+<ul>
+<li>Opentracing兼容，提供了Go, Java, Node, Python, C++的官方客户端</li>
+<li>服务之间使用一致的采样逻辑</li>
+<li>多存储支持：Cassandra, Elasticsearch, Kafka, memory</li>
+<li>动态采样(吐槽一下这个，一年多了，还没合入开源版本)</li>
+<li>支持收集的数据做后续分析</li>
+<li>现代化的UI</li>
+<li>云原生支持</li>
+<li>可视化(每个组建都支持将metric导出到Prometheus)</li>
+<li>兼容Zipkin</li>
+</ul>
+<p>由于调研的时候没法对细节做深入了解，当时选择Jaeger最重要的一点其实是其实是：<strong>jaeger-agent是一个通过UDP方式接收本机发出的spans。</strong><br>为什么是这一点呢？因为对于业务来说tracing其实是一个相对无关紧要的东西，如果给一个TCP的通道让它上报，其实是不太友好的，性能和维护性方面都没有UDP好。</p>
+<h4 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h4><p><img src="https://www.jaegertracing.io/img/architecture.png" alt="Jaeger架构图"></p>
+<ul>
+<li>jaeger-client：嵌入在应用程序里面，负责span的创建以及上报</li>
+<li>jaeger-agent：每个物理机部署一个，负责收集client上报的span，然后转发给collector</li>
+<li>jaeger-collector：接收agent发来的span，写入后端存储</li>
+<li>jaeger-query：提供rest接口，负责从存储中拉取trace信息供UI查询</li>
+<li>jaeger-ui：展示trace和服务依赖图</li>
+</ul>
+<h4 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h4><p>如果想快速体验，可以按照官网的<a href="https://www.jaegertracing.io/docs/1.11/deployment/" target="_blank" rel="noopener">Docker</a>方式部署，由于当时的线上环境还没有这方面的支持，下面以最新的Release二进制版本简述一下部署的流程。</p>
+<h5 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h5><ul>
+<li>Jaeger安装包:<br>  <a href="https://github.com/jaegertracing/jaeger/releases/download/v1.11.0/jaeger-1.11.0-darwin-amd64.tar.gz" target="_blank" rel="noopener">https://github.com/jaegertracing/jaeger/releases/download/v1.11.0/jaeger-1.11.0-darwin-amd64.tar.gz</a></li>
+<li>elasticsearch-6.4.0:<br>  <a href="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.4.0.tar.gz" target="_blank" rel="noopener">https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.4.0.tar.gz</a></li>
+</ul>
+<h5 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h5><ol>
+<li>bin/elasticsearch</li>
+<li>SPAN_STORAGE_TYPE=elasticsearch ./jaeger-collector</li>
+<li>./jaeger-agent –collector.host-port 127.0.0.1:14267</li>
+<li>SPAN_STORAGE_TYPE=elasticsearch ./jaeger-query</li>
+</ol>
+<p>打开<a href="http://127.0.0.1:16686即可看到Jaeger的查询页面：" target="_blank" rel="noopener">http://127.0.0.1:16686即可看到Jaeger的查询页面：</a><br><img src="/images/2019/04/jaeger-ui.png" alt="" title="jaeger-ui"></p>
+<ul>
+<li>Search，按照 服务:操作，tag，时间等维度进行trace的筛选</li>
+<li>Compare，比较两个trace</li>
+<li>Dependencies，查看服务依赖图，这个需要一个单独的Spark任务才能生成，下文会讲到</li>
+</ul>
+<h5 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h5><p>Jaeger的安装包里面自带了一个测试程序:example-hotrod，模拟Uber的打车服务，通过如下方式启动：</p>
+<pre><code>jaeger-1.11.0-darwin-amd64 billowqiu$ ./example-hotrod all
+</code></pre><p>这样会一次性启动所有的服务，包括：Customer service，Driver service，Route service，Frontend service，同时内部还会模拟调用MySQL和Redis。<br>启动该服务后，打开<a href="http://127.0.0.1:8080/" target="_blank" rel="noopener">http://127.0.0.1:8080/</a> 随便点一个乘客姓名，这时在Jaeger的ui里面可以看到如下trace：<br><img src="/images/2019/04/hotrod_trace.png" alt="" title="hotrod_trace"></p>
+<p>点进去可以看到详细的trace：<br><img src="/images/2019/04/hotrod_trace_detail.png" alt="" title="hotrod_trace_detail"></p>
+<h5 id="Dependencies生成"><a href="#Dependencies生成" class="headerlink" title="Dependencies生成"></a>Dependencies生成</h5><p>上面通过例子程序可以看到6个服务的调用流程及耗时等trace数据，但是<a href="http://127.0.0.1:16686/dependencies" target="_blank" rel="noopener">http://127.0.0.1:16686/dependencies</a> 里面依然是空的，这是因为服务依赖图需要单独的任务生成：<br>    <a href="https://github.com/jaegertracing/spark-dependencies" target="_blank" rel="noopener">jaegertracing/spark-dependencies</a>， 当时为了解决一个生产环境的问题，还为这个项目提了个<a href="https://github.com/jaegertracing/spark-dependencies/pull/39" target="_blank" rel="noopener">pr</a>，最后官方合入了master，也算是一个小惊喜吧。<br>代码clone下来之后执行：</p>
+<pre><code>spark-dependencies billowqiu$ mvn clean package -Dmaven.test.skip=true
+</code></pre><p>这样会build一个jar包，然后执行：</p>
+<pre><code>spark-dependencies billowqiu$ STORAGE=elasticsearch ES_NODES=http://localhost:9200 java -jar jaeger-spark-dependencies/target/jaeger-spark-dependencies-0.0.1-SNAPSHOT.jar
+</code></pre><p>在Mac下面可能会出现：Can’t assign requested address: Service ‘sparkDriver’ failed after 16 retries (starting from 0) 这个错误，可以参照<a href="https://stackoverflow.com/questions/34601554/mac-spark-shell-error-initializing-sparkcontext" target="_blank" rel="noopener">这个</a>解决。<br>这时再打开<a href="http://127.0.0.1:16686/dependencies" target="_blank" rel="noopener">http://127.0.0.1:16686/dependencies</a> 选择DAG，服务依赖如图所示：</p>
+<p><img src="/images/2019/04/hotrod_trace_dependencies.png" alt="" title="hotrod_trace_dependencies"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/11/opentracing-api-overview/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1836,168 +2004,6 @@ setFoos([f1, f2])
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2013/11/10/利用分布式缓存实现分布式锁/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2013/11/10/利用分布式缓存实现分布式锁/" itemprop="url">利用分布式缓存实现分布式锁</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2013-11-10T23:40:26+08:00">
-                2013-11-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/architecture/" itemprop="url" rel="index">
-                    <span itemprop="name">architecture</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>之前在系统中有做一个在客户端重试时，进行去重的逻辑，大致思路是将客户端的请求缓存到分布式缓存中，每次请求到达时先在缓存中查询，如果有就直接返回，没有就帮用户重试该请求。一天晚上<span style="font-family: 'Times New Roman';">(</span><span style="font-family: 宋体;">不凑巧，刚好是结婚当天</span><span style="font-family: 'Times New Roman';">)</span><span style="font-family: 宋体;">，一个微信会话来了，某某老大的评论重复……</span></p>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>上面在写数据前，会先请求一次缓存，但是这个操作在分布式环境下显然会有如下场景出现：</p>
-<p>①　节点<span style="font-family: 'Times New Roman';">A</span><span style="font-family: 宋体;">，</span><span style="font-family: 'Times New Roman';">Get</span><span style="font-family: 宋体;">数据，返回不存在</span></p>
-<p>②　节点<span style="font-family: 'Times New Roman';">B</span><span style="font-family: 宋体;">，</span><span style="font-family: 'Times New Roman';">Get</span><span style="font-family: 宋体;">数据，返回不存在</span></p>
-<p>③　节点<span style="font-family: 'Times New Roman';">A</span><span style="font-family: 宋体;">写数据</span></p>
-<p>④　节点<span style="font-family: 'Times New Roman';">A</span><span style="font-family: 宋体;">返回</span></p>
-<p>⑤　节点<span style="font-family: 'Times New Roman';">B</span><span style="font-family: 宋体;">写数据</span></p>
-<p>⑥　节点<span style="font-family: 'Times New Roman';">B</span><span style="font-family: 宋体;">返回</span></p>
-<p>&nbsp;</p>
-<p>根本原因就是<span style="font-family: 'Times New Roman';">Get</span><span style="font-family: 宋体;">数据和</span><span style="font-family: 'Times New Roman';">Set</span><span style="font-family: 宋体;">数据不是原子操作，导致出现了</span><span style="font-family: 'Times New Roman';">A</span><span style="font-family: 宋体;">，</span><span style="font-family: 'Times New Roman';">B</span><span style="font-family: 宋体;">都认为数据不存在。</span></p>
-<p>问题很明显，就是没有对数据操作进行同步，如果在单机环境下，这个可以很简单的通过操作系统提供的各种同步原语处理，但是现在节点<span style="font-family: 'Times New Roman';">A</span><span style="font-family: 宋体;">，</span><span style="font-family: 'Times New Roman';">B</span><span style="font-family: 宋体;">是处在不同机器上，这就涉及到分布式锁的问题了。类似于单机环境下的线程同步原语，我们只需要一种机制让应用程序知道某个资源被占用了（例如</span><span style="font-family: 'Times New Roman';">mutex</span><span style="font-family: 宋体;">如果</span><span style="font-family: 'Times New Roman';">lock</span><span style="font-family: 宋体;">失败，操作系统即会将该进程挂起），在分布式缓存中一般都存在一个叫做</span><span style="font-family: 'Times New Roman';">add</span><span style="font-family: 宋体;">的操作，该操作保证只有在资源不存在时才能执行成功，否则会告知调用者失败，且标注为特殊的错误码。</span></p>
-<p>&nbsp;</p>
-<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>这里只简单给出了获取锁一般实现伪代码，不同的业务场景有不同的处理，比如失败后继续重试直到成功。</p>
-<p>在<span style="font-family: 'Times New Roman';">memcache</span><span style="font-family: 宋体;">中：</span></p>
-<p><pre class="brush:cpp">if(cache-&gt;add(key, value, expire))<br>{<br>    //get lock successful<br>}<br>else<br>{<br>    //get lock fail<br>}</pre><br>在<span style="font-family: 'Times New Roman';">Redis</span><span style="font-family: 宋体;">中可以通过</span><span style="font-family: 'Times New Roman';">SET</span><span style="font-family: 宋体;">命令</span><span style="font-family: 'Times New Roman';">(2.6.12</span><span style="font-family: 宋体;">以上版本</span><span style="font-family: 'Times New Roman';">)</span><span style="font-family: 宋体;">或者</span><span style="font-family: 'Times New Roman';">SETNX</span><span style="font-family: 宋体;">命令，类似</span><span style="font-family: 'Times New Roman';">memcache</span><span style="font-family: 宋体;">中的</span><span style="font-family: 'Times New Roman';">ADD</span></p>
-<p>SET key value NX EX max_lock_time<span style="font-family: 宋体;">。在</span><a href="https://github.com/andymccurdy/redis-py" target="_blank" rel="noopener">redis-py</a>中有一个封装好的<span style="font-family: 'Times New Roman';">lock</span><span style="font-family: 宋体;">实现可以直接使用。</span></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>像<span style="font-family: 'Times New Roman';">memcache</span><span style="font-family: 宋体;">，</span><span style="font-family: 'Times New Roman';">redis</span><span style="font-family: 宋体;">这里系统一般都是作为缓存来使用，但是在某些时候通过深入挖掘其实也可以有一些意想不到的作用，通过一个简单的语句既可以实现一个基本上够用的分布式锁，其性价比不言而喻。在网上随便一搜，也有好多类似的同行遇到这个问题，下面是几个链接，有国产的也有国外：</span></p>
-<p><a href="http://abhinavsingh.com/blog/2009/12/how-to-use-locks-for-assuring-atomic-operation-in-memcached/" target="_blank" rel="noopener">http://abhinavsingh.com/blog/2009/12/how-to-use-locks-for-assuring-atomic-operation-in-memcached/</a></p>
-<p><a href="http://chuyinfeng.com/p/39" target="_blank" rel="noopener">http://chuyinfeng.com/p/39</a></p>
-<p><a href="http://blog.webfuns.net/archives/1722.html" target="_blank" rel="noopener">http://blog.webfuns.net/archives/1722.html</a></p>
-<p><a href="http://jiangbo.me/blog/2011/02/27/post/" target="_blank" rel="noopener">http://jiangbo.me/blog/2011/02/27/post/</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2048,7 +2054,7 @@ setFoos([f1, f2])
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">152</span>
+                  <span class="site-state-item-count">153</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2123,7 +2129,7 @@ setFoos([f1, f2])
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

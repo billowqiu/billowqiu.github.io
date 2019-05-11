@@ -269,6 +269,152 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2008/08/14/在vc2005-express中使用wtl/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2008/08/14/在vc2005-express中使用wtl/" itemprop="url">在VC2005 Express中使用WTL</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2008-08-14T12:12:00+08:00">
+                2008-08-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/VC/" itemprop="url" rel="index">
+                    <span itemprop="name">VC</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>废话不多说，搞了一上午了，</p>
+<p>安装VC2005Express，先下PSDK，注意安装的时候要记得安那个Web WorkShop SDK，否则编译的时候会先提示Shlwapi.h这个文件，其他需要注意的就是CodeProject上那个日本哥们写的<a href="http://www.codeproject.com/KB/wtl/WTLExpress.aspx" target="_blank" rel="noopener"><u><font color="#0000ff">http://www.codeproject.com/KB/wtl/WTLExpress.aspx</font></u></a>，写的不错，只要安这个步骤，应该不会错的，主要是那个在VC2005Express下设置PSDK，它妈的真服了MS，VC2005Express默认都不让生成Win32工程，还要按照那个挂掉的链接说明设置，找了半天没找到那个链接的相关内容，搞得累了一上午，最后终于google到了，竟然还要改工程默认配置文件，终于搞定了，为了以后设置方便这里把那篇E文Copy了：</p>
+<font size="3"><a href="http://msdn.microsoft.com/vstudio/express/visualc/usingpsdk/" target="_blank" rel="noopener">http://msdn.microsoft.com/vstudio/express/visualc/usingpsdk/</a><br>Using Visual C++ 2005 Express Edition with the Microsoft Platform SDK<br>By Brian Johnson,<br>Microsoft Corporation<br>You can use Visual C++ Express to build powerful .NET Framework applications immediately after installation. In order to use Visual C++ Express to build Win32 applications, you’ll need to take just a few more steps. I’ll list the steps necessary for building Win32 applications using Visual C++ Express.<br>Step 1: Install Visual C++ Express.<br>If you haven’t done so already, install Visual C++ Express.<br><br>Step 2: Install the Microsoft Platform SDK.<br>Install the Platform SDK over the Web from the Download Center. Follow the instructions and install the SDK for the x86 platform.<br><br>Step 3: Update the Visual C++ directories in the Projects and Solutions section in the Options dialog box.<br>Add the paths to the appropriate subsection:<br>Executable files: C:/Program Files/Microsoft Platform SDK for Windows Server 2003 R2/Bin<br>Include files: C:/Program Files/Microsoft Platform SDK for Windows Server 2003 R2/Include<br>Library files: C:/Program Files/Microsoft Platform SDK for Windows Server 2003 R2/Lib<br>Note: Alternatively, you can update the Visual C++ Directories by modifying the VCProjectEngine.dll.express.config file located in the /vc/vcpackages subdirectory of the Visual C++ Express install location. Please make sure that you also delete the file “vccomponents.dat” located in the “%USERPROFILE%/Local Settings/Application Data/Microsoft/VCExpress/8.0” if it exists before restarting Visual C++ Express Edition.<br><br>Step 4: Update the corewin_express.vsprops file.<br>One more step is needed to make the Win32 template work in Visual C++ Express. You need to edit the corewin_express.vsprops file (found in C:/Program Files/Microsoft Visual Studio 8/VC/VCProjectDefaults) and<br>Change the string that reads:<br>AdditionalDependencies=”kernel32.lib” to<br>AdditionalDependencies=”kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib”<br><br>Step 5: Generate and build a Win32 application to test your paths.<br>In Visual C++ Express, the Win32 Windows Application type is disabled in the Win32 Application Wizard. To enable that type, you need to edit the file AppSettings.htm file located in the folder “%ProgramFiles%/Microsoft Visual Studio 8/VC/VCWizards/AppWiz/Generic/Application/html/1033/“.<br>In a text editor comment out lines 441 - 444 by putting a // in front of them as shown here:<br>// WIN_APP.disabled = true;<br>// WIN_APP_LABEL.disabled = true;<br>// DLL_APP.disabled = true;<br>// DLL_APP_LABEL.disabled = true;<br>Save and close the file and open Visual C++ Express.<br>From the File menu, click New Project. In the New Project dialog box, expand the Visual C++ node in the Product Types tree and then click Win32. Click on the Win32 Console Application template and then give your project a name and click OK. In the Win32 Application Wizard dialog box, make sure that Windows application is selected as the Application type and the ATL is not selected. Click the Finish button to generate the project.<br>As a final step, test your project by clicking the Start button in the IDE or by pressing F5. Your Win32 application should build and run. </font>
+
+<p></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2008/07/24/wm-nchittest消息/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1764,167 +1910,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2008/05/12/消息路由/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2008/05/12/消息路由/" itemprop="url">消息路由</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2008-05-12T14:31:00+08:00">
-                2008-05-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/VC/" itemprop="url" rel="index">
-                    <span itemprop="name">VC</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在MSDN上看到的，对理解消息队列很有用。</p>
-<p>消息有两种：队列消息和非队列消息。</p>
-<p>队列消息的传递方式：系统维护了一个单独的系统消息队列，并为每一个GUI线程维护一个消息队列，当队列消息，比如鼠标，键盘事件引发的消息，将先被放到系统消息队列中，然后按照队列的操作规则，系统一次移除一个消息，并检查该消息，然后发送到产生该目标窗口的线程消息队列中，线程从自己的消息队列中移除消息然后让系统将其发送到窗口过程。</p>
-<p>非队列消息：不经过系统消息队列和线程消息队列的迂回，直接发送到目标窗口过程。</p>
-<p>在队列消息中<strong>WM_PAINT</strong> message, the <strong>WM_TIMER</strong> message, and the <strong>WM_QUIT</strong> message三种消息是被放在消息队列的队尾的，以确保其他消息的FIFO特性。线程通过<u><font color="#0000ff">GetMessage</font></u> 从线程消息队列中移除消息， 通过&lt;?XML:NAMESPACE PREFIX = MSHELP /&gt;&lt;MSHELP:LINK tabIndex=0 keywords=”_win32_DispatchMessage_cpp”&gt;<u><font color="#0000ff">DispatchMessage</font></u>&lt;/MSHELP:LINK&gt; 驱使系统将消息发送到相应的窗口过程。</p>
-<p><a name="routing"></a>Message RoutingThe thread removes messages from its queue and directs the system to send them to the appropriate window procedure for processing.</p>
-<p>The system uses two methods to route messages to a window procedure: posting messages to a first-in, first-out queue called a <em>message queue</em>, a system-defined memory object that temporarily stores messages, and sending messages directly to a window procedure.</p>
-<p>Messages posted to a message queue are called <em>queued messages</em>. They are primarily the result of user input entered through the mouse or keyboard, such as &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_WM_MOUSEMOVE_cpp”&gt;<u><font color="#0000ff">WM_MOUSEMOVE</font></u>&lt;/MSHELP:LINK&gt;, &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_WM_LBUTTONDOWN_cpp”&gt;<u><font color="#0000ff">WM_LBUTTONDOWN</font></u>&lt;/MSHELP:LINK&gt;, &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_WM_KEYDOWN_cpp”&gt;<u><font color="#0000ff">WM_KEYDOWN</font></u>&lt;/MSHELP:LINK&gt;, and &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_WM_CHAR_cpp”&gt;<u><font color="#0000ff">WM_CHAR</font></u>&lt;/MSHELP:LINK&gt; messages. Other queued messages include the timer, paint, and quit messages: &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_WM_TIMER_cpp”&gt;<u><font color="#0000ff">WM_TIMER</font></u>&lt;/MSHELP:LINK&gt;, <strong>WM_PAINT</strong>, and &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_WM_QUIT_cpp”&gt;<u><font color="#0000ff">WM_QUIT</font></u>&lt;/MSHELP:LINK&gt;. Most other messages, which are sent directly to a window procedure, are called <em>nonqueued messages</em>.</p>
-<h3 id="Queued-Messages"><a href="#Queued-Messages" class="headerlink" title="Queued Messages"></a><a name="quequed_messages"></a>Queued Messages</h3><p>The system can display any number of windows at a time. To route mouse and keyboard input to the appropriate window, the system uses message queues.</p>
-<p>The system maintains a single system message queue and one thread-specific message queue for each graphical user interface (GUI) thread. To avoid the overhead of creating a message queue for non–GUI threads, all threads are created initially without a message queue. The system creates a thread-specific message queue only when the thread makes its first call to one of the User or Windows Graphics Device Interface (GDI) functions.</p>
-<p>Whenever the user moves the mouse, clicks the mouse buttons, or types on the keyboard, the device driver for the mouse or keyboard converts the input into messages and places them in the system message queue. The system removes the messages, one at a time, from the system message queue, examines them to determine the destination window, and then posts them to the message queue of the thread that created the destination window. A thread’s message queue receives all mouse and keyboard messages for the windows created by the thread. The thread removes messages from its queue and directs the system to send them to the appropriate window procedure for processing.</p>
-<p>With the exception of the <strong>WM_PAINT</strong> message, the <strong>WM_TIMER</strong> message, and the <strong>WM_QUIT</strong> message, the system always posts messages at the end of a message queue. This ensures that a window receives its input messages in the proper first in, first out (FIFO) sequence. The <strong>WM_PAINT</strong> message, the <strong>WM_TIMER</strong> message, and the <strong>WM_QUIT</strong> message, however, are kept in the queue and are forwarded to the window procedure only when the queue contains no other messages. In addition, multiple <strong>WM_PAINT</strong> messages for the same window are combined into a single <strong>WM_PAINT</strong> message, consolidating all invalid parts of the client area into a single area. Combining <strong>WM_PAINT</strong> messages reduces the number of times a window must redraw the contents of its client area.</p>
-<p>The system posts a message to a thread’s message queue by filling an &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_MSG_str_cpp”&gt;<u><font color="#0000ff">MSG</font></u>&lt;/MSHELP:LINK&gt; structure and then copying it to the message queue. Information in <strong>MSG</strong> includes: the handle of the window for which the message is intended, the message identifier, the two message parameters, the time the message was posted, and the mouse cursor position. A thread can post a message to its own message queue or to the queue of another thread by using the &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_PostMessage_cpp”&gt;<u><font color="#0000ff">PostMessage</font></u>&lt;/MSHELP:LINK&gt; or &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_PostThreadMessage_cpp”&gt;<u><font color="#0000ff">PostThreadMessage</font></u>&lt;/MSHELP:LINK&gt; function.</p>
-<p>An application can remove a message from its queue by using the &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_GetMessage_cpp”&gt;<u><font color="#0000ff">GetMessage</font></u>&lt;/MSHELP:LINK&gt; function. To examine a message without removing it from its queue, an application can use the &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_PeekMessage_cpp”&gt;<u><font color="#0000ff">PeekMessage</font></u>&lt;/MSHELP:LINK&gt; function. This function fills <strong>MSG</strong> with information about the message.</p>
-<p>After removing a message from its queue, an application can use the &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_DispatchMessage_cpp”&gt;<u><font color="#0000ff">DispatchMessage</font></u>&lt;/MSHELP:LINK&gt; function to direct the system to send the message to a window procedure for processing. <strong>DispatchMessage</strong> takes a pointer to <strong>MSG</strong> that was filled by a previous call to the <strong>GetMessage</strong> or <strong>PeekMessage</strong> function. <strong>DispatchMessage</strong> passes the window handle, the message identifier, and the two message parameters to the window procedure, but it does not pass the time the message was posted or mouse cursor position. An application can retrieve this information by calling the &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_GetMessageTime_cpp”&gt;<u><font color="#0000ff">GetMessageTime</font></u>&lt;/MSHELP:LINK&gt; and &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_GetMessagePos_cpp”&gt;<u><font color="#0000ff">GetMessagePos</font></u>&lt;/MSHELP:LINK&gt; functions while processing a message.</p>
-<p>A thread can use the &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_WaitMessage_cpp”&gt;<u><font color="#0000ff">WaitMessage</font></u>&lt;/MSHELP:LINK&gt; function to yield control to other threads when it has no messages in its message queue. The function suspends the thread and does not return until a new message is placed in the thread’s message queue.</p>
-<p>You can call the &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_SetMessageExtraInfo_cpp”&gt;<u><font color="#0000ff">SetMessageExtraInfo</font></u>&lt;/MSHELP:LINK&gt; function to associate a value with the current thread’s message queue. Then call the &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_GetMessageExtraInfo_cpp”&gt;<u><font color="#0000ff">GetMessageExtraInfo</font></u>&lt;/MSHELP:LINK&gt; function to get the value associated with the last message retrieved by the <strong>GetMessage</strong> or <strong>PeekMessage</strong> function.</p>
-<h3 id="Nonqueued-Messages"><a href="#Nonqueued-Messages" class="headerlink" title="Nonqueued Messages"></a><a name="nonqueued_messages"></a>Nonqueued Messages</h3><p>Nonqueued messages are sent immediately to the destination window procedure, bypassing the system message queue and thread message queue. The system typically sends nonqueued messages to notify a window of events that affect it. For example, when the user activates a new application window, the system sends the window a series of messages, including &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_WM_ACTIVATE_cpp”&gt;<u><font color="#0000ff">WM_ACTIVATE</font></u>&lt;/MSHELP:LINK&gt;, &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_WM_SETFOCUS_cpp”&gt;<u><font color="#0000ff">WM_SETFOCUS</font></u>&lt;/MSHELP:LINK&gt;, and &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_WM_SETCURSOR_cpp”&gt;<u><font color="#0000ff">WM_SETCURSOR</font></u>&lt;/MSHELP:LINK&gt;. These messages notify the window that it has been activated, that keyboard input is being directed to the window, and that the mouse cursor has been moved within the borders of the window. Nonqueued messages can also result when an application calls certain system functions. For example, the system sends the &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_WM_WINDOWPOSCHANGED_cpp”&gt;<u><font color="#0000ff">WM_WINDOWPOSCHANGED</font></u>&lt;/MSHELP:LINK&gt; message after an application uses the &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_SetWindowPos_cpp”&gt;<u><font color="#0000ff">SetWindowPos</font></u>&lt;/MSHELP:LINK&gt; function to move a window.</p>
-<p>Some functions that send nonqueued messages are &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_BroadcastSystemMessage_cpp”&gt;<u><font color="#0000ff">BroadcastSystemMessage</font></u>&lt;/MSHELP:LINK&gt;, &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_BroadcastSystemMessageEx_cpp”&gt;<u><font color="#0000ff">BroadcastSystemMessageEx</font></u>&lt;/MSHELP:LINK&gt;, &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_SendMessage_cpp”&gt;<u><font color="#0000ff">SendMessage</font></u>&lt;/MSHELP:LINK&gt;, &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_SendMessageTimeout_cpp”&gt;<u><font color="#0000ff">SendMessageTimeout</font></u>&lt;/MSHELP:LINK&gt;, and &lt;MSHELP:LINK tabIndex=0 keywords=”_win32_SendNotifyMessage_cpp”&gt;<u><font color="#0000ff">SendNotifyMessage</font></u>&lt;/MSHELP:LINK&gt;.</p>
-<p></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1975,7 +1960,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">152</span>
+                  <span class="site-state-item-count">153</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2050,7 +2035,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

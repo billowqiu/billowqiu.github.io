@@ -269,6 +269,161 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2007/08/31/mdisdi创建过程中的一点不同/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2007/08/31/mdisdi创建过程中的一点不同/" itemprop="url">MDI,SDI创建过程中的一点不同</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2007-08-31T18:35:00+08:00">
+                2007-08-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/VC/" itemprop="url" rel="index">
+                    <span itemprop="name">VC</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>CMultiDocTemplate* pDocTemplate;<br>pDocTemplate = new CMultiDocTemplate(<br>&nbsp;&nbsp; IDR_MDISQUTYPE,<br>&nbsp;&nbsp; RUNTIME_CLASS(CSquaresDoc),<br>&nbsp;&nbsp; RUNTIME_CLASS(CChildFrame), // custom MDI child frame<br>&nbsp;&nbsp; RUNTIME_CLASS(CSquaresView));<br>AddDocTemplate(pDocTemplate);</p>
+<p>// create main MDI Frame window<br>CMainFrame* pMainFrame = new CMainFrame;<br>if (!pMainFrame-&gt;LoadFrame(IDR_MAINFRAME))<br>&nbsp;&nbsp; return FALSE;<br>m_pMainWnd = pMainFrame;</p>
+<p>。。。。。。。。</p>
+<p>&nbsp;&nbsp; // Dispatch commands specified on the command line<br>if (!ProcessShellCommand(cmdInfo))<br>&nbsp;&nbsp; return FALSE;</p>
+<p>// The main window has been initialized, so show and update it.<br>pMainFrame-&gt;ShowWindow(m_nCmdShow);<br>pMainFrame-&gt;UpdateWindow();</p>
+<p>上面为MDI，下面为SDI</p>
+<p>CSingleDocTemplate* pDocTemplate;<br>pDocTemplate = new CSingleDocTemplate(<br>&nbsp;&nbsp; IDR_MAINFRAME,<br>&nbsp;&nbsp; RUNTIME_CLASS(CSquaresDoc),<br>&nbsp;&nbsp; RUNTIME_CLASS(CMainFrame),&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // main SDI frame window<br>&nbsp;&nbsp; RUNTIME_CLASS(CSquaresView));<br>AddDocTemplate(pDocTemplate);</p>
+<p>。。。。。。。。。。</p>
+<p>// Dispatch commands specified on the command line<br>if (!ProcessShellCommand(cmdInfo))<br>&nbsp;&nbsp; return FALSE;</p>
+<p>// The main window has been initialized, so show and update it.<br>pMainFrame-&gt;ShowWindow(m_nCmdShow);<br>pMainFrame-&gt;UpdateWindow();</p>
+<p>主要是在生产文档模板对象时RUNTIME_CLASS(CChildFrame), // custom MDI child frame<br>VS RUNTIME_CLASS(CMainFrame),&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // main SDI frame window<br>MDI传递的是childframe,而SDI传递的mainframe，因此MDI的ProcessShellCommand创建的是ChildFrame而SDI创建的MainFrame，所以MDI中就多出了</p>
+<p>// create main MDI Frame window<br>CMainFrame* pMainFrame = new CMainFrame;<br>if (!pMainFrame-&gt;LoadFrame(IDR_MAINFRAME))<br>&nbsp;&nbsp; return FALSE;<br>m_pMainWnd = pMainFrame;</p>
+<p>必须自己创建MainFrame.</p>
+<p></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2007/08/26/回调函数在mfc中的使用/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1763,148 +1918,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2006/07/11/学c了/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2006/07/11/学c了/" itemprop="url">学C++了</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2006-07-11T18:17:00+08:00">
-                2006-07-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index">
-                    <span itemprop="name">C++</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>哈哈，终于开始学C++了，马上就是大三了，好像好多学校大一或者大二就开始学C++了，不能等到课堂上再学了，趁这个暑假一定要先看看。还好前面的语法部分基本上不用看，大一学过C，上学期数据结构又把C几乎是学了遍，后面的面向对象部分应该是这段时间的重要部分，幸运的是大二上学期又学过java(当时我也不知道学校为什么要把它当选修课)不过现在好像没什么印象了。我打算每天看三集视频教程，然后看下自己买的自认为经典的什么国外教程，至于上机练习什么时候心血来潮就上下，主要问题还是想玩会游戏，所以不知道一个暑假后自己能学到什么，期待中……</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1955,7 +1968,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">152</span>
+                  <span class="site-state-item-count">153</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2030,7 +2043,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
