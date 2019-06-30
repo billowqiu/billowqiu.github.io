@@ -269,6 +269,152 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2010/08/08/winsock-重复定义的错误/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2010/08/08/winsock-重复定义的错误/" itemprop="url">Winsock 重复定义的错误</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2010-08-08T18:49:00+08:00">
+                2010-08-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/VC/" itemprop="url" rel="index">
+                    <span itemprop="name">VC</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Winsock提示重复定义，</p>
+<p>这是一个老问题了，之前也碰到过，最近一个项目中再次遇到，摘抄自MSDN：</p>
+<p>The <em>Winsock2.h</em> header file internally includes core elements from the <em>Windows.h</em> header file, so there is not usually an #include line for the <em>Windows.h</em> header file in Winsock applications. If an #include line is needed for the <em>Windows.h</em> header file, this should be preceded with the #define WIN32_LEAN_AND_MEAN macro. For historical reasons, the <em>Windows.h</em> header defaults to including the <em>Winsock.h</em> header file for Windows Sockets 1.1. The declarations in the <em>Winsock.h</em> header file will conflict with the declarations in the <em>Winsock2.h</em> header file required by Windows Sockets 2.0. The WIN32_LEAN_AND_MEAN macro prevents the <em>Winsock.h</em> from being included by the <em>Windows.h</em> header. An example illustrating this is shown below. </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<div class="codeSnippet"><br><pre>#ifndef WIN32_LEAN_AND_MEAN<br>#define WIN32_LEAN_AND_MEAN<br>#endif<br><br>#include &lt;windows.h&gt;<br>#include &lt;winsock2.h&gt;<br>#include &lt;ws2tcpip.h&gt;<br>#include &lt;iphlpapi.h&gt;<br>#include &lt;stdio.h&gt;<br>int main() {<br>  return 0;<br>}<br>大意就是因为MS由于历史原因，在Windows.h头文件中包含了Winsock.h，导致与Winsock2.h冲突，所以提示重复定义。</pre><br></div><br>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2010/07/18/我看敏捷/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1733,133 +1879,6 @@ std::ostream&amp; operator&lt;&lt; ( std::ostream&amp; os, const CLinkList&lt;R&
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2010/01/19/深圳之行/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2010/01/19/深圳之行/" itemprop="url">深圳之行</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2010-01-19T22:36:00+08:00">
-                2010-01-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 从深圳回武汉刚好一个月了，上个月19号坐的车，离开了生活了16个月的深圳，再次回到熟悉的城市，但是心情完全不一样了。发现呆了4年的武昌除了学校那块比较熟悉外，其它好多地方还是那么的陌生，这也从某种意义上反映了自己的大学生活不是很丰富。</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在深圳的一年多，虽然对之前的公司没有太多好感，但是作为自己工作的第一步，只能说既然选择了那么肯定也是也有其存在的理由，由于公司所处的行业特殊，前两个月竟然是在车间度过的，虽然当时是很郁闷的，但是后来发现这也是一段值得珍藏的经历，因为在接下来的基本上是不可能再有这样的机会了。</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 从车间回来后就差不多开始开工了，工作的内容以及能力要求基本上在毕业之前就都差不多，因此让自己有惊无险的度过了那个&ldquo;工作危机&rdquo;，正是由于自己相对来说比较擅长界面，前几个月基本上就是和界面打交道，这个过程让自己对Windows消息有了更进一步的认识同时对当前的Windows界面开发也有了一定的研究，种种原因导致开发不是很规范，加上一些客观原因09年开年那会自己已经对当时做界面相当的反感了，这段时间基本上就是在自己写的一个Dialog基类上面进行开发，以及之前界面的移植，不过就现在来说虽然我更希望朝通讯方面发展，但是仍然对界面有很大的兴趣，不知道为什么总是有那么多人看不起做界面，甚至看不起做界面的人，这里不是指那种用现成的控件和界面库，就来一个自定义控件来说吧，我觉得这里面涉及的东西也不少，也不是一天两天就能搞定的吧。</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 到了3月份，我们这个小组的几个一致认为需要重新将之前那个&ldquo;项目&rdquo;从头设计开发。这个过程大概是3月到6月吧，没办法自己还是不情愿的把界面这部分模块接下来了，当然这次也不完全是界面了，还有一些逻辑功能以及相关的模块设计。正是这段时间，终于算是正式的用上了第一设计模式–singleton，由于当时对设计还没有太多的想法，导致后面开发又成了东成西就，每次想修改设计最终还是是被庞大的工作量给吓回去了。这段时间主要学到了界面闪烁的解决方案，socket通讯编程的进一步学习，最突出的应该算是调试了。</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 6月份，上面又给在当前项目上面加了个视频会议的功能，这段时间开始到10月份算是相当充实的一段时间，视频会议涉及的内容也是相当的多，编解码，音视频数据传输，会议管理及维护，当然还少不了界面。前面两个模块基本上都是有现成代码，编解码是用的h264，音视频数据传输用的电驴的NatSock部分代码的移植，这两个模块都是一个前辈搞定的，当然自己也从其中学到一些尤其是数据传输部分。由于人手有限，我完成了剩下的两个模块，╮(╯▽╰)╭，界面总是仍给我了，这部分界面是作为一个单独的模块来实现的，直接嵌入到主程序里面，会议管理及维护也是相当的多，包括会议创建，会议角色的管理已经会议的维护。开始设计时，把过多的责任交给了创建者，导致后面的会议维护几乎不可能，最终又加了一个会议管理服务器专门进行会议的管理，也正是这段时间，客户端和服务器同时开发把人搞晕死了，但是收获也颇多。</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 10.1来了之后，基本上客户端以及视频会议模块方面都进入了相对比较稳定的一个阶段，这会又给我一个新的任务，在客户端从后台登陆公司的OA网站，获取相关的信息，很有点像QQ那个面板上面的一排小按钮的功能。虽然任务不是很重，但是实现过程却是蜿蜒曲折，最开始采用的是直接socket，后来发现量太大了而且与相关业务直接挂钩的不太多，后来用WinInet，好不容易把cook及sessionid的问题搞定了，登陆成功后发现要获取的信息在另外一个服务器上面，而且其需要相关的sessionid认证，又放弃了，最后干脆用WebBroswer，本以为这次该没问题了，谁知此控件存在内存泄露，长时间运行尤其是在xp上面会导致内存耗尽，由于这个是M$的控件也就讲究用着了，当然从真正实用的角度来看用socket和WinInet才是。</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 11月份由于种种原因，准备辞职，一直到12月中下旬才办完手续，19号启程，武汉的生活中&hellip;&hellip;</p>
-<p></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1910,7 +1929,7 @@ std::ostream&amp; operator&lt;&lt; ( std::ostream&amp; os, const CLinkList&lt;R&
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">153</span>
+                  <span class="site-state-item-count">154</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1921,7 +1940,7 @@ std::ostream&amp; operator&lt;&lt; ( std::ostream&amp; os, const CLinkList&lt;R&
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1932,7 +1951,7 @@ std::ostream&amp; operator&lt;&lt; ( std::ostream&amp; os, const CLinkList&lt;R&
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

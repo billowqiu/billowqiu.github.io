@@ -269,6 +269,163 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2008/05/14/mfc透明控件的超级简单实现/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2008/05/14/mfc透明控件的超级简单实现/" itemprop="url">MFC透明控件的超级简单实现</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2008-05-14T00:44:00+08:00">
+                2008-05-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/VC/" itemprop="url" rel="index">
+                    <span itemprop="name">VC</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>今天在翻出以前写的一个程序时，想改下对话框的背景，结果导致Static控件的背景留下灰色的默认背景色，感觉很不爽，想着也学了这么久MFC了，这个问题今天一定要解决了，大致思路还是知道的，但是由于一直都是在学习，看别人的代码所以真真要自己写还是得仔细琢磨下，经过几番测试发现下面的方法最容易，贴上代码和截图吧：</p>
+<p>// CQTTransparentStatic</p>
+<p>class CQTTransparentStatic : public CStatic<br>{<br>DECLARE_DYNAMIC(CQTTransparentStatic)<br>public:<br>CQTTransparentStatic();<br>virtual ~CQTTransparentStatic();<br>//响应父类的反射消息<br>afx_msg HBRUSH CtlColor(CDC<em> /</em>pDC<em>/, UINT /</em>nCtlColor*/);<br>protected:<br>DECLARE_MESSAGE_MAP()<br>};</p>
+<p>IMPLEMENT_DYNAMIC(CQTTransparentStatic, CStatic)</p>
+<p>CQTTransparentStatic::CQTTransparentStatic()<br>{</p>
+<p>}</p>
+<p>CQTTransparentStatic::~CQTTransparentStatic()<br>{<br>}</p>
+<p>BEGIN_MESSAGE_MAP(CQTTransparentStatic, CStatic)<br>ON_WM_CTLCOLOR_REFLECT()<br>END_MESSAGE_MAP()</p>
+<p>// CQTTransparentStatic 消息处理程序</p>
+<p>HBRUSH CQTTransparentStatic::CtlColor(CDC* pDC, UINT nCtlColor)<br>{<br>// TODO: 在此更改 DC 的任何属性<br>// TODO: 如果不应调用父级的处理程序，则返回非空画笔<br>pDC-&gt;SetBkMode(TRANSPARENT);<br>return (HBRUSH)::GetStockObject(HOLLOW_BRUSH);<br>}</p>
+<p>代码真的是很简单吧，哈哈，</p>
+<div forimg="1"><img src="http://hiphotos.baidu.com/qiutao%5F2008/pic/item/2742ef012d51c71d7aec2c49.jpg" alt=""></div>
+
+<span style="FONT-SIZE: 10.5pt; mso-bidi-font-size: 12.0pt; mso-fareast-: 1.0pt">怎么样效果也还不错呢。</span>
+
+<p></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2008/05/12/消息路由/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1743,272 +1900,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2007/09/01/消息传递过程/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2007/09/01/消息传递过程/" itemprop="url">消息传递过程</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2007-09-01T18:36:00+08:00">
-                2007-09-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/VC/" itemprop="url" rel="index">
-                    <span itemprop="name">VC</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <pre><code>&lt;DIV class=cnt id=blog_text&gt;
-</code></pre><font size="3"><span><img src="http://blog.programfan.com/upfile/200709/200709010105037.gif" alt=""><br></span></font>
-
-<font size="3"><span>据说是在</span><span>Run</span><span>中调用</span><span>AfxWndProc</span><span>（侯捷说的我在源码中找了会没找到，也不晓得是哪个间接调用的），在该函数里面接着调用</span><span>AfxCallWndProc</span><span>，然后</span><span>AfxCallWndProc</span><span>中有这么一段</span></font>
-
-<span><font size="3">// special case for WM_INITDIALOG</font></span>
-
-<span><font size="3">CRect rectOld;</font></span>
-
-<span><font size="3">DWORD dwStyle = 0;</font></span>
-
-<span><font size="3">if (nMsg == WM_INITDIALOG)</font></span>
-
-<span><font size="3">_AfxPreInitDialog(pWnd, &amp;rectOld, &amp;dwStyle);</font></span>
-
-<span><font size="3"></font></span>
-
-<span><font size="3">// delegate to object’s WindowProc</font></span>
-
-<span><font size="3">lResult = pWnd-&gt;WindowProc(nMsg, wParam, lParam);</font></span>
-
-<span><font size="3"></font></span>
-
-<span><font size="3">// more special case for WM_INITDIALOG</font></span>
-
-<span><font size="3">if (nMsg == WM_INITDIALOG)</font></span>
-
-<span><font size="3">_AfxPostInitDialog(pWnd, rectOld, dwStyle);</font></span>
-
-<font size="3"><span>如果不是</span><span>WM_INITDIALOG</span><span>消息则调用</span><span>CWnd</span><span>的</span><span>WindowProc</span><span>，这时就有点迷惑了，应该说</span><span>CCmdTarget</span><span>是处理消息的基类其中的</span><span>OnCmdMsg</span><span>为什么不先调用呢，其实我也不清楚，查看了源代码后发现在</span><span>WindowProc</span><span>中会判断消息的类型里面有这么段：</span></font>
-
-<p><strong><span style="FONT-SIZE: 15pt">CWnd::WindowProc</span></strong></p>
-<span><font size="3">if (message == WM_COMMAND)</font></span>
-
-<span><font size="3">{</font></span>
-
-<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>if (OnCommand(wParam, lParam))</font></span>
-
-<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</font></span>
-
-<span><font size="3"><span style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>lResult = 1;</font></span>
-
-<span><font size="3"><span style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>goto LReturnTrue;</font></span>
-
-<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</font></span>
-
-<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>return FALSE;</font></span>
-
-<span><font size="3">}</font></span>
-
-<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><strong>CWnd::OnCommand</strong></font></span>
-
-<font size="3"><span>如果是命令消息加速键等用户接口对象的</span><span>WM_COMMAND</span><span>通知消息（有些控件也会发送此消息比如按钮的单击），则调用</span><span>OnCommand</span><span>处理，而在</span><span>OnCommand</span><span>中会判断是一般命令消息还是控件消息，其中如果不是控件消息的话会调用</span><span>OnCmdMsg(nID, CN_UPDATE_COMMAND_UI, &amp;state, NULL);</span><span>看到了吧这里就调用了从</span><span>CCmdTarget</span><span>继承来的虚函数（我只找到了</span><span>CWnd</span><span>的这个地方调用了改消息）。</span></font>
-
-<span><font size="3">接着是控件消息</font></span>
-
-<span><font size="3">// special case for notifies</font></span>
-
-<span><font size="3">if (message == WM_NOTIFY)</font></span>
-
-<span><font size="3">{</font></span>
-
-<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>NMHDR<em> pNMHDR = (NMHDR</em>)lParam;</font></span>
-
-<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>if (pNMHDR-&gt;hwndFrom != NULL &amp;&amp; OnNotify(wParam, lParam, &amp;lResult))</font></span>
-
-<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>goto LReturnTrue;</font></span>
-
-<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>return FALSE;</font></span>
-
-<span><font size="3">}</font></span>
-
-<font size="3"><span>关于</span><span>WM_NOTIFY</span><span>的一点说明</span><span>: Win32</span><span>使用新的</span><span>WM_NOFITY</span><span>来处理复杂的通知消息。</span><span>WM_COMMAND</span><span>类型的通知消息仅仅能传递一个控制窗口句柄</span><span>(lparam)</span><span>、控制窗</span><span>ID</span><span>和通知代码</span><span>(wparam)</span><span>。</span><span>WM_NOTIFY</span><span>能传递任意复杂的信息。</span></font>
-
-<font size="3"><span>因此控件消息也得以处理，</span><span>WindowProc</span><span>后面的消息处理可想而知了即其他</span><span>WM</span><span>开头的</span><span>Windows</span><span>标准消息。</span></font>
-
-<font size="3"><span>CFrameWnd</span><span>中改写了</span><span>OnCmdMsg</span></font>
-
-<span><font size="3">BOOL CFrameWnd::OnCmdMsg(UINT nID, int nCode, void* pExtra,</font></span>
-
-<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>AFX_CMDHANDLERINFO* pHandlerInfo)</font></span>
-
-<span><font size="3">{</font></span>
-
-<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>CPushRoutingFrame push(this);</font></span>
-
-<span><font size="3"></font></span>
-
-<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>// pump through current view FIRST</font></span>
-
-<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>CView* pView = GetActiveView();</font></span>
-
-<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>if (pView != NULL &amp;&amp; pView-&gt;OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))</font></span>
-
-<span><font size="3"><span style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>return TRUE;</font></span>
-
-<span><font size="3"></font></span>
-
-<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>// then pump through frame</font></span>
-
-<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>if (CWnd::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))</font></span>
-
-<span><font size="3"><span style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>return TRUE;</font></span>
-
-<span><font size="3"></font></span>
-
-<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>// last but not least, pump through app</font></span>
-
-<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>CWinApp* pApp = AfxGetApp();</font></span>
-
-<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>if (pApp != NULL &amp;&amp; pApp-&gt;OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))</font></span>
-
-<span><font size="3"><span style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>return TRUE;</font></span>
-
-<span><font size="3"></font></span>
-
-<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>return FALSE;</font></span>
-
-<span><font size="3">}</font></span>
-
-<font size="3"><span>由于在</span><span>CFrameWnd</span><span>中产生的消息一般都是</span><span>WM_COMMAND</span><span>消息，因此当</span><span>CWnd::WindowProc</span><span>被调用时会转到</span><span>OnCommand</span><span>而</span><span>CFrameWnd</span><span>又改写了</span><span>CWnd</span><span>的</span><span>OnCommand</span><span>那么</span><span>CFrameWnd</span><span>的</span><span>OnCmdMsg</span><span>是如何被调用的呢，原来在</span><span>CFrameWnd::OnCommand</span><span>中调用了</span><span>CWnd</span><span>的</span><span>OnCommand</span><span>，显然</span><span>CFrameWnd::OnCmdMsg</span><span>就被调用了，由上面的</span><span>CFrameWnd::OnCmdMsg</span><span>可以清楚的看到</span><span>CFrameWnd</span><span>对标准消息传递的过程的改写首先让当前的活动视图处理，通过查看视图的源代码可以发现视图的</span><span>OnCmdMsg</span><span>先让</span><span>CWnd::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo)</span><span>处理（最终就是调用</span><span>CCmdTarget::OnCmdMsg</span><span>，通过查看源代码可以发现</span><span>// look through message map to see if it applies to us</span><span>，其实就是查找此视图及相关基类的消息映射表进行相应的处理），接着是让</span><span>m_pDocument-&gt;OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);</span><span>处理，不用查看文档的代码也可以猜到文档模板的</span><span>OnCmdMsg</span><span>会调用，当视图的</span><span>OnCmdMsg</span><span>返回后如果没有处理的话又会调用</span><span>CWnd::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo)</span><span>（此时是</span><span>CFrameWnd</span><span>处理），最后如果还没有处理的话又给</span><span>App</span><span>对象处理，一直到让</span><span>DefWindowProc</span><span>处理。</span></font>
-
-<span><font size="3">对话框的消息处理与此不同，具体可以根据源代码追踪</font></span>
-
-<p><font size="3"><span>呵呵，第一次跟踪查找</span><span>MFC</span><span>源代码，不知道以上结论正确与否，不过对我理解消息传递的过程还是有点帮助，写下来以免忘了。</span></font><br><br></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2059,7 +1950,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">153</span>
+                  <span class="site-state-item-count">154</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2070,7 +1961,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -2081,7 +1972,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

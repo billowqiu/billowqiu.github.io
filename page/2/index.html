@@ -269,6 +269,212 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2014/02/23/liunx系统监控-vmstat/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2014/02/23/liunx系统监控-vmstat/" itemprop="url">liunx系统监控-vmstat</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2014-02-23T22:40:55+08:00">
+                2014-02-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/工具/转载/" itemprop="url" rel="index">
+                    <span itemprop="name">转载</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>vmstat是一个很全面的性能分析工具，可以观察到系统的进程 状态、内存使用、虚拟内存使用、磁盘的 IO、中断、上下问切 换、CPU使用等。系统性能分析工具中，我使用最多的是这个，除了 sysstat 工具包外，这个工具能查看的系统资源最多。对于 Linux 的性能分析，100%理解 vmstat 输出内容的含义， 那你对系统性能分析的能力就算是基本掌握了。我这里主要说明一下这个命令显示出的部分数据代表的含义，和 它反映出系统相关资源的状况。输出内容共有 6 类，分别说明如下。</p>
+<h3 id="典型vmstat输出"><a href="#典型vmstat输出" class="headerlink" title="典型vmstat输出"></a>典型vmstat输出</h3><p><img src="/images/2014/02/vmstat-output.png" alt="" title="vmstat输出"></p>
+<h3 id="procs"><a href="#procs" class="headerlink" title="procs"></a>procs</h3><ul>
+<li><p>r运行的和等待(CPU时间片)运行的进程数， 这个值也可以判断是否需要增加CPU(长期大于1)</p>
+</li>
+<li><p>b处于不可中断状态的进程数，常见的情况 是由IO引起的</p>
+</li>
+</ul>
+<h3 id="Memory"><a href="#Memory" class="headerlink" title="Memory"></a>Memory</h3><ul>
+<li>swpd: 切换到交换内存上的内存(默认以KB为单位) 如果 swpd 的值不为0，或者还比较大，比如超过100M了，但是 si, so 的值长期为 0，这种情况我们可以不用担心，不会影响系统性能。</li>
+<li>free: 空闲的物理内存</li>
+<li>buff: 作为buffer cache的内存，对块设备的读写进行缓冲</li>
+<li>cache: 作为page cache的内存, 文件系统的cache 如果 cache 的值大的时候，说明cache住的文件数多，如果频 繁访问到的文件都能被cache住，那么磁盘的读IO-bi会非常小。</li>
+</ul>
+<h3 id="Swap"><a href="#Swap" class="headerlink" title="Swap"></a>Swap</h3><ul>
+<li>si: 交换内存使用，由磁盘调入内存</li>
+<li>so: 交换内存使用，由内存调入磁盘</li>
+</ul>
+<p>内存够用的时候，这2个值都是0，如果这2个值长期 大于0时，系统性能会受到影响。磁盘IO和CPU资 源都会被消耗。我发现有些朋友看到空闲内存(free)很少或接近于0 时，就认为内存不够用了，实际上不能光看这一点 的，还要结合si,so， 如果free很少，但是si,so也很 少(大多时候是0)，那么不用担心，系统性能这时 不会受到影响的。</p>
+<h3 id="Io"><a href="#Io" class="headerlink" title="Io"></a>Io</h3><ul>
+<li>bi: 从块设备读入的数据总量(读磁盘) (KB/s)，</li>
+<li>bo: 写入到块设备的数据总理(写磁盘)(KB/s)</li>
+</ul>
+<p>随机磁盘读写的时候，这2个值越大（如超出1M），能看到CPU在IO等待的值也会越大</p>
+<h3 id="System"><a href="#System" class="headerlink" title="System"></a>System</h3><ul>
+<li>in: 每秒产生的中断次数</li>
+<li>cs: 每秒产生的上下文切换次数 上面这2个值越大，会看到由内核消耗的CPU时间会越多</li>
+</ul>
+<h3 id="Cpu"><a href="#Cpu" class="headerlink" title="Cpu"></a>Cpu</h3><ul>
+<li>us: 用户进程消耗的CPU时间百分比 us的值比较高时，说明用户进程消耗的CPU时间多，但是如果 长期超过50% 的使用，那么我们就该考虑优化程序算法或者进 行加速了(比如 PHP/Perl)</li>
+<li>sy: 内核进程消耗的CPU时间百分比 sy 的值高时，说明系统内核消耗的CPU资源多，这并不是良性 的表现，我们应该检查原因。</li>
+<li>wa: IO等待消耗的CPU时间百分比 wa 的值高时，说明IO等待比较严重，这可能是由于磁盘大量作 随机访问造成，也有可能是磁盘的带宽出现瓶颈(块操作)。</li>
+<li>id: CPU处在空闲状态时间百分比</li>
+</ul>
+<h3 id="情景分析"><a href="#情景分析" class="headerlink" title="情景分析"></a>情景分析</h3><p>这个vmstat的输出那些信息值得关注</p>
+<ul>
+<li>Procs r: 运行的进程比较多，系统很繁忙</li>
+<li>Io bo: 磁盘写的数据量稍大，如果是大文件的写，10M以内基本不用担心，如果是小文件写2M以内基本正常</li>
+<li>Cpu us: 持续大于50，服务高峰期可以接受</li>
+<li>Cpu wa: 稍微有些高</li>
+<li>Cpu id:持续小于50，服务高峰期可以接受</li>
+</ul>
+<p>转载并整理自：<a href="http://fafeng.blogbus.com/logs/6541705.html" target="_blank" rel="noopener">http://fafeng.blogbus.com/logs/6541705.html</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2013/11/10/利用分布式缓存实现分布式锁/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1662,158 +1868,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2013/03/30/xmljson然后呢/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2013/03/30/xmljson然后呢/" itemprop="url">XML,JSON然后呢</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2013-03-30T19:49:44+08:00">
-                2013-03-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Data representation, a seemingly simple problem, is proving intractable as one standard after another fails to deliver what is needed.</p>
-<ul>
-<li><span style="line-height: 16px;">二进制</span></li>
-<li>ASN.1</li>
-<li>XDR</li>
-<li>XML</li>
-<li>JSON/BSON</li>
-<li>TOML</li>
-<li>YAML(Ain’t Markup Language)<br>YAML看起来会火一阵子，等待下一个新的格式出现，BG好像对YAML使用比较多</li>
-</ul>
-<p><a href="http://www.drdobbs.com/web-development/after-xml-json-then-what/240151851" target="_blank" rel="noopener">http://www.drdobbs.com/web-development/after-xml-json-then-what/240151851</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1864,7 +1918,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">153</span>
+                  <span class="site-state-item-count">154</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1875,7 +1929,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1886,7 +1940,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

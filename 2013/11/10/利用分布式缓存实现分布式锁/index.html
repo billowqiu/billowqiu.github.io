@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="taocoding">
 <meta property="og:description" content="背景之前在系统中有做一个在客户端重试时，进行去重的逻辑，大致思路是将客户端的请求缓存到分布式缓存中，每次请求到达时先在缓存中查询，如果有就直接返回，没有就帮用户重试该请求。一天晚上(不凑巧，刚好是结婚当天)，一个微信会话来了，某某老大的评论重复…… 分析上面在写数据前，会先请求一次缓存，但是这个操作在分布式环境下显然会有如下场景出现： ①　节点A，Get数据，返回不存在 ②　节点B，Get数据，返">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-11-25T10:12:25.552Z">
+<meta property="og:updated_time" content="2019-06-30T14:32:29.723Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="利用分布式缓存实现分布式锁">
 <meta name="twitter:description" content="背景之前在系统中有做一个在客户端重试时，进行去重的逻辑，大致思路是将客户端的请求缓存到分布式缓存中，每次请求到达时先在缓存中查询，如果有就直接返回，没有就帮用户重试该请求。一天晚上(不凑巧，刚好是结婚当天)，一个微信会话来了，某某老大的评论重复…… 分析上面在写数据前，会先请求一次缓存，但是这个操作在分布式环境下显然会有如下场景出现： ①　节点A，Get数据，返回不存在 ②　节点B，Get数据，返">
@@ -493,7 +493,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">153</span>
+                  <span class="site-state-item-count">154</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -504,7 +504,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -515,7 +515,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

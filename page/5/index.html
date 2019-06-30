@@ -269,6 +269,224 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2012/07/31/use-vim-like-an-ide/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2012/07/31/use-vim-like-an-ide/" itemprop="url">Use Vim like an IDE</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2012-07-31T12:18:08+08:00">
+                2012-07-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具/转载/" itemprop="url" rel="index">
+                    <span itemprop="name">转载</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>刚在新浪微博上面看到的，转下来留个记号，</p>
+<p>原文链接<a href="http://vim.wikia.com/wiki/Use_Vim_like_an_IDE" target="_blank" rel="noopener">http://vim.wikia.com/wiki/Use_Vim_like_an_IDE</a></p>
+<p>I use Vim for all text editing, even software development. At one point I stopped using IDEs. One major reason is that Vim can do all the major things I need from IDEs (tabs, file trees, greping, syntax highlighting, indentation, completion, “quickfix”ing, etc).</p>
+<table id="toc"><br><tbody><br><tr><br><td><br><div id="toctitle"><br><br>## Contents<br><br></div></td><br></tr><br></tbody><br></table>
+
+<h2 id="Vim-Plugins"><a href="#Vim-Plugins" class="headerlink" title="Vim Plugins"></a>Vim Plugins<a href="http://vim.wikia.com/wiki/Use_Vim_like_an_IDE?action=edit&amp;section=1" title="Edit Vim Plugins section" target="_blank" rel="noopener"><img src="data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D" alt=""></a></h2><p>Still Vim needs plugins to do some IDE-like things that aren’t built in. Here are some Vim scripts that make Vim more like an IDE.</p>
+<p>Note: You can use <a href="http://www.vim.org/scripts/script.php?script_id=2332" target="_blank" rel="noopener">pathogen</a> to isolate your plugins and make it easier to experiment with new plugins.</p>
+<h3 id="Project-Filetree-Browsing"><a href="#Project-Filetree-Browsing" class="headerlink" title="Project/Filetree Browsing"></a>Project/Filetree Browsing</h3><ul>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=1658" target="_blank" rel="noopener">NERDTree</a> is a tree explorer plugin for navigating the filesystem.</li>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=184" target="_blank" rel="noopener">vtreeexplorer</a> is a tree based file explorer.</li>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=69" target="_blank" rel="noopener">project</a> gives you a “project” view of files, rather than a straight file system view</li>
+</ul>
+<h3 id="Buffer-File-Browsing"><a href="#Buffer-File-Browsing" class="headerlink" title="Buffer/File Browsing"></a>Buffer/File Browsing<a href="http://vim.wikia.com/wiki/Use_Vim_like_an_IDE?action=edit&amp;section=3" title="Edit Buffer/File Browsing section" target="_blank" rel="noopener"><img src="data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D" alt=""></a></h3><ul>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=42" target="_blank" rel="noopener">bufexplorer</a> lets you navigate through open buffers</li>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=159" target="_blank" rel="noopener">minibufexpl</a> Elegant buffer explorer; takes very little screen space.</li>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=1581" target="_blank" rel="noopener">lookupfile</a> Lookup files using Vim7 ins-completion</li>
+<li><a href="https://wincent.com/products/command-t/" target="_blank" rel="noopener">Command-T plugin</a>, inspired by the “Go to File” window bound to Command-T in TextMate</li>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=521" target="_blank" rel="noopener">MRU</a> access recently opened files.</li>
+</ul>
+<h3 id="Code-Browsing"><a href="#Code-Browsing" class="headerlink" title="Code Browsing"></a>Code Browsing<a href="http://vim.wikia.com/wiki/Use_Vim_like_an_IDE?action=edit&amp;section=4" title="Edit Code Browsing section" target="_blank" rel="noopener"><img src="data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D" alt=""></a></h3><ul>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=273" target="_blank" rel="noopener">taglist</a> gives you an outline of the source you’re viewing</li>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=3465" target="_blank" rel="noopener">Tagbar</a> similar to taglist but can order tags by scope. Recommend for programming languages with classes, e.g. C++, Java, Python.</li>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=3221" target="_blank" rel="noopener">Indexer</a> generates tags for all files in project automatically and keeps tags up-to-date. Using ctags. Works well with project plugin or independently.</li>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=2368" target="_blank" rel="noopener">CCTree</a> is a Call-Tree Explorer, Cscope based source-code browser, and code flow analyzer.</li>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=1729" target="_blank" rel="noopener">exUtility</a> global search, symbol search, tag track…(Like IDE/Source Insight).</li>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=152" target="_blank" rel="noopener">ShowMarks</a> visually shows the location of marks.<br>See also <a href="http://vim.wikia.com/wiki/Browsing_programs_with_tags" title="Browsing programs with tags" target="_blank" rel="noopener">Browsing programs with tags</a> and <a href="http://vim.wikia.com/wiki/Cscope" title="Cscope" target="_blank" rel="noopener">Cscope</a>.</li>
+</ul>
+<h3 id="Writing-Code"><a href="#Writing-Code" class="headerlink" title="Writing Code"></a>Writing Code<a href="http://vim.wikia.com/wiki/Use_Vim_like_an_IDE?action=edit&amp;section=5" title="Edit Writing Code section" target="_blank" rel="noopener"><img src="data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D" alt=""></a></h3><ul>
+<li>A plethora of <a href="http://vim.wikia.com/wiki/Category:Automated_Text_Insertion#Related_scripts" title="Category:Automated Text Insertion" target="_blank" rel="noopener">code snippet/template plugins</a> are available, many offering <a href="http://en.wikipedia.org/wiki/Textmate#Snippets" title="wikipedia:Textmate" target="_blank" rel="noopener">TextMate</a>-like snippet features.</li>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=1879" target="_blank" rel="noopener">AutoComplPop</a> gives you code completion as you type.</li>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=614" target="_blank" rel="noopener">CRefVim</a> A C-reference manual especially designed for Vim.<br>See also <a href="http://vim.wikia.com/wiki/Omni_completion" title="Omni completion" target="_blank" rel="noopener">Omni completion</a> and <a href="http://vim.wikia.com/wiki/Make_Vim_completion_popup_menu_work_just_like_in_an_IDE" title="Make Vim completion popup menu work just like in an IDE" target="_blank" rel="noopener">Make Vim completion popup menu work just like in an IDE</a>.</li>
+</ul>
+<h3 id="Vim-Functionality"><a href="#Vim-Functionality" class="headerlink" title="Vim Functionality"></a>Vim Functionality<a href="http://vim.wikia.com/wiki/Use_Vim_like_an_IDE?action=edit&amp;section=6" title="Edit Vim Functionality section" target="_blank" rel="noopener"><img src="data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D" alt=""></a></h3><ul>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=39" target="_blank" rel="noopener">matchit</a> improves % matching</li>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=1147" target="_blank" rel="noopener">bufkill</a> allows you to delete a buffer without actually closing the window.</li>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=3304" target="_blank" rel="noopener">gundo</a> visualizes your undo tree.</li>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=1697" target="_blank" rel="noopener">surround</a> makes it easier to delete/change/add parentheses/quotes/XML-tags/much more.</li>
+</ul>
+<h3 id="IDE-integration"><a href="#IDE-integration" class="headerlink" title="IDE integration"></a>IDE integration<a href="http://vim.wikia.com/wiki/Use_Vim_like_an_IDE?action=edit&amp;section=7" title="Edit IDE integration section" target="_blank" rel="noopener"><img src="data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D" alt=""></a></h3><p>You may want to use your IDE for some tasks like debugging, so some integration between Vim and the IDE can be helpful.</p>
+<ul>
+<li><a href="http://vim.wikia.com/wiki/Integrate_gvim_with_Visual_Studio" title="Integrate gvim with Visual Studio" target="_blank" rel="noopener">Integrate gvim with Visual Studio</a></li>
+<li><a href="http://eclim.org/" target="_blank" rel="noopener">Eclim</a> brings Eclipse functionality to the Vim editor.</li>
+</ul>
+<h3 id="Source-Control-Integration"><a href="#Source-Control-Integration" class="headerlink" title="Source Control Integration"></a>Source Control Integration<a href="http://vim.wikia.com/wiki/Use_Vim_like_an_IDE?action=edit&amp;section=8" title="Edit Source Control Integration section" target="_blank" rel="noopener"><img src="data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D" alt=""></a></h3><p>There are many Vim plugins for different source control management systems. Here are a few.</p>
+<ul>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=90" target="_blank" rel="noopener">vcscommand.vim</a> - CVS/SVN/SVK/git/hg/bzr integration plugin</li>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=2975" target="_blank" rel="noopener">fugitive</a> - git integration</li>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=240" target="_blank" rel="noopener">perforce</a> - perforce integration<br>See also <a href="http://vim.wikia.com/wiki/Category:VersionControl" target="_blank" rel="noopener">Category:VersionControl</a></li>
+</ul>
+<h2 id="Debugging"><a href="#Debugging" class="headerlink" title="Debugging"></a>Debugging<a href="http://vim.wikia.com/wiki/Use_Vim_like_an_IDE?action=edit&amp;section=9" title="Edit Debugging section" target="_blank" rel="noopener"><img src="data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D" alt=""></a></h2><p>There are several projects to add debugging functionality to vim</p>
+<ul>
+<li><a href="http://clewn.sourceforge.net/" target="_blank" rel="noopener">Clewn</a> implements full gdb support in the vim editor: breakpoints, watch variables, gdb command completion, assembly windows, etc.</li>
+<li><a href="http://jaredforsyth.com/projects/vim-debug/" target="_blank" rel="noopener">vim-debug</a>, which creates an integrated debugging environment in VIM.</li>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=84" target="_blank" rel="noopener">gdbvim</a> plugin: Watch in vim what you debug in gdb. And more.</li>
+</ul>
+<h2 id="Refactoring"><a href="#Refactoring" class="headerlink" title="Refactoring"></a>Refactoring<a href="http://vim.wikia.com/wiki/Use_Vim_like_an_IDE?action=edit&amp;section=10" title="Edit Refactoring section" target="_blank" rel="noopener"><img src="data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D" alt=""></a></h2><ul>
+<li><a href="http://vim.wikia.com/wiki/Vim_as_a_refactoring_tool_and_some_examples_in_C_sharp" title="Vim as a refactoring tool and some examples in C sharp" target="_blank" rel="noopener">Vim as a refactoring tool and some examples in C sharp</a></li>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=2087" target="_blank" rel="noopener"><strong>refactor</strong> plugin</a></li>
+<li><a href="http://www.vim.org/scripts/script.php?script_id=2164" target="_blank" rel="noopener"><strong>renamec</strong> plugin</a></li>
+</ul>
+<h2 id="Comments"><a href="#Comments" class="headerlink" title="Comments"></a>Comments<a href="http://vim.wikia.com/wiki/Use_Vim_like_an_IDE?action=edit&amp;section=11" title="Edit Comments section" target="_blank" rel="noopener"><img src="data:image/gif;base64,R0lGODlhAQABAIABAAAAAP///yH5BAEAAAEALAAAAAABAAEAQAICTAEAOw%3D%3D" alt=""></a></h2><p>When using Visual Studio, see <a href="http://www.ngedit.com/viemu.html" target="_blank" rel="noopener">ViEmu</a>.</p>
+<hr>
+<p>Code navigation in vi offers much more than a standard IDE, because of the ability to execute the desired combination of commands. Generate an index much more rapidly than an IDE with a heavy GUI interface:</p>
+<p>For example, one can take advantage of the tag stack:</p>
+<p>For C++, follow the instructions: <a href="http://design.liberta.co.za/articles/code-completion-intellisense-for-cpp-in-vim-with-omnicppcomplete/" target="_blank" rel="noopener">on using OmniCpp</a> Define a custom .ctags file</p>
+<p><dl><dd>–c++-kinds=+p</dd><dd>–fields=+iaS</dd><dd>–extra=+q</dd><dd>–language-force=C++</dd></dl>From a console (the exclude options may vary) generate the tags file as follows:</p>
+<pre>ctags --exclude=.svn --exclude=target -R .</pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2012/07/20/c会提供标准的网络库？/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1728,163 +1946,6 @@ return 0;
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2011/04/15/thrift安装记录/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2011/04/15/thrift安装记录/" itemprop="url">thrift安装记录</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2011-04-15T12:30:05+08:00">
-                2011-04-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index">
-                    <span itemprop="name">C++</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/系统编程/" itemprop="url" rel="index">
-                    <span itemprop="name">系统编程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>thrift依赖boost，libevent，openssl等</p>
-<p>前两者都用默认安装即可，openssl安装时需要注意使用如下配置选项：</p>
-<p>./config –prefix=/usr/local/ shared，否则会导致thrift在configure时出现依赖ssl或者crypto错误，折腾了半天，记录下。</p>
-<p>另外在thrift配置时主要使用以下选项，以包含相应文件：</p>
-<p>./configure CPPFLAGS=”-DHAVE_INTTYPES_H -DHAVE_NETINET_IN_H”</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1935,7 +1996,7 @@ return 0;
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">153</span>
+                  <span class="site-state-item-count">154</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1946,7 +2007,7 @@ return 0;
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1957,7 +2018,7 @@ return 0;
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

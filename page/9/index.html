@@ -269,6 +269,206 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/10/16/http协议之处理cookie/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2009/10/16/http协议之处理cookie/" itemprop="url">HTTP协议之处理Cookie</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-10-16T15:13:00+08:00">
+                2009-10-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统编程/" itemprop="url" rel="index">
+                    <span itemprop="name">系统编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><em>&ldquo;由于工作需要，最近在学习HTTP协议相关的一些知识，在登陆一个jsp网站时，POST过去的请求被拒绝了，通过抓包分析可以看到此网站需要设置Cookie，这里找打一篇文章写得很不错，只截抄了关于Cookie协议的一部分&rdquo;</em></p>
+<p>&nbsp;</p>
+<blockquote>
+<p>大多数的 Web 应用程序都要求维护某种会话状态，如用户购物车的内容。这种会话状态的保持很多情况下需要借助于Cookie或者Session的帮助。本文结合在线页面翻译 （Machine Translation System）项目中对于Cookie的处理方法，探讨一下如何在HTTP应用代理中正确处理Cookie的传递和管理问题。<br><!--START RESERVED FOR FUTURE USE INCLUDE FILES--><!-- include java script once we verify teams wants to use this and it will work on dbcs and cyrillic characters --><!--END RESERVED FOR FUTURE USE INCLUDE FILES--></p>
+</blockquote>
+<p>读者定位为具有Java和Web开发经验的开发和设计人员。</p>
+<p>读者可以学习到关于Cookie的工作原理和Cookie协议的细节，以及在一个HTTP应用代理的场景下Cookie的管理和处理思想，并可以直接使用文中的代码和思路，提高工作效率。</p>
+<p>随着越来越多的系统移植到了Web上，HTTP协议具有了比以前更广泛的应用。不同的系统对WEB实现提出了不同的要求，基于HTTP协议的网络应用正趋于复杂化和多元化。很多应用需要把用户请求的页面进行处理后再返回给用户，比如页面关键字过滤，页面内容缓存、内容搜索、页面翻译等等。这些应用在实际效果上类似于一个HTTP应用代理：它们首先接受用户的请求，根据用户请求的URL去真正的目标服务器取回目标页面，再根据不同应用的要求做出相应处理后返回给用户。这样用户直接面对的就是这个HTTP应用代理，而通过它与其他页面进行交互。Cookie或Session技术的应用，解决了HTTP协议的一个问题 – 无法保持客户状态，因此它现在被广泛应用于各种Web站点中。上面提到的那些应用如果不能处理好Cookie和Session的传递、更新和废除等问题，就会极大的限制它们所能处理站点的范围，因此如何在HTTP应用代理中正确处理Cookie，成为一个必须解决的问题。本文结合在页面翻译（Machine Translation System）项目中对于Cookie的处理方法，探讨一下这方面的解决方案。</p>
+<p>&nbsp;</p>
+<p>Machine Translation System（以下简称MTS）是一个在线实时页面翻译系统，为用户在线提供把英文页面翻译成其他9种语言的服务。用户通过向MTS系统提交一个类似下面的URL使用此服务，其中参数url指明了用户所需要翻译的目标地址，参数language指明了所需翻译成的目标语言，<a href="http://www.mts.com是假想中提供MTS服务的站点。" target="_blank" rel="noopener">www.mts.com是假想中提供MTS服务的站点。</a></p>
+<p><a href="http://www.mts.com/translate?url=http://www.ibm.com/&amp;language=French" target="_blank" rel="noopener"><span style="color: #5c81a7;">HTTP://www.mts.com/translate?url=http://www.ibm.com/&amp;language=French</span></a></p>
+<p>一个完整的MTS系统处理过程可以分解成以下几个步骤：</p>
+<ul>
+<li>用户向MTS提交合适的URL。<em>   MTS在接到用户的请求后，解析出用户需要翻译的目标地址和目标语言，根据用户请求的目标地址，把请求转发到目标服务器。</em>   MTS接受来自目标服务器的应答，包括页面信息和HTTP头信息。<em>   MTS在确定得到正确的目标页面后，把页面内容送入WebSphere Translation Server进行翻译。</em>   把翻译后的页面连同修改后的HTTP头信息提交给用户。</li>
+</ul>
+<p><a name="N1006C"><strong>MTS逻辑图</strong></a><br><img src="http://www.ibm.com/developerworks/cn/java/j-cookie/images/image002.jpg" alt="MTS逻辑图"></p>
+<p>当然，这其中涉及到很多的应用处理。比如与各种HTTP/HTTPS站点建立联结、根据HTTP头信息进行页面跳转和错误处理、为始终保持用户在翻译模式下而对目标的HTML页面进行分析和修改，根据系统设置对某些DNT（Do Not Translate）的页面进行过滤和跳转，当然还有对Cookie的处理等等。其他问题跟这篇文章关联不大，我们重点讨论在这种情况下的Cookie处理。Cookie跟随目标服务器的HTTP头信息被MTS接收到，经过MTS整理之后发给客户端浏览器。MTS在接到下一次用户对同一个站点的翻译请求时，再把从客户端得到的Cookie发送给目标服务器。</p>
+<p>在以上的场景中，MTS充当的作用类似于一种HTTP应用代理服务器，它代替用户取得目标页面，并在作出相应处理后再提交给用户。当然，这种代理服务器不需要用户修改浏览器的代理服务器参数或者网络配置，而只是简单的在浏览器的地址栏中输入一个MTS能够识别的URL即可。此篇文章也是在这样一个应用场景的基础上，展开对HTTP应用代理服务器如何处理Cookie的讨论。</p>
+<p><a name="N10082"><span class="atitle">问题的产生</span></a></p>
+<p>在MTS系统中，目标服务器的Cookie在两个地方会产生问题。当MTS接收目标服务器应答的时候，Cookie随着HTTP头信息被MTS接收到的。这时候目标服务器认为MTS就是最终客户，因此它赋予了Cookie与目标服务器相符的属性。而如果MTS把这些Cookie原封不动的保存在HTTP头信息中，传给真正的最终用户的话，用户的浏览器会因为这些Cookie不合法而忽略它们。同理，当Cookie从浏览器端传回目标服务器的时候，也会遇到相同的问题。因此有必要对Cookie进行一些处理，以保证用户的浏览器能真正识别和利用这些Cookie。</p>
+<p>但是为何用户浏览器无法识别从目标服务器传过来的原始Cookie呢？这是因为出于安全性的考虑，Cookie规范制定的时候对Cookie的产生和接受设置了一些严格的规范，不符合这些规范的Cookie，浏览器和服务器都将予以忽略。下面我们从Cookie规范入手进行介绍。</p>
+<p>&nbsp;</p>
+<p>目前有以下几种Cookie规范：</p>
+<ul>
+<li>Netscape cookie草案：是最早的cookie规范，基于rfc2109。尽管这个规范与rc2109有较大的差别，但是很多服务器都与之兼容。<em>   rfc2109， 是w3c发布的第一个官方cookie规范。理论上讲，所有的服务器在处理cookie(版本1)时，都要遵循此规范。遗憾的是，这个规范太严格了，以致很多服务器不正确的实施了该规范或仍在使用Netscape规范。</em>   rfc2965规范定义了cookie版本2，并说明了cookie版本1的不足。</li>
+</ul>
+<p>rfc2965规范的使用，目前并不多。rfc2109规范相应要严格得多，在实际应用上，并不是所有的浏览器和Web服务器都严格遵守。因此相比较而言，Netscape cookie草案倒是一个比较简洁和被广泛支持的Cookie规范，因此我们在这里以Netscape cookie草案为基础进行讨论，对于其他两种规范，我们的讨论和代码具有相同的意义。关于Netscape cookie草案的细节，大家可以参照Netscape官方站点，这里我们列举一些和我们讨论有关的内容。</p>
+<p>根据Netscape cookie草案的描述，Cookie 是Web 服务器向用户的浏览器发送的一段ASCII码文本。一旦收到Cookie，浏览器会把Cookie的信息片断以”名/值”对(name-value pairs)的形式储存保存在本地。这以后，每当向同一个Web 服务器请求一个新的文档时，Web 浏览器都会发送之站点以前存储在本地的Cookie。创建Cookie的最初目的是想让Web服务器能够通过多个HTTP请求追踪客户。有些复杂的网络应用需要在不同的网页之间保持一致，它们需要这种会话状态的保持能力。</p>
+<p>浏览器与Web服务器通过HTTP协议进行通讯，而Cookie就是保存在HTTP协议的请求或者应答头部（在HTTP协议中，数据包括两部分，一部分是头部，由一些名值对构成，用来描述要被传输数据的一些信息。一部分是主体(body)，是真正的数据（如HTML页面等））进行传送的。</p>
+<p>在HTML文档被发送之前，Web服务器通过传送HTTP 包头中的Set-Cookie 消息把一个cookie 发送到用户的浏览器中。下面是一个遵循Netscape cookie草案的完整的Set-Cookie 头：</p>
+<table border="0" cellspacing="0" cellpadding="0" width="100%"><br><tbody><br><tr><br><td class="code-outline"><br><pre class="displaycode">Set-Cookie：customer=huangxp; path=/foo; domain=.ibm.com;<br>expires= Wednesday, 19-OCT-05 23:12:40 GMT; [secure]<br></pre><br></td><br></tr><br></tbody><br></table>
+
+<p>Set-Cookie的每个属性解释如下：</p>
+<ul>
+<li>Customer=huangxp 一个”名称＝值”对，把名称customer设置为值”huangxp”，这个属性在Cookie中必须有。<em>   path=/foo 控制哪些访问能够触发cookie 的发送。如果没有指定path，cookie 会在所有对此站点的HTTP 传送时发送。如果path=/directory，只有访问/directory 下面的网页时，cookie才被发送。在这个例子中，用户在访问目录/foo下的内容时，浏览器将发送此cookie。如果指定了path，但是path与当前访问的url不符，则此cookie将被忽略。</em>   domain=.ibm.com 指定cookie被发送到哪台计算机上。正常情况下，cookie只被送回最初向用户发送cookie 的计算机。在这个例子中，cookie 会被发送到任何在.ibm.com域中的主机。如果domain 被设为空，domain 就被设置为和提供cookie 的Web 服务器相同。如果domain不为空，并且它的值又和提供cookie的Web服务器域名不符，这个Cookie将被忽略。<em>   expires= Wednesday, 19-OCT-05 23:12:40 GMT 指定cookie 失效的时间。如果没有指定失效时间，这个cookie 就不会被写入计算机的硬盘上，并且只持续到这次会话结束。</em>   secure 如果secure 这个词被作为Set-Cookie 头的一部分，那么cookie 只能通过安全通道传输（目前即SSL通道）。否则，浏览器将忽略此Cookie。</li>
+</ul>
+<p>一旦浏览器接收了cookie，这个cookie和对远端Web服务器的连续请求将一起被浏览器发送。例如 前一个cookie 被存入浏览器并且浏览器试图请求 URL <a href="http://www.ibm.com/foo/index.html" target="_blank" rel="noopener">http://www.ibm.com/foo/index.html</a> 时，下面的HTTP 包头就被发送到远端的Web服务器。</p>
+<p>GET /foo/index.html HTTP/1.0<br>Cookie：customer=huangxp </p>
+<p>&nbsp;</p>
+<p>在了解了Cookie协议的一些基本内容之后，让我们看看一次典型的网络浏览过程中浏览器如何识别和处理Cookie：</p>
+<ul>
+<li>浏览器对于Web服务器应答包头中Cookie的操作步骤：<br>1. 从Web服务器的应答包头中提取所有的cookie。<br>2. 解析这些cookie的组成部分（名称，值，路径等等）。<br>3. 判定主机是否允许设置这些cookie。允许的话，则把这些Cookie存储在本地。*   浏览器对Web服务器请求包头中所有的Cookie进行筛选的步骤：<br>1. 根据请求的URL和本地存储cookie的属性，判断那些Cookie能被发送给Web服务器。<br>2. 对于多个cookie，判定发送的顺序。<br>3. 把需要发送的Cookie加入到请求HTTP包头中一起发送。</li>
+</ul>
+<p>以上我们了解了在一个典型的浏览器与Web服务器交互的时候，Cookie的传递过程。下面我们将看到，如果在MTS代理网络浏览的过程中，不对Cookie进行修改，上面的Cookie传递过程将无法实现。</p>
+<p>1. 假设用户希望把 <a href="http://www.ibm.com/foo/index.html" target="_blank" rel="noopener">http://www.ibm.com/foo/index.html</a> 页面翻译成法文，应该使用如下的url对MTS发出请求</p>
+<p>： </p>
+<p><a href="http://www.mts.com/translate?url=http://www.ibm.com/foo/index.html&amp;language=French" target="_blank" rel="noopener">http://www.mts.com/translate?url=http://www.ibm.com/foo/index.html&amp;language=French</a></p>
+<p>2. MTS接收用户的请求，连接远程目标服务器 <a href="http://www.ibm.com/foo/index.html。目标服务器做出应答，返回HTTP头和HTML页面内容。其中，典型的HTTP头内容如下：" target="_blank" rel="noopener">http://www.ibm.com/foo/index.html。目标服务器做出应答，返回HTTP头和HTML页面内容。其中，典型的HTTP头内容如下：</a></p>
+<table border="0" cellspacing="0" cellpadding="0" width="100%"><br><tbody><br><tr><br><td class="code-outline"><br><pre class="displaycode">HTTP/1.1 200 OK<br>Date: Mon, 24 Oct 2005 06:54:41 GMT<br>Server: IBM_HTTP_Server<br>Cache-Control: no-cache<br>Content-Length: 19885<br>Connection: close<br>Set-Cookie：customer=huangxp; path=/foo; domain=.ibm.com;<br>expires= Wednesday, 19-OCT-05 23:12:40 GMT<br>Content-Type: text/html<br></pre><br></td><br></tr><br></tbody><br></table>
+
+<p>3. MTS不对Set-Cookie后的内容作任何处理，直接把它加到用户浏览器的应答头上发送给浏览器。</p>
+<p>4. 浏览器将从Set-Cookie中解析出domain和path的值，分别是.ibm.com和/foo，并与请求的url：<a href="http://www.mts.com/translate?url=http://www.ibm.com/foo/index.html&amp;language=French进行比较。请求url的domain是www.mts.com，path是/，与Set-Cookie中的属性不符，所以浏览器将忽略此Cookie。" target="_blank" rel="noopener">http://www.mts.com/translate?url=http://www.ibm.com/foo/index.html&amp;language=French进行比较。请求url的domain是www.mts.com，path是/，与Set-Cookie中的属性不符，所以浏览器将忽略此Cookie。</a></p>
+<p>另外，在浏览器发送Cookie的时候也会遇到同样的问题，同样如上例，如果浏览器里本来已经存储了<a href="http://www.ibm.com/foo/的Cookie，但由于用户要通过MTS访问此站点，浏览器经不会把已经存储的Cookie上转到MTS中，MTS也就无法把之传递到http://ibm.com/foo/上。" target="_blank" rel="noopener">http://www.ibm.com/foo/的Cookie，但由于用户要通过MTS访问此站点，浏览器经不会把已经存储的Cookie上转到MTS中，MTS也就无法把之传递到http://ibm.com/foo/上。</a></p>
+<p>基于上面Cookie规范的介绍和例证，我们能看出，浏览器在接受某一个站点的Cookie的时候，需要检查Cookie的参数domain、path、secure，看是否与当前的站点和URL相符，如果不符的话，就会忽略。另一方面。浏览器在上传Cookie的时候，也会根据当前所访问站点的属性，上传相关的Cookie，而其他的Cookie则不予上传。</p>
+<p>至此，我们讨论了需要修改Cookie的根本原因在于Cookie规范的限制。</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/10/12/dib数据转换为ddb/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1753,168 +1953,6 @@ return 0;
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/07/09/im的技术原理与发展/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2009/07/09/im的技术原理与发展/" itemprop="url">IM的技术原理与发展</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-07-09T01:19:00+08:00">
-                2009-07-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/未分类/" itemprop="url" rel="index">
-                    <span itemprop="name">未分类</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>一、IM技术概念</p>
-<p>IM技术全称Instant Messaging，中文翻译&ldquo;即时通讯&rdquo;，它是一种使人们能在网上识别在线用户并与他们实时交换消息的技术，是电子邮件发明以来迅速崛起的在线通讯方式。</p>
-<p>IM的出现和互联网有着密不可分的关系，IM完全基于TCP/IP网络协议族实现，而TCP/IP协议族则是整个互联网得以实现的技术基础。 最早出现即时通讯协议是IRC（Internet Relay Chat），但是可惜的是它仅能单纯的使用文字、符号的方式通过互联网进行交谈和沟通。随着互连网变得高度发达，即时通讯也变得远不止聊天这么简单，自1996年第一个IM产品ICQ发明后，IM的技术和功能也开始基本成型，语音、视频、文件共享、短信发送等高级信息交换功能都可以在IM工具上实现，于是功能强大的IM软件便足以搭建一个完整的通信交流平台。目前最具代表性的几款的IM通讯软件有MSN、Google Talk、Yahoo、Messenger 、腾讯QQ等。</p>
-<p>二、IM技术原理和工作方式</p>
-<p>典型的IM工作方式如下：登陆IM通讯中心（IM通讯服务器），获取一个自建立的历史的交流对象列表（好友列表），然后自身标志为在线状态，当好友列表中的某人在任何时候登录上线并试图通过你的计算机联系你时，IM系统会发一个消息提醒你，然后你能与他建立一个聊天会话通道进行各种消息如键入文字、通过语音等的交流，<br>从技术上来说，IM的基本技术原理如下：</p>
-<p>IM服务器<br>登陆或注销<br>用户A通过列表找到B，用户B获得的消息并与之交谈<br>通过IM服务器指引建立与B单独的通讯通道</p>
-<p>第一步，用户A输入自己的用户名和密码登录IM服务器，服务器通过读取用户数据库来验证用户身份，如果验证通过，登记用户A的IP地址、IM客户端软件的版本号及使用的TCP/UDP端口号，然后返回用户A登录成功的标志，此时用户A在IM系统中的状态为在线（Online Presence）。</p>
-<p>第二步，根据用户A存储在IM服务器上的好友列表（Buddy List），服务器将用户A在线的相关信息发送给也同时在线的IM好友的PC机，这些信息包括在线状态、IP地址、IM客户端使用的TCP端口（Port）号等，IM好友的客户端收到此信息后将在予以提示。</p>
-<p>第三步是IM服务器把用户A存储在服务器上的好友列表及相关信息回送到他的客户端机，这些信息包括也在线状态、IP地址、IM客户端使用的TCP端口（Port）号等信息，用户A的IM客户端收到后将显示这些好友列表及其在线状态。</p>
-<p>三、IM通讯方式</p>
-<p>1.在线直接通讯<br>如果用户A想与他的在线好友用户B聊天，他将直接通过服务器发送过来的用户B的IP地址、TCP端口号等信息，直接向用户B的PC机发出聊天信息，用户B的IM客户端软件收到后显示在屏幕上，然后用户B再直接回复到用户A的PC机，这样双方的即时文字消息就不再IM服务器中转，而是直接通过网络进行点对点的通讯，即对等通讯方式（Peer To Peer）。</p>
-<p>2.在线代理通讯<br>用户A与用户B的点对点通讯由于防火墙、网络速度等原因难以建立或者速度很慢，IM服务器将会主动提供消息中转服务，即用户A和用户B的即时消息全部先发送到IM服务器，再由服务器转发给对方。</p>
-<p>3.离线代理通讯<br>用户A与用户B由于各种原因不能同时在线的时候，如此时A向B发送消息，IM服务器可以主动寄存A用户的消息，到B用户下一次登陆的时候，自动将消息转发给B。</p>
-<p>4.扩展方式通讯<br>用户A可以通过IM服务器将信息以扩展的方式传递给B，如短信发送方式发送到B的手机，传真发送方式传递给B的电话机，以email的方式传递给B的电子邮箱等。<br>早期的IM系统，在IM客户端和IM服务器之间通讯采用UDP协议，UDP协议是不可靠的传输协议，而在IM客户端之间的直接通讯中，采用具备可靠传输能力的TCP协议。随着用户需求和技术环境的发展，目前主流的IM系统倾向于在IM客户端之间、IM客户端和IM服务器之间都采用TCP协议。<br>即时通讯相对于其他通讯方式如电话、传真、email等的最大优势就是消息传达的即时性和精确性，只要消息传递双方均在网络上可以互通，使用即时通讯软件传递消息，传递延时仅为1秒种</p>
-<p>四、兴起的嵌入式IM工具。</p>
-<p>传统的IM在统治了互联网即时通讯领域长达十年之久，以其日趋稳定的定能，与较强的用户黏着度，至今仍统治着这个巨大的市场。然而，软件行业的技术精英们，并不满足于此。他们厚积薄发，一直致力于开发出性能更为优越的即时通讯工具。当然，在功能上的不断完善，自然是一个必然的发展方向，在Web2.0时代，如何大力增强用户对网站的黏着度，而不仅仅是对于IM的拥附，已经成为他们的主攻方向了。于是，嵌入式IM工具，应运而生了。</p>
-<p>相对以往的传统的即使沟通工具，它们需要用户下载软件包，需要用户进行安装。对于拥有IM产品的网站而言，用户在登陆网站后，不能直接使用其IM工具，对于流量与用户的黏着度，都是有一定影响的。因此在IM与网站相互依存的今天，没有哪家网络公司，愿意将IM工具孤立开来。</p>
-<p>于是，目前，一种新型的嵌入式IM工具就应运而生了。这种IM工具，不需要下载安装，当用户登陆网页后，该IM直接嵌套在网页中，可以直接使用。</p>
-<p>而在功能上，则一点也不输于传统的IM，无论是传统的文字沟通的速度与效率，还是近年来越来越成为IM工具必备的音频/视频功能，这种嵌入式IM都能提供非常稳定的传输。更值得一提的是，因为嵌入式IM是嵌套在网页上的，软件供应商，可以根据网站需求，设计出适合网站风格的IM产品。而不是像传统的IM工具，千篇一律，毫无个性可言。</p>
-<p>目前，这类嵌入式IM在社区、交友、社团及协作等类型的网站上，应用已经较为广泛。在Web2.0时代，将发挥越来越重要的作用。 </p>
-<p></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1965,7 +2003,7 @@ return 0;
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">153</span>
+                  <span class="site-state-item-count">154</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1976,7 +2014,7 @@ return 0;
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1987,7 +2025,7 @@ return 0;
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

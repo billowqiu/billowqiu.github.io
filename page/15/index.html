@@ -269,6 +269,272 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2007/09/01/消息传递过程/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2007/09/01/消息传递过程/" itemprop="url">消息传递过程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2007-09-01T18:36:00+08:00">
+                2007-09-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/VC/" itemprop="url" rel="index">
+                    <span itemprop="name">VC</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <pre><code>&lt;DIV class=cnt id=blog_text&gt;
+</code></pre><font size="3"><span><img src="http://blog.programfan.com/upfile/200709/200709010105037.gif" alt=""><br></span></font>
+
+<font size="3"><span>据说是在</span><span>Run</span><span>中调用</span><span>AfxWndProc</span><span>（侯捷说的我在源码中找了会没找到，也不晓得是哪个间接调用的），在该函数里面接着调用</span><span>AfxCallWndProc</span><span>，然后</span><span>AfxCallWndProc</span><span>中有这么一段</span></font>
+
+<span><font size="3">// special case for WM_INITDIALOG</font></span>
+
+<span><font size="3">CRect rectOld;</font></span>
+
+<span><font size="3">DWORD dwStyle = 0;</font></span>
+
+<span><font size="3">if (nMsg == WM_INITDIALOG)</font></span>
+
+<span><font size="3">_AfxPreInitDialog(pWnd, &amp;rectOld, &amp;dwStyle);</font></span>
+
+<span><font size="3"></font></span>
+
+<span><font size="3">// delegate to object’s WindowProc</font></span>
+
+<span><font size="3">lResult = pWnd-&gt;WindowProc(nMsg, wParam, lParam);</font></span>
+
+<span><font size="3"></font></span>
+
+<span><font size="3">// more special case for WM_INITDIALOG</font></span>
+
+<span><font size="3">if (nMsg == WM_INITDIALOG)</font></span>
+
+<span><font size="3">_AfxPostInitDialog(pWnd, rectOld, dwStyle);</font></span>
+
+<font size="3"><span>如果不是</span><span>WM_INITDIALOG</span><span>消息则调用</span><span>CWnd</span><span>的</span><span>WindowProc</span><span>，这时就有点迷惑了，应该说</span><span>CCmdTarget</span><span>是处理消息的基类其中的</span><span>OnCmdMsg</span><span>为什么不先调用呢，其实我也不清楚，查看了源代码后发现在</span><span>WindowProc</span><span>中会判断消息的类型里面有这么段：</span></font>
+
+<p><strong><span style="FONT-SIZE: 15pt">CWnd::WindowProc</span></strong></p>
+<span><font size="3">if (message == WM_COMMAND)</font></span>
+
+<span><font size="3">{</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>if (OnCommand(wParam, lParam))</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>lResult = 1;</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>goto LReturnTrue;</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>return FALSE;</font></span>
+
+<span><font size="3">}</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><strong>CWnd::OnCommand</strong></font></span>
+
+<font size="3"><span>如果是命令消息加速键等用户接口对象的</span><span>WM_COMMAND</span><span>通知消息（有些控件也会发送此消息比如按钮的单击），则调用</span><span>OnCommand</span><span>处理，而在</span><span>OnCommand</span><span>中会判断是一般命令消息还是控件消息，其中如果不是控件消息的话会调用</span><span>OnCmdMsg(nID, CN_UPDATE_COMMAND_UI, &amp;state, NULL);</span><span>看到了吧这里就调用了从</span><span>CCmdTarget</span><span>继承来的虚函数（我只找到了</span><span>CWnd</span><span>的这个地方调用了改消息）。</span></font>
+
+<span><font size="3">接着是控件消息</font></span>
+
+<span><font size="3">// special case for notifies</font></span>
+
+<span><font size="3">if (message == WM_NOTIFY)</font></span>
+
+<span><font size="3">{</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>NMHDR<em> pNMHDR = (NMHDR</em>)lParam;</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>if (pNMHDR-&gt;hwndFrom != NULL &amp;&amp; OnNotify(wParam, lParam, &amp;lResult))</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>goto LReturnTrue;</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>return FALSE;</font></span>
+
+<span><font size="3">}</font></span>
+
+<font size="3"><span>关于</span><span>WM_NOTIFY</span><span>的一点说明</span><span>: Win32</span><span>使用新的</span><span>WM_NOFITY</span><span>来处理复杂的通知消息。</span><span>WM_COMMAND</span><span>类型的通知消息仅仅能传递一个控制窗口句柄</span><span>(lparam)</span><span>、控制窗</span><span>ID</span><span>和通知代码</span><span>(wparam)</span><span>。</span><span>WM_NOTIFY</span><span>能传递任意复杂的信息。</span></font>
+
+<font size="3"><span>因此控件消息也得以处理，</span><span>WindowProc</span><span>后面的消息处理可想而知了即其他</span><span>WM</span><span>开头的</span><span>Windows</span><span>标准消息。</span></font>
+
+<font size="3"><span>CFrameWnd</span><span>中改写了</span><span>OnCmdMsg</span></font>
+
+<span><font size="3">BOOL CFrameWnd::OnCmdMsg(UINT nID, int nCode, void* pExtra,</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>AFX_CMDHANDLERINFO* pHandlerInfo)</font></span>
+
+<span><font size="3">{</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>CPushRoutingFrame push(this);</font></span>
+
+<span><font size="3"></font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>// pump through current view FIRST</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>CView* pView = GetActiveView();</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>if (pView != NULL &amp;&amp; pView-&gt;OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>return TRUE;</font></span>
+
+<span><font size="3"></font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>// then pump through frame</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>if (CWnd::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>return TRUE;</font></span>
+
+<span><font size="3"></font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>// last but not least, pump through app</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>CWinApp* pApp = AfxGetApp();</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>if (pApp != NULL &amp;&amp; pApp-&gt;OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))</font></span>
+
+<span><font size="3"><span style="mso-tab-count: 2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>return TRUE;</font></span>
+
+<span><font size="3"></font></span>
+
+<span><font size="3"><span style="mso-tab-count: 1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>return FALSE;</font></span>
+
+<span><font size="3">}</font></span>
+
+<font size="3"><span>由于在</span><span>CFrameWnd</span><span>中产生的消息一般都是</span><span>WM_COMMAND</span><span>消息，因此当</span><span>CWnd::WindowProc</span><span>被调用时会转到</span><span>OnCommand</span><span>而</span><span>CFrameWnd</span><span>又改写了</span><span>CWnd</span><span>的</span><span>OnCommand</span><span>那么</span><span>CFrameWnd</span><span>的</span><span>OnCmdMsg</span><span>是如何被调用的呢，原来在</span><span>CFrameWnd::OnCommand</span><span>中调用了</span><span>CWnd</span><span>的</span><span>OnCommand</span><span>，显然</span><span>CFrameWnd::OnCmdMsg</span><span>就被调用了，由上面的</span><span>CFrameWnd::OnCmdMsg</span><span>可以清楚的看到</span><span>CFrameWnd</span><span>对标准消息传递的过程的改写首先让当前的活动视图处理，通过查看视图的源代码可以发现视图的</span><span>OnCmdMsg</span><span>先让</span><span>CWnd::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo)</span><span>处理（最终就是调用</span><span>CCmdTarget::OnCmdMsg</span><span>，通过查看源代码可以发现</span><span>// look through message map to see if it applies to us</span><span>，其实就是查找此视图及相关基类的消息映射表进行相应的处理），接着是让</span><span>m_pDocument-&gt;OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);</span><span>处理，不用查看文档的代码也可以猜到文档模板的</span><span>OnCmdMsg</span><span>会调用，当视图的</span><span>OnCmdMsg</span><span>返回后如果没有处理的话又会调用</span><span>CWnd::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo)</span><span>（此时是</span><span>CFrameWnd</span><span>处理），最后如果还没有处理的话又给</span><span>App</span><span>对象处理，一直到让</span><span>DefWindowProc</span><span>处理。</span></font>
+
+<span><font size="3">对话框的消息处理与此不同，具体可以根据源代码追踪</font></span>
+
+<p><font size="3"><span>呵呵，第一次跟踪查找</span><span>MFC</span><span>源代码，不知道以上结论正确与否，不过对我理解消息传递的过程还是有点帮助，写下来以免忘了。</span></font><br><br></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2007/08/31/mdisdi创建过程中的一点不同/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1713,211 +1979,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2006/07/12/c头文件/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2006/07/12/c头文件/" itemprop="url">C++头文件</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2006-07-12T18:18:00+08:00">
-                2006-07-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index">
-                    <span itemprop="name">C++</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <pre><code>学了两天 C++了，基础部分基本上看了一遍，用到一些编译器时发现里面的头文件不一样，有的有后缀名而有的没有后缀名。后来上网看了下才发现好象是标准C++头文件没有后缀名，以下是在网上找到的C++头文件一览： 
-</code></pre><p>传统 C++</p>
-<p>　　#include &lt;assert.h&gt;　　　　//设定插入点&nbsp;&nbsp; </p>
-<p>　　#include &lt;ctype.h&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //字符处理</p>
-<p>　　#include &lt;errno.h&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //定义错误码</p>
-<p>　　#include &lt;float.h&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //浮点数处理</p>
-<p>　　#include &lt;fstream.h&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //文件输入／输出</p>
-<p>　　#include &lt;iomanip.h&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //参数化输入／输出</p>
-<p>　　#include &lt;iostream.h&gt;　　　//数据流输入／输出</p>
-<p>　　#include &lt;limits.h&gt;　　　　//定义各种数据类型最值常量</p>
-<p>　　#include &lt;locale.h&gt;　　　　//定义本地化函数</p>
-<p>　　#include &lt;math.h&gt;　　　　　//定义数学函数</p>
-<p>　　#include &lt;stdio.h&gt;　　　　 //定义输入／输出函数</p>
-<p>　　#include &lt;stdlib.h&gt;　　　　//定义杂项函数及内存分配函数</p>
-<p>　　#include &lt;string.h&gt;　　　　//字符串处理</p>
-<p>　　#include &lt;strstrea.h&gt;　　　//基于数组的输入／输出</p>
-<p>　　#include &lt;time.h&gt;　　　　　//定义关于时间的函数</p>
-<p>　　#include &lt;wchar.h&gt;　　　　 //宽字符处理及输入／输出</p>
-<p>　　#include &lt;wctype.h&gt;　　　　//宽字符分类</p>
-<p>标准 C++　（同上的不再注释）</p>
-<p>　　#include &lt;algorithm&gt;　　　 //STL 通用算法</p>
-<p>　　#include &lt;bitset&gt;　　　　　//STL 位集容器</p>
-<p>　　#include &lt;cctype&gt;</p>
-<p>　　#include &lt;cerrno&gt;</p>
-<p>　　#include &lt;clocale&gt;</p>
-<p>　　#include &lt;cmath&gt;</p>
-<p>　　#include &lt;complex&gt;　　　　 //复数类</p>
-<p>　　#include &lt;cstdio&gt;</p>
-<p>　　#include &lt;cstdlib&gt;</p>
-<p>　　#include &lt;cstring&gt;</p>
-<p>　　#include &lt;ctime&gt;</p>
-<p>　　#include &lt;deque&gt;　　　　　 //STL 双端队列容器</p>
-<p>　　#include &lt;exception&gt;　　　 //异常处理类</p>
-<p>　　#include &lt;fstream&gt;</p>
-<p>　　#include &lt;functional&gt;　　　//STL 定义运算函数（代替运算符）</p>
-<p>　　#include &lt;limits&gt;</p>
-<p>　　#include &lt;list&gt;　　　　　　//STL 线性列表容器</p>
-<p>　　#include &lt;map&gt;　　　　　　 //STL 映射容器</p>
-<p>　　#include &lt;iomanip&gt;</p>
-<p>　　#include &lt;ios&gt;　　　　　　 //基本输入／输出支持</p>
-<p>　　#include &lt;iosfwd&gt;　　　　　//输入／输出系统使用的前置声明</p>
-<p>　　#include &lt;iostream&gt;</p>
-<p>　　#include &lt;istream&gt;　　　　 //基本输入流</p>
-<p>　　#include &lt;ostream&gt;　　　　 //基本输出流</p>
-<p>　　#include &lt;queue&gt;　　　　　 //STL 队列容器</p>
-<p>　　#include &lt;set&gt;　　　　　　 //STL 集合容器</p>
-<p>　　#include &lt;sstream&gt;　　　　 //基于字符串的流</p>
-<p>　　#include &lt;stack&gt;　　　　　 //STL 堆栈容器　　　　</p>
-<p>　　#include &lt;stdexcept&gt;　　　 //标准异常类</p>
-<p>　　#include &lt;streambuf&gt;　　　 //底层输入／输出支持</p>
-<p>　　#include &lt;string&gt;　　　　　//字符串类</p>
-<p>　　#include &lt;utility&gt;　　　　 //STL 通用模板类</p>
-<p>　　#include &lt;vector&gt;　　　　　//STL 动态数组容器</p>
-<p>　　#include &lt;cwchar&gt;</p>
-<p>　　#include &lt;cwctype&gt;</p>
-<p>　　using namespace std;</p>
-<p>C99 增加</p>
-<p>&nbsp;&nbsp; #include &lt;complex.h&gt;　　 //复数处理</p>
-<p>&nbsp;&nbsp; #include &lt;fenv.h&gt;　　　　//浮点环境</p>
-<p>&nbsp;&nbsp; #include &lt;inttypes.h&gt;　　//整数格式转换</p>
-<p>&nbsp;&nbsp; #include &lt;stdbool.h&gt;　　 //布尔环境</p>
-<p>&nbsp;&nbsp; #include &lt;stdint.h&gt;　　　//整型环境</p>
-<p>&nbsp;&nbsp; #include &lt;tgmath.h&gt;　　　//通用类型数学宏</p>
-<p></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1968,7 +2029,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">153</span>
+                  <span class="site-state-item-count">154</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1979,7 +2040,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1990,7 +2051,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
