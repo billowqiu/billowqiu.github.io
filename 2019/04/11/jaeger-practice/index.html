@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="tracing,">
 
 
 
@@ -80,22 +80,23 @@
 
 
 <meta name="description" content="做tracing选型时发现除了Zipkin(这个其实很久之前就有所闻，但是一直没实操过)，还有Uber开源的Jaeger，看到官网就感觉这是一个用心的产品，这个应该离不开Uber有专门的团队维护。 特性官网列了几个特性：  Opentracing兼容，提供了Go, Java, Node, Python, C++的官方客户端 服务之间使用一致的采样逻辑 多存储支持：Cassandra, Elasti">
+<meta name="keywords" content="tracing">
 <meta property="og:type" content="article">
 <meta property="og:title" content="jaeger实战">
 <meta property="og:url" content="http://yoursite.com/2019/04/11/jaeger-practice/index.html">
 <meta property="og:site_name" content="taocoding">
 <meta property="og:description" content="做tracing选型时发现除了Zipkin(这个其实很久之前就有所闻，但是一直没实操过)，还有Uber开源的Jaeger，看到官网就感觉这是一个用心的产品，这个应该离不开Uber有专门的团队维护。 特性官网列了几个特性：  Opentracing兼容，提供了Go, Java, Node, Python, C++的官方客户端 服务之间使用一致的采样逻辑 多存储支持：Cassandra, Elasti">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://www.jaegertracing.io/img/architecture.png">
+<meta property="og:image" content="https://www.jaegertracing.io/img/architecture-v1.png">
 <meta property="og:image" content="http://yoursite.com/images/2019/04/jaeger-ui.png">
 <meta property="og:image" content="http://yoursite.com/images/2019/04/hotrod_trace.png">
 <meta property="og:image" content="http://yoursite.com/images/2019/04/hotrod_trace_detail.png">
 <meta property="og:image" content="http://yoursite.com/images/2019/04/hotrod_trace_dependencies.png">
-<meta property="og:updated_time" content="2019-05-11T12:44:30.830Z">
+<meta property="og:updated_time" content="2019-09-02T08:25:05.834Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="jaeger实战">
 <meta name="twitter:description" content="做tracing选型时发现除了Zipkin(这个其实很久之前就有所闻，但是一直没实操过)，还有Uber开源的Jaeger，看到官网就感觉这是一个用心的产品，这个应该离不开Uber有专门的团队维护。 特性官网列了几个特性：  Opentracing兼容，提供了Go, Java, Node, Python, C++的官方客户端 服务之间使用一致的采样逻辑 多存储支持：Cassandra, Elasti">
-<meta name="twitter:image" content="https://www.jaegertracing.io/img/architecture.png">
+<meta name="twitter:image" content="https://www.jaegertracing.io/img/architecture-v1.png">
 
 
 
@@ -359,7 +360,7 @@
 <li>兼容Zipkin</li>
 </ul>
 <p>由于调研的时候没法对细节做深入了解，当时选择Jaeger最重要的一点其实是其实是：<strong>jaeger-agent是一个通过UDP方式接收本机发出的spans。</strong><br>为什么是这一点呢？因为对于业务来说tracing其实是一个相对无关紧要的东西，如果给一个TCP的通道让它上报，其实是不太友好的，性能和维护性方面都没有UDP好。</p>
-<h4 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h4><p><img src="https://www.jaegertracing.io/img/architecture.png" alt="Jaeger架构图"></p>
+<h4 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h4><p><img src="https://www.jaegertracing.io/img/architecture-v1.png" alt="Jaeger架构图"></p>
 <ul>
 <li>jaeger-client：嵌入在应用程序里面，负责span的创建以及上报</li>
 <li>jaeger-agent：每个物理机部署一个，负责收集client上报的span，然后转发给collector</li>
@@ -408,6 +409,12 @@
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/tracing/" rel="tag"># tracing</a>
+          
+        </div>
       
 
       
