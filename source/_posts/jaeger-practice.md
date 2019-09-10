@@ -1,7 +1,7 @@
 ---
 title: jaeger实战
 date: 2019-04-11 20:12:56
-tags:
+tags: tracing
 ---
 做tracing选型时发现除了Zipkin(这个其实很久之前就有所闻，但是一直没实操过)，还有Uber开源的[Jaeger](https://www.jaegertracing.io)，看到官网就感觉这是一个用心的产品，这个应该离不开Uber有专门的团队维护。
 
@@ -22,7 +22,7 @@ tags:
 
 #### 架构
 
-![Jaeger架构图](https://www.jaegertracing.io/img/architecture.png)
+![Jaeger架构图](https://www.jaegertracing.io/img/architecture-v1.png)
 
 - jaeger-client：嵌入在应用程序里面，负责span的创建以及上报
 - jaeger-agent：每个物理机部署一个，负责收集client上报的span，然后转发给collector

@@ -1,7 +1,7 @@
 ---
 title: opentracing-api-overview
 date: 2018-11-11 21:27:00
-tags:
+tags: tracing
 ---
 ### 简介
 opentracing是一个API规范，各类框架和库负责实现该规范，从而允许开发人员通过手动埋点实现平台无关的tracing跟踪。目前主流的语言都有对应的接口提供，具体可以参考[链接](https://opentracing.io/docs/supported-languages)。下面以opentracing-go为例对其做一个大致介绍。
