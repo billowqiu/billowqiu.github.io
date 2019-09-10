@@ -269,6 +269,165 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2012/11/23/关于内存碎片的一点笔记/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2012/11/23/关于内存碎片的一点笔记/" itemprop="url">关于内存碎片的一点笔记</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2012-11-23T13:32:27+08:00">
+                2012-11-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/网络通讯/" itemprop="url" rel="index">
+                    <span itemprop="name">网络通讯</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>关于内存碎片的问题，网上可以搜到大把，这里就不简述了。不知道有多少同学真正遇到过由这个导致的问题，我暂时是没有遇到，但是每次在写相关程序时难免会有这方面的担心，比如我收了一个包，简单的做法就是直接对该包进行处理，然后接着处理下一个包。如果想提高吞吐，可以分配一块内存将该包copy过去，然后再异步处理(这里copy不一定需要)，处理完毕后释放。作为短期运行的程序这样做也没什么问题，如果是包量比较大的服务程序，这样频繁的内存分配，释放难免会有内存碎片方面的担心。之前写了一个程序也是这个类似方式处理的，平均包量10w/s，运行了好几个月也没出现啥问题，陈硕有一篇文章也提到过关于内存碎片方面的看法<a href="http://blog.csdn.net/solstice/article/details/6527585，" target="_blank" rel="noopener">http://blog.csdn.net/solstice/article/details/6527585，</a></p>
+<p>今天和一位同事讨论，他说到了一些这方面的知识，现总结如下：</p>
+<p>1不要过早优化和担心内存碎片</p>
+<p>2优先使用容器，类似vector&lt;char&gt;，其次是malloc/free，配合使用tcmalloc,jemalloc等库</p>
+<p>对于上述的内存分配方面还可以通过如下方法优化，采用内存池技术分配不定大小的内存块，然后通过一个类似如下的包装：</p>
+<p>struct Pack<br>{<br>char* buffer;<br>std::size_t len;<br>};</p>
+<p>再使用malloc/free分配Pack，这样对于同样大小的Pack对象，效率还是不错的。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2012/11/14/互联网容灾方案笔记/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1770,185 +1929,6 @@ except Exception,e:
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2012/08/03/小议tcp的mss最大分段以及mtu/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2012/08/03/小议tcp的mss最大分段以及mtu/" itemprop="url">小议TCP的MSS(最大分段)以及MTU</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2012-08-03T23:35:17+08:00">
-                2012-08-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/网络通讯/" itemprop="url" rel="index">
-                    <span itemprop="name">网络通讯</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/网络通讯/转载/" itemprop="url" rel="index">
-                    <span itemprop="name">转载</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>原文链接:<a href="http://cisco.chinaitlab.com/TCP/37527.html" target="_blank" rel="noopener">http://cisco.chinaitlab.com/TCP/37527.html</a></p>
-<p><strong>[背景知识]</strong></p>
-<p>MTU: Maxitum Transmission Unit 最大传输单元</p>
-<p>MSS: Maxitum Segment Size 最大分段大小（偶是直译，翻译的不好，不要打俺PP）</p>
-<p>PPPoE: PPP Over Ethernet（在以太网上承载PPP协议）</p>
-<p><strong>[分析过程]</strong></p>
-<p>先说说这MTU最大传输单元，这个最大传输单元实际上和链路层协议有着密切的关系，让我们先仔细回忆一下EthernetII帧的结构DMAC+SMAC+Type+Data+CRC</p>
-<p>由于以太网传输电气方面的限制，每个以太网帧都有最小的大小64bytes最大不能超过1518bytes，对于小于或者大于这个限制的以太网帧我们都可以视之为错误的数据帧，一般的以太网转发设备会丢弃这些数据帧。</p>
-<p>（注：小于64Bytes的数据帧一般是由于以太网冲突产生的“碎片”或者线路干扰或者坏的以太网接口产生的，对于大于1518Bytes的数据帧我们一般把它叫做Giant帧，这种一般是由于线路干扰或者坏的以太网口产生）</p>
-<p>由于以太网EthernetII最大的数据帧是1518Bytes这样，刨去以太网帧的帧头（DMAC目的MAC地址48bit=6Bytes+SMAC源MAC地址48bit=6Bytes+Type域2bytes）14Bytes和帧尾CRC校验部分4Bytes（这个部门有时候大家也把它叫做FCS），那么剩下承载上层协议的地方也就是Data域最大就只能有1500Bytes这个值我们就把它称之为MTU。这个就是网络层协议非常关心的地方，因为网络层协议比如IP协议会根据这个值来决定是否把上层传下来的数据进行分片。就好比一个盒子没法装下一大块面包，我们需要把面包切成片，装在多个盒子里面一样的道理。</p>
-<p>当两台远程PC互联的时候，它们的数据需要穿过很多的路由器和各种各样的网络媒介才能到达对端，网络中不同媒介的MTU各不相同，就好比一长段的水管，由不同粗细的水管组成（MTU不同 ）通过这段水管最大水量就要由中间最细的水管决定。</p>
-<p>对于网络层的上层协议而言（我们以TCP/IP协议族为例）它们对水管粗细不在意它们认为这个是网络层的事情。网络层IP协议会检查每个从上层协议下来的数据包的大小，并根据本机MTU的大小决定是否作“分片”处理。分片最大的坏处就是</p>
-<p>降低了传输性能，本来一次可以搞定的事情，分成多次搞定，所以在网络层更高一层（就是传输层）的实现中往往会对此加以注意！有些高层因为某些原因就会要求我这个面包不能切片，我要完整地面包，所以会在IP数据包包头里面加上一</p>
-<p>个标签：DF（Donot Fragment）。这样当这个IP数据包在一大段网络（水管里面）传输的时候，如果遇到MTU小于IP数据包的情况，转发设备就会根据要求丢弃这个数据包。然后返回一个错误信息给发送者。这样往往会造成某些通讯上的问题，不过幸运的是大部分网络链路都是MTU1500或者大于1500。</p>
-<p>对于UDP协议而言，这个协议本身是无连接的协议，对数据包的到达顺序以及是否正确到达不甚关心，所以一般UDP应用对分片没有特殊要求。</p>
-<p>对于TCP协议而言就不一样了，这个协议是面向连接的协议，对于TCP协议而言它非常在意数据包的到达顺序以及是否传输中有错误发生。所以有些TCP应用对分片有要求—不能分片（DF）。</p>
-<p>花开两朵，各表一枝，说完MTU的故事我们该讲讲今天的第二个猪脚—PPPoE所谓PPPoE就是在以太网上面跑PPP协议，有人奇怪了，PPP协议和Ethernet不都是链路层协议吗？怎么一个链路层跑到另外一个链路层上面去了，难道升级成网络层协议了不成。其实这是个误区：就是某层协议只能承载更上一层协议。</p>
-<p>为什么会产生这种奇怪的需求呢？这是因为随着宽带接入（这种宽带接入一般为Cable Modem或者xDSL或者以太网的接入）由于以太网缺乏认证计费机制而传统运营商是通过PPP协议来对拨号等接入服务进行认证计费的，所以就出了这么一个怪胎：PPPoE。（有关PPPoE的详细介绍参见V大以及本站其他成员的一些介绍文章，我就不啰里啰唆的了）</p>
-<p>PPPoE带来了好处，也带来了一些坏处，比如：二次封装耗费资源，降低了传输效能等等，这些坏处俺也不多说了，最大的坏处就是PPPoE导致MTU变小了以太网的MTU是1500，再减去PPP的包头包尾的开销（8Bytes），就变成1492。</p>
-<p>如果两台主机之间的某段网络使用了PPPoE那么就会导致某些不能分片的应用无法通讯。</p>
-<p>这个时候就需要我们调整一下主机的MTU，通过降低主机的MTU，这样我们就能够顺利地进行通讯了。</p>
-<p>当然对于TCP应用而言还有另外的解决方案。</p>
-<p>马上请出今天第三位猪脚：MSS。</p>
-<p>MSS最大传输大小的缩写，是TCP协议里面的一个概念。</p>
-<p>MSS就是TCP数据包每次能够传输的最大数据分段。为了达到最佳的传输效能TCP协议在建立连接的时候通常要协商双方的MSS值，这个值TCP协议在实现的时候往往用MTU值代替（需要减去IP数据包包头的大小20Bytes和TCP数据段的包头20Bytes）所以往往MSS为1460。通讯双方会根据双方提供的MSS值得最小值确定为这次连接的最大MSS值。</p>
-<p>介绍完这三位猪脚</p>
-<p>我们回过头来看前言里面的那个问题，我们试想一下，如果我们在中间路由器上把每次TCP连接的最大MSS进行调整这样使得通过PPPoE链路的最大MSS值加上数据包头包尾不会超过PPPoE的MTU大小1492这样就不会造成无法通讯的问题.所以上面的问题可以通过ip tcp adjust-mss 1452来解决。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1999,7 +1979,7 @@ except Exception,e:
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">154</span>
+                  <span class="site-state-item-count">155</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2021,7 +2001,7 @@ except Exception,e:
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

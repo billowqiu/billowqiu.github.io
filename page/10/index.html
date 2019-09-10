@@ -269,6 +269,159 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/07/14/c中回调callback的使用方法/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2009/07/14/c中回调callback的使用方法/" itemprop="url">C++中回调(CallBack)的使用方法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-07-14T23:55:00+08:00">
+                2009-07-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C++</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>回调函数是一个很有用，也很重要的概念。当发生某种事件时，系统或其他函数将会自动调用你定义的一段函数。回调函数在windows编程使用的场合很多，比如Hook回调函数：MouseProc,GetMsgProc以及EnumWindows,DrawState的回调函数等等，还有很多系统级的回调过程。 一般情况下, 我们使用的回调函数基本都是采用C语言风格. 这里介绍一种C++风格的回调对象方法. 采用template实现.</p>
+<p>template &lt; class Class, typename ReturnType, typename Parameter &gt;&nbsp;&nbsp;<br>class SingularCallBack&nbsp;&nbsp;<br>{&nbsp;&nbsp;&nbsp;<br>public:&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp;&nbsp; typedef ReturnType (Class::<em>Method)(Parameter);&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp;&nbsp; SingularCallBack(Class</em> _class_instance, Method _method)&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //取得对象实例地址,及调用方法地址&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; class_instance = _class_instance;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; method&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = _method;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp; };&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp;&nbsp; ReturnType operator()(Parameter parameter)&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // 调用对象方法&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (class_instance-&gt;<em>method)(parameter);&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp; };&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp;&nbsp; ReturnType execute(Parameter parameter)&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // 调用对象方法&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return operator()(parameter);&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp; };&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;<br>&nbsp;&nbsp; private:&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp;&nbsp; Class</em>&nbsp; class_instance;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp; Method&nbsp; method;&nbsp;&nbsp;<br>&nbsp;<br>};&nbsp;<br>示例:</p>
+<p>以下是两个类实现.<br>class A&nbsp;&nbsp;<br>{&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp; public:&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp;&nbsp; void output()&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; std::cout &lt;&lt; “I am class A :D” &lt;&lt; std::endl;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp; };&nbsp;&nbsp;<br>&nbsp;<br>};&nbsp;&nbsp;<br>&nbsp;<br>class B&nbsp;&nbsp;<br>{&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp; public:&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp;&nbsp; bool methodB(A a)&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a.output();&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp; }&nbsp;&nbsp;<br>&nbsp;<br>};&nbsp;&nbsp;<br>&nbsp;</p>
+<p>SingularCallBack的各种调用示例:<br>A a;<br>B b;</p>
+<p>SingularCallBack&lt; B,bool,A &gt;* cb;<br>cb = new SingularCallBack&lt; B,bool,A &gt;(&amp;b,&amp;B::methodB);</p>
+<p>if(cb-&gt;execute(a))<br>{<br>&nbsp;&nbsp; std::cout &lt;&lt; “CallBack Fired Successfully!” &lt;&lt; std::endl;<br>}<br>else<br>{<br>&nbsp;&nbsp; std::cout &lt;&lt; “CallBack Fired Unsuccessfully!” &lt;&lt; std::endl;<br>}<br>&nbsp;&nbsp;<br>class AClass&nbsp;&nbsp;<br>{&nbsp;&nbsp;<br>&nbsp;&nbsp; public:&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp; AClass(unsigned int _id): id(_id){};&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp; ~AClass(){};&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp; bool AMethod(std::string str)&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; std::cout &lt;&lt; “AClass[“ &lt;&lt; id &lt;&lt; “]: “ &lt;&lt; str &lt;&lt; std::endl;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp; };&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp; private:&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp;&nbsp; unsigned int id;&nbsp;&nbsp;<br>&nbsp;<br>};&nbsp;&nbsp;&nbsp;</p>
+<p>typedef SingularCallBack &lt; AClass, bool, std::string &gt; ACallBack;&nbsp;&nbsp;&nbsp;<br>&nbsp;&nbsp;</p>
+<p>int main()&nbsp;&nbsp;<br>{&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp; std::vector &lt; ACallBack &gt; callback_list;&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp; AClass a1(1);&nbsp;&nbsp;<br>&nbsp;&nbsp; AClass a2(2);&nbsp;&nbsp;<br>&nbsp;&nbsp; AClass a3(3);&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp; callback_list.push_back(ACallBack(&amp;a1, &amp;AClass::AMethod));&nbsp;&nbsp;<br>&nbsp;&nbsp; callback_list.push_back(ACallBack(&amp;a2, &amp;AClass::AMethod));&nbsp;&nbsp;<br>&nbsp;&nbsp; callback_list.push_back(ACallBack(&amp;a3, &amp;AClass::AMethod));&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp; for (unsigned int i = 0; i &lt; callback_list.size(); i++)&nbsp;&nbsp;<br>&nbsp;&nbsp; {&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; callback_list<a href="&quot;abc&quot;">i</a>;&nbsp;&nbsp;<br>&nbsp;&nbsp; }&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp; for (unsigned int i = 0; i &lt; callback_list.size(); i++)&nbsp;&nbsp;<br>&nbsp;&nbsp; {&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; callback_list[i].execute(“abc”);&nbsp;&nbsp;<br>&nbsp;&nbsp; }&nbsp;&nbsp;<br>&nbsp;<br>&nbsp;&nbsp; return true;&nbsp;&nbsp;<br>&nbsp;<br>}&nbsp;&nbsp;<br>&nbsp;</p>
+<p>引用:</p>
+<p>C++ Callback Solution </p>
+<p>本文来自CSDN博客，转载请标明出处：<a href="http://blog.csdn.net/force_eagle/archive/2009/07/14/4347329.aspx" target="_blank" rel="noopener">http://blog.csdn.net/force_eagle/archive/2009/07/14/4347329.aspx</a></p>
+<p></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/07/09/im的技术原理与发展/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2187,261 +2340,6 @@ return 0;
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/05/18/function-object-and-binders/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2009/05/18/function-object-and-binders/" itemprop="url">Function object And Binders</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-05-18T22:01:00+08:00">
-                2009-05-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index">
-                    <span itemprop="name">C++</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><span style="font-size: small;"></span></p>
-<p></p><p class="p0" style="margin-top: 0pt; margin-bottom: 0pt; padding: 0pt;"><span style="font-size: 10.5pt; color: #000000; font-family: '宋体'; mso-spacerun: 'yes';">这两个概念一般都是一起出现的，今天再次翻起《Ruminations&nbsp;On&nbsp;C++》，这两个概念真的如Koenig所说比较难以理解，加上这次我以前至少也看过了3次了，但是每次都是当时看懂了，过后就忘了，究其原因1:没有真正理解；2没有应用到实际中。</span></p>
-<p><span style="font-size: 10.5pt; color: #000000; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;现在暂时也不会应用到实际，但是这次的理解必须写下来。其实函数对象倒还好，一个重载了()了类其对象基本上就可以叫做函数对象，Koenig的说法是：函数对象提供了一种方法，将要调用的函数与准备传递给这个函数的隐式参数捆绑起来。</span></p>
-<p><span style="font-size: 10.5pt; color: #000000; font-family: 'Times New Roman'; mso-spacerun: 'yes';">template&lt;typename&nbsp;_Arg1,&nbsp;typename&nbsp;_Arg2,&nbsp;typename&nbsp;_Result&gt;</span></p>
-<p><span style="font-size: 10.5pt; color: #000000; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;struct&nbsp;binary_function</span></p>
-<p><span style="font-size: 10.5pt; color: #000000; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;{</span></p>
-<p><span style="font-size: 10.5pt; color: #000000; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;typedef&nbsp;_Arg1&nbsp;first_argument_type;&nbsp;&nbsp;&nbsp;///&lt;&nbsp;the&nbsp;type&nbsp;of&nbsp;the&nbsp;first&nbsp;argument</span></p>
-<p><span style="font-size: 10.5pt; color: #000000; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;///&nbsp;&nbsp;(no&nbsp;surprises&nbsp;here)</span></p>
-<p><span style="font-size: 10.5pt; color: #000000; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;typedef&nbsp;_Arg2&nbsp;second_argument_type;&nbsp;&nbsp;///&lt;&nbsp;the&nbsp;type&nbsp;of&nbsp;the&nbsp;second&nbsp;argument</span></p>
-<p><span style="font-size: 10.5pt; color: #000000; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;typedef&nbsp;_Result&nbsp;result_type;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;///&lt;&nbsp;type&nbsp;of&nbsp;the&nbsp;return&nbsp;type</span></p>
-<p><span style="font-size: 10.5pt; color: #000000; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;};</span></p>
-<p>&nbsp;</p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">template&lt;typename&nbsp;_Tp&gt;</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;struct&nbsp;greater&nbsp;:&nbsp;public&nbsp;binary_function&lt;_Tp,&nbsp;_Tp,&nbsp;bool&gt;</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;{</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bool</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;operator()(const&nbsp;_Tp&amp;&nbsp;<strong>x,&nbsp;const&nbsp;_Tp&amp;&nbsp;</strong>y)&nbsp;const</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;return&nbsp;<strong>x&nbsp;&gt;&nbsp;</strong>y;&nbsp;}</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">};</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">有了<span style="font-family: Times New Roman;">greater</span><span style="font-family: 宋体;">我们就可以定义一个对象</span></span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">greater&lt;int&gt;&nbsp;gt;</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">bool&nbsp;greater1000(int&nbsp;n)</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">{</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">return&nbsp;gt(n,1000);</span><span style="font-size: 10.5pt; color: #ff0000; font-family: '宋体'; mso-spacerun: 'yes';">//<span style="font-family: 宋体;">这里就是调用了</span><span style="font-family: Times New Roman;">greater</span><span style="font-family: 宋体;">的</span><span style="font-family: Times New Roman;">operator()</span></span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">}</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">bind2nd<span style="font-family: 宋体;">可以将一个二元函数对象</span><span style="font-family: Times New Roman;">f(x,y)</span><span style="font-family: 宋体;">中的第二个参数</span><span style="font-family: Times New Roman;">y</span><span style="font-family: 宋体;">绑定到一个新的一元函数对象上</span><span style="font-family: Times New Roman;">g(x)</span><span style="font-family: 宋体;">，这时通过</span><span style="font-family: Times New Roman;">g(x)(y)</span><span style="font-family: 宋体;">即相当于</span><span style="font-family: Times New Roman;">f(x,y)</span><span style="font-family: 宋体;">了，真是妙，这不就是数学里面的复合函数，这次是第一次领悟到这一点，也算是一点进步吧。通过</span><span style="font-family: Times New Roman;">bind2nd</span><span style="font-family: 宋体;">的源码可以很清晰得看出其内部机理：</span></span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">template&lt;typename&nbsp;_Operation&gt;</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;class&nbsp;binder2nd</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;public&nbsp;unary_function&lt;typename&nbsp;_Operation::first_argument_type,</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;typename&nbsp;_Operation::result_type&gt;</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;{</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;protected:</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_Operation&nbsp;op;</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;typename&nbsp;_Operation::second_argument_type&nbsp;value;</span></p>
-<p>&nbsp;</p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;public:</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;binder2nd(const&nbsp;_Operation&amp;&nbsp;__x,</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">const&nbsp;typename&nbsp;_Operation::second_argument_type&amp;&nbsp;__y)</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;op(<strong>x),&nbsp;value(</strong>y)&nbsp;{&nbsp;}</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="font-size: 10.5pt; color: #ff0000; font-family: '宋体'; mso-spacerun: 'yes';">//<span style="font-family: 宋体;">下面的</span><span style="font-family: Times New Roman;">()</span><span style="font-family: 宋体;">重载即相当于</span><span style="font-family: Times New Roman;">f(x,y)</span><span style="font-family: 宋体;">了，只不过这时的</span><span style="font-family: Times New Roman;">y</span><span style="font-family: 宋体;">已经是</span><span style="font-family: Times New Roman;">binder2nd</span><span style="font-family: 宋体;">对象的一个成员了，当然</span><span style="font-family: Times New Roman;">f</span><span style="font-family: 宋体;">也是起一个成员，这样外部只需传递</span><span style="font-family: Times New Roman;">x</span><span style="font-family: 宋体;">了，即将</span><span style="font-family: Times New Roman;">binary</span><span style="font-family: 宋体;">转换为</span><span style="font-family: Times New Roman;">unary</span><span style="font-family: 宋体;">了。</span></span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;typename&nbsp;_Operation::result_type</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;operator()(const&nbsp;typename&nbsp;_Operation::first_argument_type&amp;&nbsp;__x)&nbsp;const</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;return&nbsp;op(__x,&nbsp;value);&nbsp;}</span></p>
-<p>&nbsp;</p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;_GLIBCXX_RESOLVE_LIB_DEFECTS</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;109.&nbsp;&nbsp;Missing&nbsp;binders&nbsp;for&nbsp;non-const&nbsp;sequence&nbsp;elements</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;typename&nbsp;_Operation::result_type</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;operator()(typename&nbsp;_Operation::first_argument_type&amp;&nbsp;__x)&nbsp;const</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;return&nbsp;op(__x,&nbsp;value);&nbsp;}</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;_GLIBCXX_DEPRECATED_ATTR;</span></p>
-<p>&nbsp;</p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;///&nbsp;One&nbsp;of&nbsp;the&nbsp;@link&nbsp;s20_3_6_binder&nbsp;binder&nbsp;functors@endlink.</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;template&lt;typename&nbsp;_Operation,&nbsp;typename&nbsp;_Tp&gt;</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;inline&nbsp;binder2nd&lt;_Operation&gt;</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;bind2nd(const&nbsp;_Operation&amp;&nbsp;<strong>fn,&nbsp;const&nbsp;_Tp&amp;&nbsp;</strong>x)</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;{</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;typedef&nbsp;typename&nbsp;_Operation::second_argument_type&nbsp;_Arg2_type;</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;binder2nd01&lt;_Operation&gt;(<strong>fn,&nbsp;_Arg2_type(</strong>x));</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">}&nbsp;</span></p>
-<p><span style="font-size: 10.5pt; font-family: '宋体'; mso-spacerun: 'yes';">下面来看看<span style="font-family: Times New Roman;">MSDN</span><span style="font-family: 宋体;">上面的一个例子：</span></span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">//&nbsp;functional_bind2nd.cpp</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">//&nbsp;compile&nbsp;with:&nbsp;/EHsc</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">#include&nbsp;&lt;vector&gt;</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">#include&nbsp;&lt;functional&gt;</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">#include&nbsp;&lt;algorithm&gt;</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">#include&nbsp;&lt;iostream&gt;</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">using&nbsp;namespace&nbsp;std;</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">//&nbsp;Creation&nbsp;of&nbsp;a&nbsp;user-defined&nbsp;function&nbsp;object</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">//&nbsp;that&nbsp;inherits&nbsp;from&nbsp;the&nbsp;unary_function&nbsp;base&nbsp;class</span></p>
-<p><span style="font-size: 10.5pt; color: #ff0000; font-family: 'Times New Roman'; mso-spacerun: 'yes';">//<span style="font-family: 宋体;">定义一个一元函数对象</span></span><span style="font-size: 10.5pt; color: #ff0000; font-family: '宋体'; mso-spacerun: 'yes';">，判定传入的参数是否是大于<span style="font-family: Times New Roman;">15</span></span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">class&nbsp;greaterthan15:&nbsp;unary_function&lt;int,&nbsp;bool&gt;</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">{</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">public:</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;result_type&nbsp;operator()(argument_type&nbsp;i)</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;{</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;(result_type)(i&nbsp;&gt;&nbsp;15);</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">};</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">int&nbsp;main()</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">{</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;vector&lt;int&gt;&nbsp;v1;</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;vector&lt;int&gt;::iterator&nbsp;Iter;</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;i;</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(i&nbsp;=&nbsp;0;&nbsp;i&nbsp;&lt;=&nbsp;5;&nbsp;i++)</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;{</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;v1.push_back(5&nbsp;*&nbsp;i);</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;}</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;”The&nbsp;vector&nbsp;v1&nbsp;=&nbsp;(&nbsp;”;</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(Iter&nbsp;=&nbsp;v1.begin();&nbsp;Iter&nbsp;!=&nbsp;v1.end();&nbsp;Iter++)</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;*Iter&nbsp;&lt;&lt;&nbsp;”&nbsp;”;</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;”)”&nbsp;&lt;&lt;&nbsp;endl;</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Count&nbsp;the&nbsp;number&nbsp;of&nbsp;integers&nbsp;&gt;&nbsp;10&nbsp;in&nbsp;the&nbsp;vector</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">vector&lt;int&gt;::iterator::difference_type&nbsp;result1a;</span></p>
-<p><span style="font-size: 10.5pt; color: #ff0000; font-family: 'Times New Roman'; mso-spacerun: 'yes';">//</span><span style="font-size: 10.5pt; color: #ff0000; font-family: '宋体'; mso-spacerun: 'yes';">将<span style="font-family: Times New Roman;">10</span><span style="font-family: 宋体;">绑定到新的函数对象</span><span style="font-family: Times New Roman;">binder2nd(greater&lt;int&gt;(),10)</span><span style="font-family: 宋体;">上面，接着通过</span><span style="font-family: Times New Roman;">count_if</span><span style="font-family: 宋体;">来迭代，并传递参数</span><span style="font-family: Times New Roman;">(<em>v1.begin())</em></span><span style="font-family: 宋体;">，也就是实现对每一个元素调用</span><span style="font-family: Times New Roman;">greater&lt;int&gt;(v1.begin(),10)</span></span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;result1a&nbsp;=&nbsp;count_if(v1.begin(),&nbsp;v1.end(),&nbsp;bind2nd(greater&lt;int&gt;(),&nbsp;10));</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;”The&nbsp;number&nbsp;of&nbsp;elements&nbsp;in&nbsp;v1&nbsp;greater&nbsp;than&nbsp;10&nbsp;is:&nbsp;”</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;result1a&nbsp;&lt;&lt;&nbsp;”.”&nbsp;&lt;&lt;&nbsp;endl;</span></p>
-<p>&nbsp;</p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Compare&nbsp;counting&nbsp;the&nbsp;number&nbsp;of&nbsp;integers&nbsp;&gt;&nbsp;15&nbsp;in&nbsp;the&nbsp;vector</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;with&nbsp;a&nbsp;user-defined&nbsp;function&nbsp;object</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">vector&lt;int&gt;::iterator::difference_type&nbsp;result1b;</span></p>
-<p><span style="font-size: 10.5pt; color: #ff0000; font-family: 'Times New Roman'; mso-spacerun: 'yes';">//<span style="font-family: 宋体;">这里直接传入一元函数对象</span></span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;result1b&nbsp;=&nbsp;count_if(v1.begin(),&nbsp;v1.end(),&nbsp;greaterthan15());</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;”The&nbsp;number&nbsp;of&nbsp;elements&nbsp;in&nbsp;v1&nbsp;greater&nbsp;than&nbsp;15&nbsp;is:&nbsp;”</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;result1b&nbsp;&lt;&lt;&nbsp;”.”&nbsp;&lt;&lt;&nbsp;endl;</span></p>
-<p>&nbsp;</p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Count&nbsp;the&nbsp;number&nbsp;of&nbsp;integers&nbsp;&lt;&nbsp;10&nbsp;in&nbsp;the&nbsp;vector</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">vector&lt;int&gt;::iterator::difference_type&nbsp;result2;</span></p>
-<p><span style="font-size: 10.5pt; color: #ff0000; font-family: 'Times New Roman'; mso-spacerun: 'yes';">//</span><span style="font-size: 10.5pt; color: #ff0000; font-family: '宋体'; mso-spacerun: 'yes';">将<span style="font-family: Times New Roman;">10</span><span style="font-family: 宋体;">绑定到新的函数对象</span><span style="font-family: Times New Roman;">binder2nd(greater&lt;int&gt;(),10)</span><span style="font-family: 宋体;">上面，只不过这时</span><span style="font-family: Times New Roman;">10</span><span style="font-family: 宋体;">是作为第一个参数绑定的，接着通过</span><span style="font-family: Times New Roman;">count_if</span><span style="font-family: 宋体;">来迭代，并传递参数</span><span style="font-family: Times New Roman;">(<em>v1.begin())</em></span><span style="font-family: 宋体;">，也就是实现对每一个元素调用</span><span style="font-family: Times New Roman;">greater&lt;int&gt;(10</span><span style="font-family: 宋体;">，</span><span style="font-family: Times New Roman;">v1.begin())</span><span style="font-family: 宋体;">，也就是比</span><span style="font-family: Times New Roman;">10</span><span style="font-family: 宋体;">小的元素个数</span></span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;result2&nbsp;=&nbsp;count_if(v1.begin(),&nbsp;v1.end(),&nbsp;bind1st(greater&lt;int&gt;(),&nbsp;10));</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;cout&nbsp;&lt;&lt;&nbsp;”The&nbsp;number&nbsp;of&nbsp;elements&nbsp;in&nbsp;v1&nbsp;less&nbsp;than&nbsp;10&nbsp;is:&nbsp;”</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;&lt;&nbsp;result2&nbsp;&lt;&lt;&nbsp;”.”&nbsp;&lt;&lt;&nbsp;endl;</span></p>
-<p><span style="font-size: 10.5pt; font-family: 'Times New Roman'; mso-spacerun: 'yes';">}</span></p>
-<p><!--EndFragment--></p><br><p></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2492,7 +2390,7 @@ return 0;
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">154</span>
+                  <span class="site-state-item-count">155</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2514,7 +2412,7 @@ return 0;
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

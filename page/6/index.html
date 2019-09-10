@@ -269,6 +269,157 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2011/04/16/centos5-5下scribe写入数据到hdfs配置方法/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2011/04/16/centos5-5下scribe写入数据到hdfs配置方法/" itemprop="url">CentOS5.5下scribe写入数据到HDFS配置方法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2011-04-16T01:55:00+08:00">
+                2011-04-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/系统编程/" itemprop="url" rel="index">
+                    <span itemprop="name">系统编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>1按照<a href="http://blog.csdn.net/ToCpp/archive/2011/04/10/6314374.aspx" target="_blank" rel="noopener">CentOS 5.5 下配置Hadoop 0.21单节点</a><br>一文中的方法配置Hadoop</p>
+<p>2编译scribe，支持hdfs<br>2.1下载thrift,libevent,boost等库，可以都下载最新版本，基本上都是make &amp; make install<br>2.2下载最新版scribe-2.2，之前在网上看到说scribe有很多bug，必须在当前开发版本才能写入HDFS，试了好久没成功，也以为确实是代码的问题，现在发现不是这个问题，直接<a href="https://github.com/facebook/scribe" target="_blank" rel="noopener">下载</a>该版本<br>2.3在scribe源码包里面bootstrap.sh，按照文档上的说法是可以一步到位的即</p>
+<p>./configure CPPFLAGS=”-DHAVE_INTTYPES_H -DHAVE_NETINET_IN_H -I/data/billowqiu/jdk1.6.0_25/include -I/data/billowqiu/jdk1.6.0_25/include/linux -I/data/billowqiu/hadoop-0.20.1+169.89/src/c++/libhdfs” LDFLAGS=”-L/data/billowqiu/hadoop-0.20.1+169.89/src/c++/libhdfs/lib -L/data/billowqiu/jdk1.6.0_25/jre/lib/amd64/server” –with-hadooppath=/data/billowqiu/hadoop-0.20.1+169.89 –enable-hdfs，实在不行直接修改Makefile也可以，先./configure –enable-hdfs，然后修改相应的src目录下面的Makefile，将以下字段修改如下：CPPFLAGS = -I/usr/local/lib/jdk1.6.0_23/include -I/usr/local/lib/jdk1.6.0_23/include/linux</p>
+<p>上面的JDK路径以机器上面的实际路径为准。</p>
+<p>貌似在静态链接boost会出现“undefined reference to `boost::system::generic_category()”，通过将将-lboost_system -lboost_filesystem放到链接库最后可以解决。</p>
+<p>$ cd src $ g++ -Wall -O3 -L/usr/lib -o scribed store.o store_queue.o conf.o file.o conn_pool.o scribe_server.o network_dynamic_config.o dynamic_bucket_updater.o env_default.o -L/usr/local/lib -L/usr/local/lib -L/usr/local/lib -lfb303 -lthrift -lthriftnb -levent -lpthread libscribe.a libdynamicbucketupdater.a -lboost_system -lboost_filesystem</p>
+<p>&nbsp;</p>
+<p>2.4拷贝hadoop-0.21.0/hdfs/src/c++/libhdfs/hdfs.h文件到scribe/src目录下，libhdfs其实就是通过JNI让C/C++调用HDFS接口，在hadoop-0.21.0/hdfs/src/c++/libhdfs目录下面执行如下操作<br>./configure –enable-shared JVM_ARCH=tune=k8 –prefix=<code>pwd</code>/nativelib<br>./make install<br>这时会在nativelib/lib下面生成5个文件，将其都拷贝到/usr/local/lib下面，执行ldconfig<br>2.5编译scribe，在scribe/src目录下面执行./make，即可生成scribed文件，<br>2.6按照scribe/examples目录下面的配置文件写个简单的支持HDFS的配置文件simple_hdfs_example.conf：<br>port=1463<br>max_msg_per_second=2000000<br>check_interval=1<br>max_queue_size=100000000<br>num_thrift_server_threads=2</p>
+<h1 id="DEFAULT-write-all-messages-to-hadoop"><a href="#DEFAULT-write-all-messages-to-hadoop" class="headerlink" title="DEFAULT - write all messages to hadoop"></a>DEFAULT - write all messages to hadoop</h1><p>&lt;store&gt;<br>category=default<br>target_write_size=20480<br>type=file<br>fs_type=hdfs<br>file_path=hdfs://localhost:9000/scribedata<br>create_symlink=no<br>use_hostname_sub_directory=yes<br>base_filename=thisisoverwritten<br>max_size=1000000000<br>rotate_period=100s<br>add_newlines=1<br>&lt;/store&gt;<br>&lt;store&gt;<br>category=qt<br>target_write_size=20480<br>type=file<br>fs_type=hdfs<br>file_path=hdfs://localhost:9000/scribedata<br>create_symlink=no<br>use_hostname_sub_directory=yes<br>base_filename=thisisoverwritten<br>max_size=1000000000<br>rotate_period=100s<br>add_newlines=1<br>&lt;/store&gt;<br>2.7到处libhdfs库需要使用的jar路径即CLASSPATH，具体需要哪些不太清楚，<br>官方文档上建议将hadoop/lib目录下所有的库的加入，下面是我导出的：<br>export CLASSPATH=$CLASSPATH:/xxx/hadoop-0.21.0/hadoop-common-0.21.0.jar:/xxx/hadoop-0.21.0/hadoop-hdfs-0.21.0.jar:/xxx/hadoop-0.20.1+152/contrib/scribe-log4j/hadoop-0.20.1+152-scribe-log4j.jar:/xxx/hadoop-0.21.0/lib/commons-logging-1.1.1.jar:/xxx/hadoop-0.21.0/lib/commons-logging-api-1.1.jar:/xxx/hadoop-0.21.0/lib/core-3.1.1.jar:/xxx/hadoop-0.21.0/lib/log4j-1.2.15.jar<br>XXX你懂的。</p>
+<p>2.8可以执行scribe了， ./scribed ../examples/simple_hdfs_example.conf<br>2.9通过发送工具发送日志到scribe，echo “Successful write data to HDFS,I am qiutao” | ./scribe_cat qt<br>3.10在hadoop目录下面执行bin/hadoop dfs -lsr /scribedata即可看到相应的数据生成了。<br>整个过程确实比较繁琐，尤其要注意2.4，一定要在自己机器上面编译libhdfs库，否则会出现一些莫名其妙的问题，<br>基本上都是抛出的java异常，在这个上面吃了不少亏，终于在自己机器上面写入HDFS了，一步步的也学到了不少东西，<br>留作以后备用。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2011/04/15/thrift安装记录/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1651,172 +1802,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2010/08/29/循环左移-海豚算法/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2010/08/29/循环左移-海豚算法/" itemprop="url">循环左移-海豚算法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2010-08-29T21:55:00+08:00">
-                2010-08-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/数据结构-算法/" itemprop="url" rel="index">
-                    <span itemprop="name">数据结构/算法</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>题目要求是这样的：</p>
-<p>&nbsp;</p>
-<p>/*</p>
-<p>设将n (n &gt; 1) 个整数存放到一维数组 R中。设计一个在时间和空间两方面尽可能高效的算法。</p>
-<p>将 R 中的序列循环左移 p（0 &lt; p &lt; n）个位置，即将 R 中的数据由 (a0, a1, &hellip;&hellip;an-1)</p>
-<p>变换为(ap, ap-1, &hellip;an-1, a0, a1, &hellip;, ap-1)。要求：</p>
-<p>&nbsp;&nbsp; &nbsp; &nbsp; (1) 给出算法的基本设计思想。</p>
-<p>&nbsp;&nbsp; &nbsp; &nbsp; (2) 根据设计思想，采用C或C++或JaVa语言描述算法，关键之处给出注释。</p>
-<p>&nbsp;&nbsp; &nbsp; &nbsp; (3) 说明你所设计算法的时间复杂度和空间复杂度。</p>
-<p>*/</p>
-<p>下面是我的一个低效实现：</p>
-<p><span style="font-family: monospace; font-size: small;"><span style="white-space: pre-wrap;"><pre style="border: 1px dotted #785;background: #f5f5f5;">#include &lt;iostream&gt;<br>bool circleLeftMove( int nArr[], int nSize, int nMove )<br>{<br>    //判断边界条件<br>    if( nSize &lt;= 1 )<br>    {<br>        return false;<br>    }<br>    if( nMove &lt;= 0 || nMove &gt;= nSize )<br>    {<br>        return false;<br>    }<br>    //将需要移动的前nMove个数移动到一个缓存中<br>    int *pTemp = new int[nMove];<br>    for( int i=0; i&lt;nMove; ++i )<br>    {<br>        pTemp[i] = nArr[i];<br>    }<br>    //移动nMove开始的剩余数到0～(nSize - nMove)位置上<br>    int nStart = nMove;<br>    for( int j=0; j&lt;(nSize-nMove); ++j )<br>    {<br>        nArr[j] = nArr[nStart++];<br>    }<br>    //将缓存中的数据放到原始数组后面<br>    nStart = nSize-nMove;<br>    for( int i=0; i&lt;nMove; ++i )<br>    {<br>        nArr[nStart++] = pTemp[i];<br>    }<br>    //释放缓存<br>    delete []pTemp;<br>    return true;<br>}<br>void print( int arr[], int nSize )<br>{<br>    for(int i=0; i&lt;nSize; ++i )<br>    {<br>        std::cout &lt;&lt; “Num” &lt;&lt; i &lt;&lt; “==&gt;” &lt;&lt; arr[i] &lt;&lt; std::endl;<br>    }<br>}</pre></span></span></p>
-<p>int main(int argc, char *argv[])<br>{<br>    int nArr[]={0,1,2,3,4,5,6};<br>    std::cout &lt;&lt; “Before Circle Move:” &lt;&lt; std::endl;<br>    print( nArr, sizeof(nArr)/sizeof(nArr[0]) );<br>    int nMove;<br>    std::cout &lt;&lt; “Please Input The Move Count:”;<br>    std::cin  &gt;&gt; nMove;<br>    std::cout &lt;&lt; std::endl;<br>    circleLeftMove( nArr, sizeof(nArr)/sizeof(nArr[0]), nMove );<br>    std::cout &lt;&lt; “After Circle Move “ &lt;&lt; nMove &lt;&lt; std::endl;<br>    print( nArr, sizeof(nArr)/sizeof(nArr[0]) );<br>    return 0;<br>}<br> </p>
-<p>只是稍微测试了下，查看参考答案后发现这个算法叫做海豚算法，下面是其给出的参考实现：</p>
-<p>大致思路为：</p>
-<p>&nbsp;</p>
-<p>首先把序列{ a0, a1, …, ap, &hellip;, an-1 }逆转为{an-1, an-2, …, ap, &hellip;,a0 }，</p>
-<p>再分别逆转{ an-1, an-2, …, ap }和{ ap-1, ap-2, &hellip;,a0 }，</p>
-<p>最后得到{ ap, ap+1, &hellip;, an-1, a0, &hellip;, ap-1}。</p>
-<p><pre style="border: 1px dotted #785;background: #f5f5f5;">void reverse ( int A[ ], int left, int right )<br>{<br>    int n = right-left+1;<br>    if ( n &lt;= 1 ) return;<br>    if ( n &lt;= 1 ) return;<br>    for ( int i = 0; i &lt; n/2; i++ )<br>    {<br>        int temp = A[i];<br>        A[i] = A[n-i-1];<br>        A[n-i-1] = temp;<br>    }<br>}<br>void sift_Left ( int a[ ], int n, int p )<br>{<br>    reverse ( a, 0, n-1 );<br>    reverse ( a, 0, n-p-1 );<br>    reverse ( a, n-p, n-1 );<br>}</pre>&nbsp;</p>
-<p>我实现的那个空间复杂度比较高O(p)，参考答案的为O(1)，时间上面都是O(n)。</p>
-<p>通过比较其他实现，发现自己在算法方面确实需要提高，我完全是按照那种常规思路来实现，没有进行任何优化，这在效率有要求的时候显然就不行了，这里还悟出一点道理，高效算法一般都不是大多数人想到的那种常规方法，即根据要求一步步满足，而应该根据算法输出结果来分析其中的规律进而找到突破点。</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1867,7 +1852,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">154</span>
+                  <span class="site-state-item-count">155</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1889,7 +1874,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

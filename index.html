@@ -269,6 +269,165 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/10/microservice-00/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/09/10/microservice-00/" itemprop="url">那些年见识过的微服务思想</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-10T22:10:20+08:00">
+                2019-09-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Martin大叔那篇著名的<a href="https://martinfowler.com/articles/microservices.html" target="_blank" rel="noopener">微服务</a>文章出来后，”微服务”这个词逐渐进入大众视野，然后一系列关于微服务的框架，治理手段层出不穷，如spring cloud全家桶。</p>
+<p>经过这一年多对服务框架和调用链的实践，多多少少有些体会，每次在套用这些名词的时候总会有一种似曾相识的感觉，静下心来想想其实在鹅厂的时候已经接触不过不少相关的套路，那会大叔的文章并没有出来，也没有人把他给总结的这么高大上，这里先堆一些名词，等日后慢慢丰富。</p>
+<h3 id="大系统小做"><a href="#大系统小做" class="headerlink" title="大系统小做"></a>大系统小做</h3><blockquote>
+<p>将功能复杂较大的系统，化大为小，减少模块耦合，降低相关联性，用多个独立的进程相互协作来实现整体的复杂系统功能，比如把读和写的功能分成不同的进程实现。</p>
+</blockquote>
+<ul>
+<li>微服务思想的精髓</li>
+</ul>
+<h3 id="tbus，spp"><a href="#tbus，spp" class="headerlink" title="tbus，spp"></a>tbus，spp</h3><blockquote>
+<p>前者是IEG当时游戏服务器的标配框架，后者是SNG业务服务的标配框架。<br>两者都共同点是业务进程通过网络或者共享内存与本机的一个代理进程进行通信，该代理进程负责与外部其他节点&gt; 通信，从而对业务屏蔽了网络通信的逻辑，想想这不就是现在service-mesh中的sidecar么。</p>
+</blockquote>
+<ul>
+<li>service mesh</li>
+</ul>
+<h3 id="QZA"><a href="#QZA" class="headerlink" title="QZA"></a>QZA</h3><blockquote>
+<p>由于qzone平台层的模块众多，中间层的业务对接起来不可能都自己去实现一套协议转换，鉴权，频率控制等逻辑，于是qza(qzone access)应运而生</p>
+</blockquote>
+<ul>
+<li>API网关</li>
+</ul>
+<h3 id="CLog"><a href="#CLog" class="headerlink" title="CLog"></a>CLog</h3><blockquote>
+<p>当时这个系统印象比较深刻的用途就是给老板(GM)这类人专门定位问题的，比较模块太多了，一个一个log查起来不现实，只能把log集中存储，按照uin，seq等维度来聚合。</p>
+</blockquote>
+<ul>
+<li>染色，调用链</li>
+</ul>
+<h3 id="L5"><a href="#L5" class="headerlink" title="L5"></a>L5</h3><blockquote>
+<p>这是个神器，当时SNG基本上所有的业务机器上面都有一个L5-Agent，干啥呢，就是帮你做服务发现，你每次调用下游服务的时候，都会通过api从其共享内存中拿一个IP:PORT，拿的过程就做了负载均衡了，只不过调用者感受不到，调用完下游服务之后，你会上报这次调用的结果(返回码，耗时等)，基于这些上报，当某个下游服务出故障了，他会自动帮你摘除掉该节点，这不就是熔断么。</p>
+</blockquote>
+<ul>
+<li>服务发现</li>
+<li>负载均衡</li>
+<li>熔断</li>
+</ul>
+<h3 id="柔性可用"><a href="#柔性可用" class="headerlink" title="柔性可用"></a>柔性可用</h3><blockquote>
+<p>“结合用户使用场景，根据资源消耗，调整产品策略，设计几个级别的、不同的用户体验，最大限度的保证关键服务的可用性。” 这跟降级的思路基本一致。</p>
+</blockquote>
+<ul>
+<li>降级</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/30/importance-of-stability/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1743,226 +1902,6 @@ setFoos([f1, f2])
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2014/03/11/designing-distributed-systems/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2014/03/11/designing-distributed-systems/" itemprop="url">Designing Distributed Systems</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2014-03-11T01:01:58+08:00">
-                2014-03-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/architecture/" itemprop="url" rel="index">
-                    <span itemprop="name">architecture</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/architecture/转载/" itemprop="url" rel="index">
-                    <span itemprop="name">转载</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h4 id="Bill-Venners"><a href="#Bill-Venners" class="headerlink" title="Bill Venners"></a>Bill Venners</h4><blockquote>
-<p>What is important to keep in mind when you are designing a distributed system?</p>
-</blockquote>
-<h4 id="Ken-Arnold"><a href="#Ken-Arnold" class="headerlink" title="Ken Arnold"></a>Ken Arnold</h4><blockquote>
-<p>We should start off with some notion of what we mean by distributed system. A distributed system, in the sense in which I take any interest, means a system in which the failure of an unknown computer can screw you.</p>
-<p><strong>Failure</strong> is not such an important factor for some multicomponent distributed systems. Those systems are tightly controlled; nobody ever adds anything unexpectedly; they are designed so that all components go up and down at the same time. You can create systems like that, but those systems are relatively uninteresting. They are also quite rare.</p>
-<p>Failure is the defining difference between distributed and local programming, so you have to design distributed systems with the expectation of failure. Imagine asking people, “If the probability of something happening is one in ten to the thirteenth, how often would it happen?” Your natural human sense would be to answer, “Never.” That is an infinitely large number in human terms. But if you ask a physicist, she would say, “All the time. In a cubic foot of air, those things happen all the time.” When you design distributed systems, you have to say, “Failure happens all the time.” So when you design, you design for failure. It is your number one concern.</p>
-<p>Yes, you have to get done what you have to get done, but you have to do it in the context of failure. One reason it is easier to write systems with Jini and RMI (remote method invocation) is because they’ve taken the notion of failure so seriously. We gave up on the idea of local/remote transparency. It’s a nice thought, but so is instantaneous faster-than-light travel. It is demonstrably true that at least so far transparency is not possible.</p>
-</blockquote>
-<h2 id="Partial-Failure"><a href="#Partial-Failure" class="headerlink" title="Partial Failure"></a>Partial Failure</h2><blockquote>
-<p>What does designing for failure mean? One classic problem is partial failure. If I send a message to you and then a network failure occurs, there are two possible outcomes. One is that the message got to you, and then the network broke, and I just couldn’t get the response. The other is the message never got to you because the network broke before it arrived. So if I never receive a response, how do I know which of those two results happened? I cannot determine that without eventually finding you. The network has to be repaired or you have to come up, because maybe what happened was not a network failure but you died.</p>
-<p>Now this is not a question you ask in local programming. You invoke a method and an object. You don’t ask, “Did it get there?” The question doesn’t make any sense. But it is the question of distributed computing.</p>
-<p>So considering the fact that I can invoke a method on you and not know if it arrives, how does that change how I design things? For one thing, it puts a multiplier on the value of simplicity. The more things I can do with you, the more things I have to think about recovering from. That also means the conceptual cost of having more functionality has a big multiplier. In my nightmares, I’ll tell you it’s exponential, and not merely a multiplier. Because now I have to ask, “What is the recovery strategy for everything on which I interact with you?” That also implies that you want a limited number of possible recovery strategies.</p>
-</blockquote>
-<h2 id="Transactions"><a href="#Transactions" class="headerlink" title="Transactions"></a>Transactions</h2><blockquote>
-<p>So what are those recovery strategies? J2EE (Java 2 Platform, Enterprise Edition) and many distributed systems use transactions. Transactions say, “I don’t know if you received it, so I am forcing the system to act as if you didn’t.” I will abort the transaction. Then if you are down, you’ll come up a week from now and you’ll be told, “Forget about that. It never happened.” And you will.</p>
-<p>Transactions are easy to understand: I don’t know if things failed, so I make sure they failed and I start over again. That is a legitimate, straightforward way to deal with failure. It is not a cheap way however.</p>
-<p>Transactions tend to require multiple players, usually at least one more player than the number of transaction participants, including the client. And even if you can optimize out the extra player, there are still more messages that say, “Am I ready to go forward? Do you want to go forward? Do you think we should go forward? Yes? Then I think it’s time to go forward.” All of those messages have to happen.</p>
-<p>And even with a two-phase commit, there are some small windows that can leave you in ambiguous states. A human being eventually has to interrupt and say, “You know, that thing did go away and it’s never coming back. So don’t wait.” Say you have three participants in a transaction. Two of them agree to go forward and are waiting to be told to go. But the third one crashes at an inopportune time before it has a chance to vote, so the first two are stuck. There is a small window there. I think it has been proven that it doesn’t matter how many phases you add, you can’t make that window go away. You can only narrow it slightly.</p>
-<p>So the transactions approach isn’t perfect, although those kinds of problems happen rarely enough. Maybe instead of ten to the thirteenth, the probability is ten to the thirtieth. Maybe you can ignore it, I don’t know. But that window is certainly a worry.</p>
-<p>The main point about transactions is that it has overhead. You have to create the transaction and you have to abort it. One of the things that a container like J2EE does for you is that it hides a lot of that from you. Most things just know that there’s a transaction around them. If somebody thinks it should be aborted, it will be aborted. But most things don’t have to participate very directly in aborting the transaction. That makes it simpler.</p>
-</blockquote>
-<h2 id="Idempotency"><a href="#Idempotency" class="headerlink" title="Idempotency"></a>Idempotency</h2><blockquote>
-<p>I tend to prefer something called idempotency. You can’t solve all problems with it, but basically idempotency says that reinvoking the method will be harmless. It will give you an equivalent result as having invoked it once.</p>
-<p>If I want to manipulate a bank account, I send in an operation ID: “This is operation number 75. Please deduct $100 from this bank account.” If I get a failure, I just keep sending it until it gets through. If you’re the recipient, you say, “Oh, 75. I’ve seen that one, so I’ll ignore it.” It is a simple way to deal with partial failure. Basically, recovery is simple retry. Or, potentially, you give up by sending a cancel operation for the ID until that gets through. If you want to do that, though, you’re more likely to use transactions so you can abort them.</p>
-<p>Generally, with idempotency, everybody needs to know how to go forward. But people don’t often need to know how to go back. I don’t abort a transaction. I just repeatedly try again until I succeed. That means I need to know how to say to do this. I don’t have to deal with all sorts of ugly recovery most of the time.</p>
-<p>Now, what happens if failure increases on the network? You start sending messages more often. If that is a problem, for a long distance you can solve it by writing a check and buying more hardware. Hardware is much cheaper than programmers. Other ways of dealing with this tend to increase the system’s complexity, requiring more programmers.</p>
-</blockquote>
-<h2 id="Bill-Venners-1"><a href="#Bill-Venners-1" class="headerlink" title="Bill Venners"></a>Bill Venners</h2><blockquote>
-<p>Do you mean transactions?</p>
-</blockquote>
-<h2 id="Ken-Arnold-1"><a href="#Ken-Arnold-1" class="headerlink" title="Ken Arnold"></a>Ken Arnold</h2><blockquote>
-<p>Transactions on everything can increase complexity. I’m just talking about transactions and idempotency now, but other recovery mechanisms exist.</p>
-<p>If I just have to try everything twice, if I can simply reject the second request if something has already been done, I can just buy another computer and a better network—up to some limit, obviously. At some point, that’s no longer true. But a bigger computer is more reliable and cheaper than another programmer. I tend to like simple solutions and scaling problems that can be solved with checkbooks, even though I am a programmer myself.</p>
-</blockquote>
-<h2 id="Wide-Area-Distributed-Systems"><a href="#Wide-Area-Distributed-Systems" class="headerlink" title="Wide-Area Distributed Systems"></a>Wide-Area Distributed Systems</h2><h4 id="Bill-Venners-2"><a href="#Bill-Venners-2" class="headerlink" title="Bill Venners"></a>Bill Venners</h4><blockquote>
-<p>Is there anything in particular about Internet- wide distributed systems or large wide area networks that is different from smaller ones? Dealing with increased latency, for example?</p>
-</blockquote>
-<h4 id="Ken-Arnold-2"><a href="#Ken-Arnold-2" class="headerlink" title="Ken Arnold"></a>Ken Arnold</h4><blockquote>
-<p>Yes, latency has a lot to do with it. When you design anything, local or remote, efficiency one of the things you think about. Latency is an important issue. Do you make many little calls or one big call? One of the great things about Jini is that, if you can use objects, you can present an API whose natural model underneath deals with latency by batching up requests where it can. It adapts to the latency that it is in. So you can get away from some of it, but latency is a big issue.</p>
-<p>Another issue is of course security. Inside a corporate firewall you say, “We’ll do something straightforward, and if somebody is mucking around with it, we’ll take them to court.” But that is clearly not possible on the Internet; it is a more hostile environment. So you either have to make things not care, which is fine when you don’t care if somebody corrupts your data. Or, you better make it so they can’t corrupt your data. So aside from latency, security is the other piece to think about in widely distributed systems.</p>
-</blockquote>
-<h2 id="State-is-Hell"><a href="#State-is-Hell" class="headerlink" title="State is Hell"></a>State is Hell</h2><h4 id="Bill-Venners-3"><a href="#Bill-Venners-3" class="headerlink" title="Bill Venners"></a>Bill Venners</h4><blockquote>
-<p>What about state?</p>
-</blockquote>
-<h4 id="Ken-Arnold-3"><a href="#Ken-Arnold-3" class="headerlink" title="Ken Arnold"></a>Ken Arnold</h4><blockquote>
-<p>State is hell. You need to design systems under the assumption that state is hell. Everything that can be stateless should be stateless.</p>
-</blockquote>
-<h4 id="Bill-Venners-4"><a href="#Bill-Venners-4" class="headerlink" title="Bill Venners"></a>Bill Venners</h4><blockquote>
-<p>Define what you mean by that.</p>
-</blockquote>
-<h4 id="Ken-Arnold-4"><a href="#Ken-Arnold-4" class="headerlink" title="Ken Arnold"></a>Ken Arnold</h4><blockquote>
-<p>In this sense, state is essentially something held in one place on behalf of somebody who is in another place, something that is not reconstructible by the other entity that wants it. If I can reconstruct it, it’s called a cache. And caches are often OK. Caching strategies are their own branch of computer science, and you can screw them up. But as a general rule, I send you a bunch of information and you send me the shorthand for it. I start to interact with you using this shorthand. I pass the integer back to you to refer to the cached data: “I’m talking about interaction number 17.” And then you go down. I can send that same state to some equivalent service to you, and build myself back up. That kind of state is essentially a cache.</p>
-<p>Caching can get complex. It’s the question that Jini solves with leasing. If one of us goes down, when can the person holding the cache throw this stuff away? Leasing is a good answer to that. There are other answers, but leasing is a pretty elegant one.</p>
-<p>On the other hand, if you store information that I can’t reconstruct, then a whole host of questions suddenly surface. One question is, “Are you now a single point of failure?” I have to talk to you now. I can’t talk to anyone else. So what happens if you go down?</p>
-<p>To deal with that, you could be replicated. But now you have to worry about replication strategies. What if I talk to one replicant and modify some data, then I talk to another? Is that modification guaranteed to have already arrived there? What is the replication strategy? What kind of consistency do you need—tight or loose? What happens if the network gets partitioned and the replicants can’t talk to each other? Can anybody proceed?</p>
-<p>There are answers to these questions. A whole branch of computer science is devoted to replication. But it is a nontrivial issue. You can almost always get into some state where you can’t proceed. You no longer have a single point of failure. You have reduced the probability of not being able to proceed, but you haven’t eliminated it.</p>
-<p>If my interaction with you is stateless in the sense I’ve described—nothing more than a cache—then your failure can only slow me down if there’s an equivalent service to you. And that equivalent service can come up after you go down. It doesn’t necessarily have to be there in advance for failover.</p>
-<p>So, generally, state introduces a whole host of problems and complications. People have solved them, but they are hell. So I follow the rule: make everything you can stateless. If there is one piece of the system you can’t make stateless—it has to have state—to the extent possible make it hold all the state. Have as few stateful components as you can.</p>
-<p>If you end up with a system of five components and two of them have state, ask yourself if only one can have state. Because, assuming all components are critical, if either of the two stateful components goes down you are screwed. So you might as well have just one stateful component. Then at least four, instead of three, components have this wonderful feature of robustability. There are limits to how hard you should try to do that. You probably don’t want to put two completely unrelated things together just for that reason. You may want to implement them in the same place. But in terms of defining the interfaces and designing the systems, you should avoid state and then make as many components as possible stateless. The best answer is to make all components stateless. It is not always achievable, but it’s always my goal.</p>
-</blockquote>
-<h4 id="Bill-Venners-5"><a href="#Bill-Venners-5" class="headerlink" title="Bill Venners"></a>Bill Venners</h4><blockquote>
-<p>All these databases lying around are state. On the Web, every Website has a database behind it.</p>
-</blockquote>
-<h4 id="Ken-Arnold-5"><a href="#Ken-Arnold-5" class="headerlink" title="Ken Arnold"></a>Ken Arnold</h4><blockquote>
-<p>Sure, the file system underneath a Website, even if it’s just HTML, is a database. And that is one case where state is necessary. How am I going to place an order with you if I don’t trust you to hold onto it? So in that case, you have to live with state hell. But a lot of work goes into that dealing with that state. If you look at the reliable, high-performance sites, that is a very nontrivial problem to solve. It is probably the distributed state problem that people are most familiar with. Anyone who has dealt with any large scale, high availability, or high performance piece of the problem knows that state is hell because they’ve lived with that hell. So the question is, “Why have more hell than you need to have?” You have to try and avoid it. <strong><em>Avoid. Avoid. Avoid.</em></strong></p>
-</blockquote>
-<p>原文地址：<br><a href="http://www.artima.com/intv/distrib.html" title="design distributed system" target="_blank" rel="noopener">http://www.artima.com/intv/distrib.html</a>.</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2013,7 +1952,7 @@ setFoos([f1, f2])
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">154</span>
+                  <span class="site-state-item-count">155</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2035,7 +1974,7 @@ setFoos([f1, f2])
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

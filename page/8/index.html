@@ -269,6 +269,156 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2010/02/28/行为模式之observer/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2010/02/28/行为模式之observer/" itemprop="url">行为模式之Observer</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2010-02-28T23:41:00+08:00">
+                2010-02-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近项目中遇到一个需求：在服务器进行一次调度以后，要给客户端一个通知，而客户端在调用服务端的调度之前会进行通知的注册。这是一个典型的Observer模式，因此顺便将观察者模式再复习了一次，这个模式其实就只涉及到主题和观察者两个类，也相对比较简单，UML类图如下：</p>
+<p><img src="http://hi.csdn.net/attachment/201002/28/19059_1267372507LS0k.gif" alt=""></p>
+<p>顺序图：</p>
+<p><img src="http://hi.csdn.net/attachment/201002/28/19059_1267372507HwV1.gif" alt=""></p>
+<p>有了这两个图，观察者模式就一目了然了，这里在讲HF上面的对应的设计原则贴上来：</p>
+<p>1<strong>找出程序中会变化的方面，然后将和固定不变的方面相分离</strong>—&gt;在观察者模式中，会改变的是主题的状态，以及观察者的数目和类型。用这个模式，你可以改变依赖于主题状态的对象，却不必改变主题，这就叫提前规划！</p>
+<p>2<strong>针对接口编程，不针对实现编程</strong>–&gt;主题和观察者都是用接口：观察者利用主题的接口向主题注册，而主题利用观察者接口通知观察者。这样可以让两者之间运作正常，又同时具有松耦合的优点。</p>
+<p>3<strong>多用组合，少用继承</strong>–&gt;观察者模式利用&ldquo;组合&rdquo;将许多观察者组合进主题中，对象之间的这种关系不是通过继承产生的，而是在运行时利用组合的方式而产生的。</p>
+<p></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2010/01/19/深圳之行/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1971,152 +2121,6 @@ MyClass* receiver = new MyClass;
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/10/16/什么是设计模式/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2009/10/16/什么是设计模式/" itemprop="url">什么是设计模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-10-16T22:57:00+08:00">
-                2009-10-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/设计模式/" itemprop="url" rel="index">
-                    <span itemprop="name">设计模式</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Think In C++上面说，可以把模式的基本概念看做一般情况下程序设计的基本概念：增加一些抽象层(让我想到了沉思录上面经常说的一句话C++的惯用法用类来表示概念)。当人们对某事物进行抽象的时候，隔离特定的细节，最直接的动机之一就是为了<em><span style="color: #ff00ff;">变化的事物与不变的事物分离开</span></em>。做到这一点的另一个方法是，一旦发现程序中的某些部分可能被修改，那么就要阻止那些修改在代码中到处传播副作用。</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 设计模式的目标是封装变化。书中讲到这样就可以把继承和组合看做一种设计模式，但是由编程语言直接支持的特性不能被称为设计模式，毕竟设计模式应该是和语言无关的。</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 设计模式的分类：1创建型：用于怎样创建一个对象，通常包括隔离对象创建的细节，这样代码不依赖于对象是什么类型，因此在增加一种新的对象类型时不需要改变代码。2结构型：影响对象之间的连接方式，确保系统的变化不需要改变对象间的连接。3行为型：在程序中处理具有特定操作类型的对象，这些对象封装要执行的操作过程，比如解释一种语言，遍历一个序列或者实现一个算法。</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 今天就到这，明天开始学习每一个具体的模式。</p>
-<p></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2167,7 +2171,7 @@ MyClass* receiver = new MyClass;
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">154</span>
+                  <span class="site-state-item-count">155</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2189,7 +2193,7 @@ MyClass* receiver = new MyClass;
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

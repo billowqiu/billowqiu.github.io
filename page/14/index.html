@@ -269,6 +269,211 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2008/05/23/求素数/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2008/05/23/求素数/" itemprop="url">求素数</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2008-05-23T23:07:00+08:00">
+                2008-05-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据结构-算法/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构/算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <pre><code>&amp;nbsp;鉴于以前写程序那种不经过仔细思考及分析的不良习惯，觉得画流程翻还是很必要的，而且养成习惯后，对自己的思维锻炼以及高效正确编程有很大的好处。翻开大一时发的《C程序设计》第二章复习了一下，把上面一个很好的例子自己整理了一下，而且发现一个不错的画流程图的工具(Diagram Designer)。以下为全文：
+</code></pre><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<span>问题：将</span><span><font face="Times New Roman">1</font></span><span>到</span><span><font face="Times New Roman">1000</font></span><span>之间的素数打印出来。</span>
+
+<span>算法描述：“筛选”法，所谓“筛选法”指的是“</span><span><font face="Times New Roman">Eratosthenes</font></span><span>筛法”。他采取的方法是，在一张纸上写上</span><span><font face="Times New Roman">1</font></span><span>到</span><span><font face="Times New Roman">1000</font></span><span>全部整数，然后逐个判断它们是否是素数，找出一个非素数，就把它挖掉，最后剩下的就是素数。</span>
+
+<span style="mso-ascii-: yes">①</span><span><font face="Times New Roman"> 2 3 </font></span><span style="mso-ascii-: yes">④</span><span><font face="Times New Roman"> 5 </font></span><span style="mso-ascii-: yes">⑥</span><span><font face="Times New Roman"> 7 </font></span><span style="mso-ascii-: yes">⑧</span><span><font face="Times New Roman"> </font></span><span style="mso-ascii-: yes">⑨</span><span><font face="Times New Roman"> </font></span><span style="mso-ascii-: yes">⑩</span><span>……</span><font face="Times New Roman"> </font><br><br><span>具体做法如下：</span>
+
+<span style="mso-ascii-: yes">⑴</span><span>先将</span><span><font face="Times New Roman">1</font></span><span>挖掉（因为</span><span><font face="Times New Roman">1</font></span><span>不是素数）。</span>
+
+<span style="mso-ascii-: yes">⑵</span><span>用</span><span><font face="Times New Roman">2</font></span><span>去除它后面的各个数，把能被</span><span><font face="Times New Roman">2</font></span><span>整除的数挖掉，即把</span><span><font face="Times New Roman">2</font></span><span>的倍数挖掉。</span>
+
+<span style="mso-ascii-: yes">⑶</span><span>用</span><span><font face="Times New Roman">3</font></span><span>去除它后面的各数，把</span><span><font face="Times New Roman">3</font></span><span>的倍数挖掉</span>
+
+<span style="mso-ascii-: yes">⑷</span><span>分别用</span><span><font face="Times New Roman">4</font></span><span>，</span><span><font face="Times New Roman">5</font></span><span>…各数作为除数去除这些数以后的各数。这个过程一直进行到在除数后面的数已经全被挖掉为止。事实上，只需进行到</span>
+
+<span>上面的算法可以表示为：</span>
+
+<span style="mso-ascii-: yes">⑴</span><span>挖去</span><span><font face="Times New Roman">1</font></span>
+
+<span style="mso-ascii-: yes">⑵</span><span>用下一个未被挖去的数</span><span><font face="Times New Roman">p</font></span><span>去除</span><span><font face="Times New Roman">p</font></span><span>后面的各数，把</span><span><font face="Times New Roman">p</font></span><span>的倍数挖掉。</span>
+
+<span style="mso-ascii-: yes">⑶</span><span>检查</span><span><font face="Times New Roman">p</font></span><span>是否小于的整数部分（如果</span><span><font face="Times New Roman">n=1000</font></span><span>，则检查</span><span><font face="Times New Roman">p&lt;31</font></span><span>？），如果是，则返回</span><span style="mso-ascii-: yes">⑵</span><span>继续执行，否则就结束。</span>
+
+<span style="mso-ascii-: yes">⑷</span><span>纸上剩下的就是素数。</span>
+
+<span>解题的基本思路有了，但要变成计算机的操作，还要做进一步的分析，如怎样判断一个数是否已被挖掉，怎样找出一个数</span><span><font face="Times New Roman">p</font></span><span>的倍数，怎样打印出来未被挖掉的数。</span>
+
+<span>用自顶向下逐步细化的方法来处理这个问题，先进行“顶层设计”，见下图。也可以用流程图进行逐步细化。流程图</span><span><font face="Times New Roman">1</font></span><span>表示流程的粗略情况，把要做的三部分工作分别用</span><span><font face="Times New Roman">A</font></span><span>、</span><span><font face="Times New Roman">B</font></span><span>、</span><span><font face="Times New Roman">C</font></span><span>表示。 </span><br><span><br><div forimg="1"><a href="http://hiphotos.baidu.com/qiutao%5F2008/pic/item/50a29d363623c4cea2cc2b28.jpg" target="_blank" rel="noopener"><img src="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/50a29d363623c4cea2cc2b28.jpg" alt=""></a></div></span>
+
+<span>这三部分还不够具体，要进一步细化。</span><span><font face="Times New Roman">A</font></span><span>部分可以细化为图</span><span><font face="Times New Roman">A</font></span><span>。先输入</span><span><font face="Times New Roman">n</font></span><span>，然后将</span><span><font face="Times New Roman">1</font></span><span>输入给</span><span><font face="Times New Roman">X1</font></span><span>，</span><span><font face="Times New Roman">2</font></span><span>输入</span><span><font face="Times New Roman">X2</font></span><span>，</span><span><font face="Times New Roman">1000</font></span><span>输入给</span><font face="Times New Roman"><span>X</span><span style="FONT-SIZE: 7.5pt">1000</span></font><span style="mso-ascii-: 10.5pt">。</span>
+
+<span style="mso-bidi-font-size: 10.5pt"><a href="http://hiphotos.baidu.com/qiutao%5F2008/pic/item/5bb5041bf679f1c6ac6e7529.jpg" target="_blank" rel="noopener"><img src="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/5bb5041bf679f1c6ac6e7529.jpg" alt=""></a></span>
+
+<span style="mso-ascii-: 10.5pt">B部分可以细化为图</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">B</font></span><span style="mso-ascii-: 10.5pt">。</span>
+
+<span style="mso-bidi-font-size: 10.5pt"><a href="http://hiphotos.baidu.com/qiutao%5F2008/pic/item/735064fb189887314e4aea2a.jpg" target="_blank" rel="noopener"><img src="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/735064fb189887314e4aea2a.jpg" alt=""></a></span>
+
+<span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">B</font></span><span style="mso-ascii-: 10.5pt">中的</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">B1</font></span><span style="mso-ascii-: 10.5pt">和</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">B2</font></span><span style="mso-ascii-: 10.5pt">不能再分了。</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">B1</font></span><span style="mso-ascii-: 10.5pt">处理的方法是：使</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">X1=0</font></span><span style="mso-ascii-: 10.5pt">，即哪个数不是素数，就使它等于</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">0</font></span><span style="mso-ascii-: 10.5pt">，以后把不等于</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">0</font></span><span style="mso-ascii-: 10.5pt">的数打印处理就是所求的素鼠表。</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">B3</font></span><span style="mso-ascii-: 10.5pt">中的循环体内以</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">D</font></span><span style="mso-ascii-: 10.5pt">标志的部分还要进一步细化，对</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">D</font></span><span style="mso-ascii-: 10.5pt">细化为图</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">D</font></span><span style="mso-ascii-: 10.5pt">。</span>
+
+<span style="mso-bidi-font-size: 10.5pt"><a href="http://hiphotos.baidu.com/qiutao%5F2008/pic/item/74cd06160bb4410b962b432b.jpg" target="_blank" rel="noopener"><img src="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/74cd06160bb4410b962b432b.jpg" alt=""></a></span>
+
+<div forimg="1"></div>
+
+<p>图<span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">D</font></span><span style="mso-ascii-: 10.5pt">中的</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">E</font></span><span style="mso-ascii-: 10.5pt">部分还不够具体，再进一步细化为图</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">E</font></span><span style="mso-ascii-: 10.5pt">。</span></p>
+<span style="mso-ascii-: 10.5pt"><a href="http://hiphotos.baidu.com/qiutao%5F2008/pic/item/e957c817ac1353124b90a735.jpg" target="_blank" rel="noopener"><img src="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/e957c817ac1353124b90a735.jpg" alt=""></a></span>
+
+<span style="mso-ascii-: 10.5pt">图</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">E</font></span><span style="mso-ascii-: 10.5pt">中的</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">F</font></span><span style="mso-ascii-: 10.5pt">部分又细化为图</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">F</font></span><span style="mso-ascii-: 10.5pt">，因为首先要判断某一个</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">Xj</font></span><span style="mso-ascii-: 10.5pt">是否已经被挖掉，如已被挖掉则不必考虑被</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">Xi</font></span><span style="mso-ascii-: 10.5pt">除。至此，已不能也不需要再分解了。</span>
+
+<span style="mso-bidi-font-size: 10.5pt"><span style="mso-ascii-: 10.5pt"><a href="http://hiphotos.baidu.com/qiutao%5F2008/pic/item/db517951464f5e9c8d543035.jpg" target="_blank" rel="noopener"><img src="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/db517951464f5e9c8d543035.jpg" alt=""></a></span></span>
+
+<span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">图1</font></span><span style="mso-ascii-: 10.5pt">中的</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">C</font></span><span style="mso-ascii-: 10.5pt">部分进行细化，得图</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">C1</font></span><span style="mso-ascii-: 10.5pt">。</span>
+
+<span style="mso-bidi-font-size: 10.5pt"><a href="http://hiphotos.baidu.com/qiutao%5F2008/pic/item/2742ef0180aa521d7aec2c31.jpg" target="_blank" rel="noopener"><img src="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/2742ef0180aa521d7aec2c31.jpg" alt=""></a></span>
+
+<div forimg="1"></div>
+
+<p>再对图<span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">C1</font></span><span style="mso-ascii-: 10.5pt">中的</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">G</font></span><span style="mso-ascii-: 10.5pt">部分进行细化，得图</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">G</font></span><span style="mso-ascii-: 10.5pt">。</span></p>
+<span style="mso-bidi-font-size: 10.5pt"><a href="http://hiphotos.baidu.com/qiutao%5F2008/pic/item/2cd0d4083c67e0c263d98637.jpg" target="_blank" rel="noopener"><img src="http://hiphotos.baidu.com/qiutao%5F2008/abpic/item/2cd0d4083c67e0c263d98637.jpg" alt=""></a></span>
+
+<span style="mso-ascii-: 10.5pt">至此，已将图</span><span style="mso-bidi-font-size: 10.5pt"><font face="Times New Roman">1</font></span><span style="mso-ascii-: 10.5pt">分解为能用三种基本结构表示的基本操作了。将以上这些图组合起来就可以得到最终的总流程图了，根据这个细化了的流程图已经可以用任何高级语言编写程序了。</span>
+
+<p>有时间再把整个流程图组合在一起，然后把对应的程序也写一下，慢慢来吧，要走的路还长呢！&nbsp;&nbsp;&nbsp;</p>
+<p></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2008/05/14/mfc透明控件的超级简单实现/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1753,153 +1958,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2007/09/01/float-toolbar-and-dock-toolbar/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2007/09/01/float-toolbar-and-dock-toolbar/" itemprop="url">Float ToolBar and dock ToolBar</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2007-09-01T18:37:00+08:00">
-                2007-09-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/VC/" itemprop="url" rel="index">
-                    <span itemprop="name">VC</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <pre><code>&lt;TABLE style=&quot;TABLE-LAYOUT: fixed&quot;&gt;
-</code></pre><p><tbody></tbody></p>
-<p><tr></tr></p>
-<p><td></td></p>
-<p><div class="cnt" id="blog_text"></div></p>
-<p><div><font face="黑体" size="4">A docked toolbar is a child of the frame window it’s docked to, but a floating toolbar is a child of the mini frame window that surrounds it. The mini frame window is a popup window owned by the frame window, but it’s not a child of the frame window. (A popup window is a window with the style WS_POPUP; a child window has the WS_CHILD style instead.) The distinction is important because popup windows owned by a frame window are destroyed before the frame window is destroyed. Child windows, on the other hand, are destroyed <em>after</em> their parents are destroyed. A floating toolbar no longer exists when the frame window’s <em>OnDestroy</em> function is called.</font></div><br></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1950,7 +2008,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">154</span>
+                  <span class="site-state-item-count">155</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1972,7 +2030,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

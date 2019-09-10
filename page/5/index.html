@@ -269,6 +269,185 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2012/08/03/小议tcp的mss最大分段以及mtu/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2012/08/03/小议tcp的mss最大分段以及mtu/" itemprop="url">小议TCP的MSS(最大分段)以及MTU</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2012-08-03T23:35:17+08:00">
+                2012-08-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/网络通讯/" itemprop="url" rel="index">
+                    <span itemprop="name">网络通讯</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/网络通讯/转载/" itemprop="url" rel="index">
+                    <span itemprop="name">转载</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>原文链接:<a href="http://cisco.chinaitlab.com/TCP/37527.html" target="_blank" rel="noopener">http://cisco.chinaitlab.com/TCP/37527.html</a></p>
+<p><strong>[背景知识]</strong></p>
+<p>MTU: Maxitum Transmission Unit 最大传输单元</p>
+<p>MSS: Maxitum Segment Size 最大分段大小（偶是直译，翻译的不好，不要打俺PP）</p>
+<p>PPPoE: PPP Over Ethernet（在以太网上承载PPP协议）</p>
+<p><strong>[分析过程]</strong></p>
+<p>先说说这MTU最大传输单元，这个最大传输单元实际上和链路层协议有着密切的关系，让我们先仔细回忆一下EthernetII帧的结构DMAC+SMAC+Type+Data+CRC</p>
+<p>由于以太网传输电气方面的限制，每个以太网帧都有最小的大小64bytes最大不能超过1518bytes，对于小于或者大于这个限制的以太网帧我们都可以视之为错误的数据帧，一般的以太网转发设备会丢弃这些数据帧。</p>
+<p>（注：小于64Bytes的数据帧一般是由于以太网冲突产生的“碎片”或者线路干扰或者坏的以太网接口产生的，对于大于1518Bytes的数据帧我们一般把它叫做Giant帧，这种一般是由于线路干扰或者坏的以太网口产生）</p>
+<p>由于以太网EthernetII最大的数据帧是1518Bytes这样，刨去以太网帧的帧头（DMAC目的MAC地址48bit=6Bytes+SMAC源MAC地址48bit=6Bytes+Type域2bytes）14Bytes和帧尾CRC校验部分4Bytes（这个部门有时候大家也把它叫做FCS），那么剩下承载上层协议的地方也就是Data域最大就只能有1500Bytes这个值我们就把它称之为MTU。这个就是网络层协议非常关心的地方，因为网络层协议比如IP协议会根据这个值来决定是否把上层传下来的数据进行分片。就好比一个盒子没法装下一大块面包，我们需要把面包切成片，装在多个盒子里面一样的道理。</p>
+<p>当两台远程PC互联的时候，它们的数据需要穿过很多的路由器和各种各样的网络媒介才能到达对端，网络中不同媒介的MTU各不相同，就好比一长段的水管，由不同粗细的水管组成（MTU不同 ）通过这段水管最大水量就要由中间最细的水管决定。</p>
+<p>对于网络层的上层协议而言（我们以TCP/IP协议族为例）它们对水管粗细不在意它们认为这个是网络层的事情。网络层IP协议会检查每个从上层协议下来的数据包的大小，并根据本机MTU的大小决定是否作“分片”处理。分片最大的坏处就是</p>
+<p>降低了传输性能，本来一次可以搞定的事情，分成多次搞定，所以在网络层更高一层（就是传输层）的实现中往往会对此加以注意！有些高层因为某些原因就会要求我这个面包不能切片，我要完整地面包，所以会在IP数据包包头里面加上一</p>
+<p>个标签：DF（Donot Fragment）。这样当这个IP数据包在一大段网络（水管里面）传输的时候，如果遇到MTU小于IP数据包的情况，转发设备就会根据要求丢弃这个数据包。然后返回一个错误信息给发送者。这样往往会造成某些通讯上的问题，不过幸运的是大部分网络链路都是MTU1500或者大于1500。</p>
+<p>对于UDP协议而言，这个协议本身是无连接的协议，对数据包的到达顺序以及是否正确到达不甚关心，所以一般UDP应用对分片没有特殊要求。</p>
+<p>对于TCP协议而言就不一样了，这个协议是面向连接的协议，对于TCP协议而言它非常在意数据包的到达顺序以及是否传输中有错误发生。所以有些TCP应用对分片有要求—不能分片（DF）。</p>
+<p>花开两朵，各表一枝，说完MTU的故事我们该讲讲今天的第二个猪脚—PPPoE所谓PPPoE就是在以太网上面跑PPP协议，有人奇怪了，PPP协议和Ethernet不都是链路层协议吗？怎么一个链路层跑到另外一个链路层上面去了，难道升级成网络层协议了不成。其实这是个误区：就是某层协议只能承载更上一层协议。</p>
+<p>为什么会产生这种奇怪的需求呢？这是因为随着宽带接入（这种宽带接入一般为Cable Modem或者xDSL或者以太网的接入）由于以太网缺乏认证计费机制而传统运营商是通过PPP协议来对拨号等接入服务进行认证计费的，所以就出了这么一个怪胎：PPPoE。（有关PPPoE的详细介绍参见V大以及本站其他成员的一些介绍文章，我就不啰里啰唆的了）</p>
+<p>PPPoE带来了好处，也带来了一些坏处，比如：二次封装耗费资源，降低了传输效能等等，这些坏处俺也不多说了，最大的坏处就是PPPoE导致MTU变小了以太网的MTU是1500，再减去PPP的包头包尾的开销（8Bytes），就变成1492。</p>
+<p>如果两台主机之间的某段网络使用了PPPoE那么就会导致某些不能分片的应用无法通讯。</p>
+<p>这个时候就需要我们调整一下主机的MTU，通过降低主机的MTU，这样我们就能够顺利地进行通讯了。</p>
+<p>当然对于TCP应用而言还有另外的解决方案。</p>
+<p>马上请出今天第三位猪脚：MSS。</p>
+<p>MSS最大传输大小的缩写，是TCP协议里面的一个概念。</p>
+<p>MSS就是TCP数据包每次能够传输的最大数据分段。为了达到最佳的传输效能TCP协议在建立连接的时候通常要协商双方的MSS值，这个值TCP协议在实现的时候往往用MTU值代替（需要减去IP数据包包头的大小20Bytes和TCP数据段的包头20Bytes）所以往往MSS为1460。通讯双方会根据双方提供的MSS值得最小值确定为这次连接的最大MSS值。</p>
+<p>介绍完这三位猪脚</p>
+<p>我们回过头来看前言里面的那个问题，我们试想一下，如果我们在中间路由器上把每次TCP连接的最大MSS进行调整这样使得通过PPPoE链路的最大MSS值加上数据包头包尾不会超过PPPoE的MTU大小1492这样就不会造成无法通讯的问题.所以上面的问题可以通过ip tcp adjust-mss 1452来解决。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2012/07/31/use-vim-like-an-ide/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1795,157 +1974,6 @@ return 0;
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2011/04/16/centos5-5下scribe写入数据到hdfs配置方法/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2011/04/16/centos5-5下scribe写入数据到hdfs配置方法/" itemprop="url">CentOS5.5下scribe写入数据到HDFS配置方法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2011-04-16T01:55:00+08:00">
-                2011-04-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/系统编程/" itemprop="url" rel="index">
-                    <span itemprop="name">系统编程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>1按照<a href="http://blog.csdn.net/ToCpp/archive/2011/04/10/6314374.aspx" target="_blank" rel="noopener">CentOS 5.5 下配置Hadoop 0.21单节点</a><br>一文中的方法配置Hadoop</p>
-<p>2编译scribe，支持hdfs<br>2.1下载thrift,libevent,boost等库，可以都下载最新版本，基本上都是make &amp; make install<br>2.2下载最新版scribe-2.2，之前在网上看到说scribe有很多bug，必须在当前开发版本才能写入HDFS，试了好久没成功，也以为确实是代码的问题，现在发现不是这个问题，直接<a href="https://github.com/facebook/scribe" target="_blank" rel="noopener">下载</a>该版本<br>2.3在scribe源码包里面bootstrap.sh，按照文档上的说法是可以一步到位的即</p>
-<p>./configure CPPFLAGS=”-DHAVE_INTTYPES_H -DHAVE_NETINET_IN_H -I/data/billowqiu/jdk1.6.0_25/include -I/data/billowqiu/jdk1.6.0_25/include/linux -I/data/billowqiu/hadoop-0.20.1+169.89/src/c++/libhdfs” LDFLAGS=”-L/data/billowqiu/hadoop-0.20.1+169.89/src/c++/libhdfs/lib -L/data/billowqiu/jdk1.6.0_25/jre/lib/amd64/server” –with-hadooppath=/data/billowqiu/hadoop-0.20.1+169.89 –enable-hdfs，实在不行直接修改Makefile也可以，先./configure –enable-hdfs，然后修改相应的src目录下面的Makefile，将以下字段修改如下：CPPFLAGS = -I/usr/local/lib/jdk1.6.0_23/include -I/usr/local/lib/jdk1.6.0_23/include/linux</p>
-<p>上面的JDK路径以机器上面的实际路径为准。</p>
-<p>貌似在静态链接boost会出现“undefined reference to `boost::system::generic_category()”，通过将将-lboost_system -lboost_filesystem放到链接库最后可以解决。</p>
-<p>$ cd src $ g++ -Wall -O3 -L/usr/lib -o scribed store.o store_queue.o conf.o file.o conn_pool.o scribe_server.o network_dynamic_config.o dynamic_bucket_updater.o env_default.o -L/usr/local/lib -L/usr/local/lib -L/usr/local/lib -lfb303 -lthrift -lthriftnb -levent -lpthread libscribe.a libdynamicbucketupdater.a -lboost_system -lboost_filesystem</p>
-<p>&nbsp;</p>
-<p>2.4拷贝hadoop-0.21.0/hdfs/src/c++/libhdfs/hdfs.h文件到scribe/src目录下，libhdfs其实就是通过JNI让C/C++调用HDFS接口，在hadoop-0.21.0/hdfs/src/c++/libhdfs目录下面执行如下操作<br>./configure –enable-shared JVM_ARCH=tune=k8 –prefix=<code>pwd</code>/nativelib<br>./make install<br>这时会在nativelib/lib下面生成5个文件，将其都拷贝到/usr/local/lib下面，执行ldconfig<br>2.5编译scribe，在scribe/src目录下面执行./make，即可生成scribed文件，<br>2.6按照scribe/examples目录下面的配置文件写个简单的支持HDFS的配置文件simple_hdfs_example.conf：<br>port=1463<br>max_msg_per_second=2000000<br>check_interval=1<br>max_queue_size=100000000<br>num_thrift_server_threads=2</p>
-<h1 id="DEFAULT-write-all-messages-to-hadoop"><a href="#DEFAULT-write-all-messages-to-hadoop" class="headerlink" title="DEFAULT - write all messages to hadoop"></a>DEFAULT - write all messages to hadoop</h1><p>&lt;store&gt;<br>category=default<br>target_write_size=20480<br>type=file<br>fs_type=hdfs<br>file_path=hdfs://localhost:9000/scribedata<br>create_symlink=no<br>use_hostname_sub_directory=yes<br>base_filename=thisisoverwritten<br>max_size=1000000000<br>rotate_period=100s<br>add_newlines=1<br>&lt;/store&gt;<br>&lt;store&gt;<br>category=qt<br>target_write_size=20480<br>type=file<br>fs_type=hdfs<br>file_path=hdfs://localhost:9000/scribedata<br>create_symlink=no<br>use_hostname_sub_directory=yes<br>base_filename=thisisoverwritten<br>max_size=1000000000<br>rotate_period=100s<br>add_newlines=1<br>&lt;/store&gt;<br>2.7到处libhdfs库需要使用的jar路径即CLASSPATH，具体需要哪些不太清楚，<br>官方文档上建议将hadoop/lib目录下所有的库的加入，下面是我导出的：<br>export CLASSPATH=$CLASSPATH:/xxx/hadoop-0.21.0/hadoop-common-0.21.0.jar:/xxx/hadoop-0.21.0/hadoop-hdfs-0.21.0.jar:/xxx/hadoop-0.20.1+152/contrib/scribe-log4j/hadoop-0.20.1+152-scribe-log4j.jar:/xxx/hadoop-0.21.0/lib/commons-logging-1.1.1.jar:/xxx/hadoop-0.21.0/lib/commons-logging-api-1.1.jar:/xxx/hadoop-0.21.0/lib/core-3.1.1.jar:/xxx/hadoop-0.21.0/lib/log4j-1.2.15.jar<br>XXX你懂的。</p>
-<p>2.8可以执行scribe了， ./scribed ../examples/simple_hdfs_example.conf<br>2.9通过发送工具发送日志到scribe，echo “Successful write data to HDFS,I am qiutao” | ./scribe_cat qt<br>3.10在hadoop目录下面执行bin/hadoop dfs -lsr /scribedata即可看到相应的数据生成了。<br>整个过程确实比较繁琐，尤其要注意2.4，一定要在自己机器上面编译libhdfs库，否则会出现一些莫名其妙的问题，<br>基本上都是抛出的java异常，在这个上面吃了不少亏，终于在自己机器上面写入HDFS了，一步步的也学到了不少东西，<br>留作以后备用。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1996,7 +2024,7 @@ return 0;
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">154</span>
+                  <span class="site-state-item-count">155</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2018,7 +2046,7 @@ return 0;
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
