@@ -269,6 +269,180 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2012/11/23/使用strace和perf进行性能剖析/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2012/11/23/使用strace和perf进行性能剖析/" itemprop="url">使用strace和perf进行性能剖析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2012-11-23T20:38:04+08:00">
+                2012-11-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/系统编程/" itemprop="url" rel="index">
+                    <span itemprop="name">系统编程</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/系统编程/网络通讯/" itemprop="url" rel="index">
+                    <span itemprop="name">网络通讯</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>写了一个小型的udp代理程序，刚刚测试发现性能没有达到预期。通过以下步骤进行了简单分析：</p>
+<h1 id="strace-p-pid-c-o-strace-log"><a href="#strace-p-pid-c-o-strace-log" class="headerlink" title="strace -p  $pid -c -o strace.log"></a>strace -p  $pid -c -o strace.log</h1><h1 id="cat-starce-log"><a href="#cat-starce-log" class="headerlink" title="cat starce.log"></a>cat starce.log</h1><p>System call usage summary for 32 bit mode:<br>% time     seconds         usecs/call                  calls             errors syscall</p>
+<hr>
+<p>47.16    0.018374                        0               2397064           sendmsg<br>26.21    0.010212                        0               2397065           recvmsg<br>12.93    0.005036                       0               2397076           gettimeofday<br>8.42    0.003282                        0              1198532            epoll_wait<br>5.28    0.002057                        0               1198538           time<br>0.00    0.000000                      0               6                        write<br>0.00    0.000000                      0               6                        epoll_ctl</p>
+<hr>
+<p>100.00    0.038961                                    9588287           total</p>
+<p>可以看到除网络相关的系统调用外，gettimeofday和time调用比较频繁，一时也没有找到程序中哪里有该调用，再通过perf top -p $pid获得如下输出</p>
+<p>samples          pcnt     function                                           DSO</p>
+<p>2304.00         22.3%     <strong>random_r                               /lib/libc-2.12.so<br>539.00          5.2%     </strong>srandom_r                                  /lib/libc-2.12.so<br>439.00          4.3%     copy_user_generic_string            [kernel.kallsyms]<br>356.00          3.5%     _spin_lock                                        [kernel.kallsyms]<br>261.00          2.5%     ia32_sysenter_target                      [kernel.kallsyms]<br>259.00          2.5%     ipt_do_table                                     [kernel.kallsyms]</p>
+<p>突然想起有个生成seq的函数里面有rand和gettimeofday，经过简单优化，重新测试性能翻倍。</p>
+<p><strong>PS:strace果然是神器啊</strong></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2012/11/23/关于内存碎片的一点笔记/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1773,162 +1947,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2012/09/06/python之命令行解析和运行外部命令/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2012/09/06/python之命令行解析和运行外部命令/" itemprop="url">python之命令行解析和运行外部命令</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2012-09-06T12:54:25+08:00">
-                2012-09-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近在做一个删除日志的脚步过程中用到了python，涉及到了命令行解析，运行外部程序，xml解析等。</p>
-<p>Python中的命令行解析有几种方式，比如较古老的getopt，由于个人不太熟悉，选择了使用更方便的optparse.OptionParser，使用上非常像boost.program_option；运行外部程序也有多种方式，有类似system的调用和popen族，前者方便使用，但是不能得到命令运行的输出，后者则没有这个限制，帮助文档上面也比较推荐使用，以下是一个简单的demo，仅仅作为一个备忘吧。</p>
-<p><pre class="brush:python">import shlex, subprocess<br>import optparse</pre></p>
-<p>def option_parse():<br>    parser = optparse.OptionParser()<br>    parser.add_option(“-d”, “–duration”, dest=”duration”, default=”30”, help=”the duration need to delete from hadoop”)<br>    parser.add_option(“-f”, “–cfg”, dest=”cfgfile”, default=”server_config.xml”, help=”config file”)<br>    parser.add_option(“-q”, “–quiet”, action=”store_false”, dest=”verbose”, default=True, help=”don’t print status messages to stdout”)</p>
-<pre><code>return parser.parse_args()
-</code></pre><p>def run_cmd(cmd):<br>    try:<br>        args = shlex.split(str(cmd))</p>
-<pre><code>    #args = shlex.split(cmd)
-    print args
-    p = subprocess.Popen(args, stdout=subprocess.PIPE)
-    (output, err) = p.communicate()
-    return output
-except Exception,e:
-    print e
-    return &quot;&quot;
-</code></pre><p>option_parse()<br>在run_cmd函数中，如果使用注释部分代码，有可能会出现编码方面的问题，具体为什么没有深究，加上str转换就好了。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1979,7 +1997,7 @@ except Exception,e:
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">155</span>
+                  <span class="site-state-item-count">156</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1990,7 +2008,7 @@ except Exception,e:
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

@@ -269,6 +269,179 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2006/12/25/派生类的拷贝构造函数/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2006/12/25/派生类的拷贝构造函数/" itemprop="url">派生类的拷贝构造函数</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2006-12-25T18:20:00+08:00">
+                2006-12-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C++</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <pre><code>&lt;DIV class=cnt id=blog_text&gt;
+</code></pre><p>刚刚弄了一个关于派生类的实验，里面涉及到了派生类的拷贝构造函数，这时才发现自己在这个知识点上还很模糊。在CSDN上面看了下相关的一篇文章后，稍微有了点感觉。现总以一个例子总结如下：</p>
+<p>情况(1). 派生类的copy&nbsp;&nbsp; constructor未定义</p>
+<p>#include&nbsp;&nbsp; &lt;iostream&gt;&nbsp;&nbsp;<br>using&nbsp;&nbsp; namespace&nbsp;&nbsp; std&nbsp;&nbsp; ;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;<br>class&nbsp;&nbsp; base&nbsp;&nbsp;<br>{&nbsp;&nbsp;<br>public:&nbsp;&nbsp;<br>base()&nbsp;&nbsp; {&nbsp;&nbsp; cout&nbsp;&nbsp; &lt;&lt;&nbsp;&nbsp; “base::base()”&nbsp;&nbsp; &lt;&lt;&nbsp;&nbsp; endl&nbsp;&nbsp; ;&nbsp;&nbsp; }&nbsp;&nbsp;<br>base(&nbsp;&nbsp; const&nbsp;&nbsp; base&amp;&nbsp;&nbsp; )&nbsp;&nbsp; {&nbsp;&nbsp; cout&nbsp;&nbsp; &lt;&lt;&nbsp;&nbsp; “base::base(&nbsp;&nbsp; const&nbsp;&nbsp; base&amp;)”&nbsp;&nbsp; &lt;&lt;&nbsp;&nbsp; endl&nbsp;&nbsp; ;&nbsp;&nbsp; }&nbsp;&nbsp;<br>virtual&nbsp;&nbsp; ~base()&nbsp;&nbsp; {&nbsp;&nbsp; cout&nbsp;&nbsp; &lt;&lt;&nbsp;&nbsp; “base::~base()”&nbsp;&nbsp; &lt;&lt;&nbsp;&nbsp; endl&nbsp;&nbsp; ;&nbsp;&nbsp; }&nbsp;&nbsp;<br>};&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;<br>class&nbsp;&nbsp; child&nbsp;&nbsp; :&nbsp;&nbsp; public&nbsp;&nbsp; base&nbsp;&nbsp;<br>{&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;<br>public:&nbsp;&nbsp;<br>child()&nbsp;&nbsp; {&nbsp;&nbsp; cout&nbsp;&nbsp; &lt;&lt;&nbsp;&nbsp; “child::child()”&nbsp;&nbsp;&nbsp;&nbsp; &lt;&lt;&nbsp;&nbsp; endl&nbsp;&nbsp; ;&nbsp;&nbsp; }&nbsp;&nbsp;<br>/<em>——————————————————————&nbsp;&nbsp;<br>child(&nbsp;&nbsp; const&nbsp;&nbsp; child&amp;&nbsp;&nbsp; )&nbsp;&nbsp; {&nbsp;&nbsp; cout&nbsp;&nbsp; &lt;&lt;&nbsp;&nbsp; “child::child(&nbsp;&nbsp; const&nbsp;&nbsp; child&amp;&nbsp;&nbsp; )” &lt;&lt;&nbsp;&nbsp; endl&nbsp;&nbsp; ;&nbsp;&nbsp; }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>——————————————————————-</em>/&nbsp;&nbsp;<br>~child()&nbsp;&nbsp; {&nbsp;&nbsp; cout&nbsp;&nbsp; &lt;&lt;&nbsp;&nbsp; “child::~child()”&nbsp;&nbsp; &lt;&lt;&nbsp;&nbsp; endl&nbsp;&nbsp; ;&nbsp;&nbsp; }&nbsp;&nbsp;<br>int&nbsp;&nbsp; test(int&nbsp;&nbsp; i)&nbsp;&nbsp; {&nbsp;&nbsp; cout&nbsp;&nbsp; &lt;&lt;&nbsp;&nbsp; “int&nbsp;&nbsp; child::test(int)”&nbsp;&nbsp; &lt;&lt;&nbsp;&nbsp; endl&nbsp;&nbsp; ;&nbsp;&nbsp;</p>
+<p>return&nbsp;&nbsp; 0&nbsp;&nbsp; ;&nbsp;&nbsp; }&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;<br>};&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;<br>int main()&nbsp;&nbsp;<br>{&nbsp;&nbsp;<br>child&nbsp;&nbsp; c1&nbsp;&nbsp; ;&nbsp;&nbsp;<br>cout&nbsp;&nbsp; &lt;&lt;&nbsp;&nbsp; “—————————-“&nbsp;&nbsp; &lt;&lt;&nbsp;&nbsp; endl&nbsp;&nbsp; ;&nbsp;&nbsp;<br>child&nbsp;&nbsp; c2(c1)&nbsp;&nbsp; ;&nbsp;&nbsp;<br>cout&nbsp;&nbsp; &lt;&lt;&nbsp;&nbsp; “—————————-“&nbsp;&nbsp; &lt;&lt;&nbsp;&nbsp; endl&nbsp;&nbsp; ;&nbsp;&nbsp;<br>}&nbsp;&nbsp;<br>输出结果:&nbsp;&nbsp;<br>base::base()&nbsp;&nbsp;<br>child::child()&nbsp;&nbsp;<br>—————————-&nbsp;&nbsp;<br>base::base(&nbsp;&nbsp; const&nbsp;&nbsp; base&amp;)<br>—————————-&nbsp;&nbsp;<br>child::~child()&nbsp;&nbsp;<br>base::~base()&nbsp;&nbsp;<br>child::~child()&nbsp;&nbsp;<br>base::~base()&nbsp;&nbsp;</p>
+<p>注意 child&nbsp;&nbsp; c2(c1)&nbsp;&nbsp; ;&nbsp;&nbsp; 调用了基类的拷贝构造函数，这是为什么呢？因为派生类没有显式定义自己的拷贝构造函数，而基类定义了。首先child公有继承base，且base::copy&nbsp;&nbsp; ctor也是public的，那么对child类而言，基类copy&nbsp;&nbsp; ctor是可见的。 child&nbsp;&nbsp; c2(c1)&nbsp;&nbsp; ;&nbsp;&nbsp; 这句，编译器先找child自己的copy&nbsp;&nbsp; ctor，没有。这时就去找基类的copy&nbsp;&nbsp; ctor。由于它的参数是这样定义的：const&nbsp;&nbsp; base&amp;&nbsp;&nbsp; ，即用到了基类对象的引用，所以这里有多态的能力，比如child&nbsp;&nbsp; c2(c1)&nbsp;&nbsp; ;</p>
+<p>看下面这个例子</p>
+<p>#include&nbsp;&nbsp; &lt;iostream&gt;&nbsp;&nbsp;<br>using&nbsp;&nbsp; namespace&nbsp;&nbsp; std&nbsp;&nbsp; ;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;<br>class&nbsp;&nbsp; base&nbsp;&nbsp;<br>{&nbsp;&nbsp;<br>public:&nbsp;&nbsp;<br>base(){cout&lt;&lt;”base::base()”&lt;&lt; endl;}&nbsp;&nbsp;<br>base(const base&amp; rhs)&nbsp;&nbsp;<br>{&nbsp;&nbsp;<br>cout&lt;&lt;”base::base(const base&amp;)”&lt;&lt;endl;&nbsp;&nbsp;&nbsp;&nbsp;<br>rhs.show();&nbsp;&nbsp;&nbsp;&nbsp;<br>}&nbsp;&nbsp;<br>virtual&nbsp;&nbsp; void show() const {cout&lt;&lt;”base::show()”&lt;&lt;endl;}&nbsp;&nbsp;<br>virtual&nbsp;&nbsp; ~base()&nbsp;&nbsp; {cout&lt;&lt;”base::~base()”&lt;&lt;endl;}&nbsp;&nbsp;<br>};&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;<br>class&nbsp;&nbsp; child:public base&nbsp;&nbsp;<br>{&nbsp;&nbsp;<br>public:&nbsp;&nbsp;<br>child()&nbsp;&nbsp; {cout&lt;&lt;”child::child()”&lt;&lt;endl;}&nbsp;&nbsp;<br>/<em>——————————————————————&nbsp;&nbsp;<br>child(&nbsp;&nbsp; const&nbsp;&nbsp; child&amp;&nbsp;&nbsp; )&nbsp;&nbsp; {&nbsp;&nbsp; cout&nbsp;&nbsp; &lt;&lt;&nbsp;&nbsp; “child::child(&nbsp;&nbsp; const&nbsp;&nbsp; child&amp;&nbsp;&nbsp; )” &lt;&lt;&nbsp;&nbsp; endl&nbsp;&nbsp; ;&nbsp;&nbsp; }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>——————————————————————-</em>/&nbsp;&nbsp;<br>~child(){cout&lt;&lt;”child::~child()”&lt;&lt;endl;}&nbsp;&nbsp;<br>virtual void show()const {cout&lt;&lt;”child::show()”&lt;&lt;endl;}&nbsp;&nbsp;<br>int test(int i) {cout&lt;&lt;”int child::test(int)”&lt;&lt;endl;return 0;}&nbsp;&nbsp;<br>};&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;<br>int&nbsp;&nbsp; main()&nbsp;&nbsp;<br>{&nbsp;&nbsp;<br>&nbsp;&nbsp; child&nbsp;&nbsp; c1&nbsp;&nbsp; ;&nbsp;&nbsp;<br>&nbsp;&nbsp; cout&lt;&lt;”—————————-“&lt;&lt;endl;&nbsp;&nbsp;<br>&nbsp;&nbsp; child&nbsp;&nbsp; c2(c1);&nbsp;&nbsp;<br>&nbsp;&nbsp; cout&lt;&lt;”—————————-“&lt;&lt;endl;&nbsp;&nbsp;<br>}&nbsp;&nbsp;</p>
+<p>输出为：</p>
+<p>base::base()&nbsp;&nbsp;<br>child::child()&nbsp;&nbsp;<br>—————————-&nbsp;&nbsp;<br>base::base(&nbsp;&nbsp; const&nbsp;&nbsp; base&amp;)&nbsp;&nbsp;</p>
+<p>child::show()<br>—————————-&nbsp;&nbsp;<br>child::~child()&nbsp;&nbsp;<br>base::~base()&nbsp;&nbsp;<br>child::~child()&nbsp;&nbsp;<br>base::~base()&nbsp;&nbsp;</p>
+<p>2基类也没有显式定义自己的拷贝构造函数</p>
+<p>#include &lt;iostream&gt;<br>using namespace std ; </p>
+<p>class base<br>{<br>public:<br>base() { cout &lt;&lt; “base::base()” &lt;&lt; endl ; }<br>/<em>base( const base&amp; ) { cout &lt;&lt; “base::base( const base&amp;)” &lt;&lt; endl ; } </em>/<br>virtual ~base() { cout &lt;&lt; “base::~base()” &lt;&lt; endl ; }<br>}; </p>
+<p>class child : public base<br>{ </p>
+<p>public:<br>child() { cout &lt;&lt; “child::child()” &lt;&lt; endl ; }<br>/<em>——————————————————————<br>child( const child&amp; ) { cout &lt;&lt; “child::child( const child&amp; )” &lt;&lt; endl ; }&nbsp;&nbsp;&nbsp;<br>——————————————————————-</em>/<br>~child() { cout &lt;&lt; “child::~child()” &lt;&lt; endl ; }<br>int test(int i) { cout &lt;&lt; “int child::test(int)” &lt;&lt; endl ; return 0 ; } </p>
+<p>};&nbsp;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;<br>&nbsp;&nbsp; int main()<br>{<br>child c1 ;<br>cout &lt;&lt; “—————————-“ &lt;&lt; endl ;<br>child c2(c1) ;<br>cout &lt;&lt; “—————————-“ &lt;&lt; endl ;<br>}&nbsp;&nbsp;</p>
+<p>输出结果:<br>base::base()<br>child::child() </p>
+<h2 id="—————————-nbsp-nbsp-nbsp"><a href="#—————————-nbsp-nbsp-nbsp" class="headerlink" title="—————————-&nbsp;&nbsp;&nbsp;"></a>—————————-&nbsp;&nbsp;&nbsp;</h2><p>child::~child()<br>base::~base()<br>child::~child()<br>base::~base()&nbsp;&nbsp;</p>
+<p>这时child c2(c1) ; 调用的是自己的默认拷贝构造函数，同时也会调用基类的默认构造函数（为什么是构造函数不是拷贝构造函数，下面的一种情况就会看到），既然默认的构造函数什么所以不会有什么输出信息。</p>
+<p>3基类和派生类都显式定义了自己都拷贝构造函数</p>
+<p>#include &lt;iostream&gt;<br>using namespace std ; </p>
+<p>class base<br>{<br>public:<br>base() { cout &lt;&lt; “base::base()” &lt;&lt; endl ; }&nbsp;&nbsp;&nbsp;<br>base( const base&amp; ) { cout &lt;&lt; “base::base( const base&amp;)” &lt;&lt; endl ; }&nbsp;&nbsp;&nbsp;<br>virtual ~base() { cout &lt;&lt; “base::~base()” &lt;&lt; endl ; }<br>}; </p>
+<p>class child : public base<br>{ </p>
+<p>public:<br>child() { cout &lt;&lt; “child::child()” &lt;&lt; endl ; }&nbsp;&nbsp;&nbsp;<br>child( const child&amp; ) { cout &lt;&lt; “child::child( const child&amp; )” &lt;&lt; endl ; }&nbsp;&nbsp;&nbsp;<br>~child() { cout &lt;&lt; “child::~child()” &lt;&lt; endl ; }<br>int test(int i) { cout &lt;&lt; “int child::test(int)” &lt;&lt; endl ; return 0 ; } </p>
+<p>};&nbsp;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;<br>&nbsp;&nbsp; int main()<br>{<br>child c1 ;<br>cout &lt;&lt; “—————————-“ &lt;&lt; endl ;<br>child c2(c1) ;<br>cout &lt;&lt; “—————————-“ &lt;&lt; endl ;<br>}&nbsp;&nbsp;</p>
+<p>输出为：</p>
+<p>base::base() </p>
+<h2 id="child-child"><a href="#child-child" class="headerlink" title="child::child() "></a>child::child() </h2><p>base::base() </p>
+<h2 id="child-child-const-child-amp"><a href="#child-child-const-child-amp" class="headerlink" title="child::child( const child&amp; ) "></a>child::child( const child&amp; ) </h2><p>child::~child()<br>base::~base()<br>child::~child()<br>base::~base()&nbsp;&nbsp;</p>
+<p>注意这里child c2(c1) ;&nbsp;&nbsp; 调用了基类的构造函数而不是拷贝构造函数，这又是为什么呢？<br>请问拷贝构造函数是不是构造函数？？&nbsp;&nbsp;&nbsp; 是，是个特殊的构造函数，但是他也是构造函数。C2调用自己的拷贝构造函数的时候，编译器只是认为你调用了构造函数，根据参数类型是调用我们所说的拷贝构造函数，但是当他决定调用基类的哪个构造函数的时候，他要看你传递给基类的参数了，你什么都没有给传递，当然调用默认构造函数了。</p>
+<p>我想通过上面三种情况的讲解大家应该都能明白派生类拷贝构造函数的奥妙了，通过这个例子也对我学习C++的过程敲了下警钟：知识面还是不广，综合运用所学东西的能力还不够，尤其是那个多态的地方，如果是单独的多态可能一下子就看出来了，但是用在这里就傻眼了。<br><br></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2006/08/28/指针与数组-2/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1083,7 +1256,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">155</span>
+                  <span class="site-state-item-count">156</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1094,7 +1267,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

@@ -269,6 +269,163 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/10/18/singleton/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2009/10/18/singleton/" itemprop="url">Singleton</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-10-18T00:01:00+08:00">
+                2009-10-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 这个应该是最简单的一个设计模式，记得当初在学校学习C++时看到这样一个类，当时还觉得这确实是个技巧，但是那会基本上没有实际用到，这次在项目中则到处可见，个人觉得Singleton用到的场合还比较多，基本上叫做**Mgr之类的都是Singleton，当然经验还不足不知道是不是有些地方有滥用，我们项目中用到的是一个#define:</p>
+<p>#define SINGLE_INSTANCE(class_name)&nbsp; /</p>
+<p>private: /</p>
+<p>&nbsp;&nbsp;&nbsp; class_name(); /</p>
+<p>&nbsp;&nbsp;&nbsp; class_name(const class_name&amp;); /</p>
+<p>&nbsp;&nbsp;&nbsp; class_name&amp; operator(const class_name&amp;);/ </p>
+<p>public: /</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; static class_name&amp; instance() /</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;{static class_name _instance;return _instance;}</p>
+<p>这样假如定义了一个类：</p>
+<p>class A</p>
+<p>{</p>
+<p>//这样就是一个Singleton类了</p>
+<p>SINGLE_INSTANCE(A)</p>
+<p>};</p>
+<p>模板形式的更爽：</p>
+<div class="CC1"><span style="color: #ff7700;">template</span>&lt;<span style="color: #ff7700;">class</span> T&gt; <span style="color: #ff7700;">class</span> Singleton {</div><br><div class="CC1">&nbsp; Singleton(<span style="color: #ff7700;">const</span> Singleton&amp;);</div><br><div class="CC1">&nbsp; Singleton&amp; <span style="color: #ff7700;">operator</span>=(<span style="color: #ff7700;">const</span> Singleton&amp;);</div><br><div class="CC1"><span style="color: #ff7700;">protected</span>:</div><br><div class="CC1">&nbsp; Singleton() {}</div><br><div class="CC1">&nbsp; <span style="color: #ff7700;">virtual</span> ~Singleton() {}</div><br><div class="CC1"><span style="color: #ff7700;">public</span>:</div><br><div class="CC1">&nbsp; <span style="color: #ff7700;">static</span> T&amp; instance() {</div><br><div class="CC1">&nbsp;&nbsp;&nbsp; <span style="color: #ff7700;">static</span> T theInstance;</div><br><div class="CC1">&nbsp;&nbsp;&nbsp; <span style="color: #ff7700;">return</span> theInstance;</div><br><div class="CC1">&nbsp; }</div><br><div class="CC1">};</div><br><div class="CC1">&nbsp;</div><br><div class="CC1"><span style="color: #dd0000;">// A sample class to be made into a Singleton</span></div><br><div class="CC1"><span style="color: #ff7700;">class</span> MyClass : <span style="color: #ff7700;">public</span> Singleton&lt;MyClass&gt; {</div><br><div class="CC1">&nbsp; <span style="color: #ff7700;">int</span> x;</div><br><div class="CC1"><span style="color: #ff7700;">protected</span>:</div><br><div class="CC1">&nbsp;&nbsp;<span style="color: #ff7700;">friend</span> <span style="color: #ff7700;">class</span> Singleton&lt;MyClass&gt;;</div><br><div class="CC1">&nbsp; MyClass() { x = 0; }</div><br><div class="CC1"><span style="color: #ff7700;">public</span>:</div><br><div class="CC1">&nbsp; <span style="color: #ff7700;">void</span> setValue(<span style="color: #ff7700;">int</span> n) { x = n; }</div><br><div class="CC1">&nbsp; <span style="color: #ff7700;">int</span> getValue() <span style="color: #ff7700;">const</span> { <span style="color: #ff7700;">return</span> x; }</div><br><div class="CC1">};</div><br>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/10/16/什么是设计模式/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1750,202 +1907,6 @@ return 0;
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/07/21/c设计模式之一-工厂模式（简单工厂、工厂和抽象/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2009/07/21/c设计模式之一-工厂模式（简单工厂、工厂和抽象/" itemprop="url">C++设计模式之一 工厂模式（简单工厂、工厂和抽象工厂）</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-07-21T23:34:00+08:00">
-                2009-07-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/设计模式/" itemprop="url" rel="index">
-                    <span itemprop="name">设计模式</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>原文地址：<a href="http://www.cnblogs.com/Seasky/archive/2009/02/06/1385609.html" target="_blank" rel="noopener">http://www.cnblogs.com/Seasky/archive/2009/02/06/1385609.html</a></p>
-<p><a href="http://files.cnblogs.com/Seasky/FactoryPattern.7z" title="工厂模式实例代码" target="_blank" rel="noopener">实例代码下载</a>&nbsp;<br><a href="http://files.cnblogs.com/Seasky/FactoryPatternChart.zip" title="结构图下载" target="_blank" rel="noopener">结构类图下载</a>&nbsp;</p>
-<p>&nbsp; &nbsp; &nbsp;&nbsp; 今天开始这个系列之前，心里有些恐慌，毕竟园子里的高手关于设计模式的经典文章很多很多，特别是大侠<a href="http://terrylee.cnblogs.com/" target="_blank" rel="noopener">李会军</a>、<a href="http://zhenyulu.cnblogs.com/" target="_blank" rel="noopener">吕震宇</a> 老师的文章更是堪称经典。他们的文笔如行云流水，例子活泼生动，讲解深入浅出。好在他们都是用C#描述，也没有提供必要的源码下载，所以我这里用C++实现。首先我想声明的是我的文笔绝对不如他们的好，例子也没有他们的形象，不过我打算把C++的代码实现和类图提供给大家，就算作为一种补充吧。</p>
-<p>&nbsp; &nbsp; &nbsp;&nbsp; 开始设计模式自然而然到提到几个原则：I、开闭法则（OCP）；II、里氏代换法则（LSP）；III、依赖倒置法则(DIP)；IV、接口隔离法则（ISP）；V、合成/聚合复用原则（CARP）；VI、迪米特法则（LoD），这几个法则在<a href="http://zhenyulu.cnblogs.com/" target="_blank" rel="noopener">吕震宇</a> 老师的<a href="http://www.cnblogs.com/zhenyulu/articles/36061.html" target="_blank" rel="noopener">设计模式（二）</a>和<a href="http://www.cnblogs.com/zhenyulu/articles/36068.html" target="_blank" rel="noopener">设计模式（三）</a>中有非常详尽的阐述和深入浅出的举例分析。有兴趣的朋友打开链接看一下就可以了。</p>
-<p>&nbsp; &nbsp; &nbsp; 补充说明：</p>
-<ul>
-<li>我这里所以代码都是用VS2005的C++编译器实现。所以不能保证在其他IDE中能顺利编译，但是我想如果你使用其他编译器，也应该不会有太大问题，主要也应该是stdafx.h文件中包含的头文件问题。<em>   里面出行的结构图都是用微软的Visio2003 绘制，大家下载后可以直接用Visio打开。</em>   在以后所有的模式例子中都有客户程序，客户程序这个角色不是模式本身的内容，它是模式之外的部分，但是正是这个客户程序完成了对模式的使用，模式本身的结构是讲解的重点，但是客户程序如何使用模式也是理解模式的一个重要方面，因此在我后续的介绍中都有客户程序这个角色，并会说明究竟调用模式中的哪些角色完成对模式的使用。</li>
-</ul>
-<h4 id="简单工厂模式"><a href="#简单工厂模式" class="headerlink" title="简单工厂模式"></a>简单工厂模式</h4><h5 id="生活例子"><a href="#生活例子" class="headerlink" title="生活例子"></a>生活例子</h5><p>&nbsp; &nbsp; &nbsp; 吃饭是人的基本需求，如果人类不需要吃饭，可能我们就能活得清闲许多，也就不需要像现在一样没日没夜的工作，学习。我们学习是为了找到更好的工作，好工作为了赚更多的钱，最终为了吃饱饭，吃好饭。因此可以说吃饭是与人息息相关，下面就从吃饭的例子来引入工厂模式的学习。</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 如果你想吃饭了，怎么办自己做吗？自己做就相当于程序中直接使用new。当然是自己下个指令，别人来做更爽。那就把做饭的任务交给你的老婆吧，那么她就是一个做饭的工厂了，你告诉她要要吃红烧肉，等会她就从厨房给你端出来一盘香喷喷的红烧肉了，再来个清蒸鱼吧，大鱼大肉不能太多，那就再来个爆炒空心菜，最后再来个西红柿鸡蛋汤。下图 1) 就是这个问题的模型。<br><img src="http://images.cnblogs.com/cnblogs_com/Seasky/167561/r_1-2.JPG" alt="">&nbsp;<br>（图1）<br>&nbsp; &nbsp; &nbsp; &nbsp;显然到了这里，你是Client，你老婆就是工厂，她拥有做红烧肉的方法，做清蒸鱼的方法，做爆炒空心菜、西红柿鸡蛋汤的方法，这些方法返回值就是食物抽象。红烧肉、清蒸鱼、爆炒空心菜、西红柿鸡蛋汤就是食物的继承类，到这里你就可以大吃二喝了。简单工厂模式也成型了。哈哈，娶一个手艺不错的老婆还真好，吃的好，吃的爽，又清闲。</p>
-<p>&nbsp; &nbsp; &nbsp;&nbsp; 下面来看标准的简单工厂模式的分析。&nbsp;</p>
-<h5 id="意图"><a href="#意图" class="headerlink" title="意图"></a>意图</h5><p>把一系列拥有共同特征的产品的创建封装 </p>
-<h5 id="结构图"><a href="#结构图" class="headerlink" title="结构图"></a>结构图</h5><p><img src="http://images.cnblogs.com/cnblogs_com/Seasky/167561/r_1-3.JPG" alt="">&nbsp;<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; （图2）</p>
-<h5 id="角色分析"><a href="#角色分析" class="headerlink" title="角色分析"></a>角色分析</h5><div style="padding-right: 20px; padding-left: 30px; padding-bottom: 10px; padding-top: 0px;"><strong>产品基类</strong>： 工厂创建的所有产品的基类, 它负责描述所有实例所共有的公共接口。它用来作为工厂方法的返回参数。<br>代码实现：<br><pre class="programlisting">        //—这时一个系列的产品基类<br>class Product<br>{<br>protected:<br>Product(void);<br>public:<br>virtual ~Product(void);<br>public:<br>virtual void Function() = 0;<br>};<br>//cpp<br>Product::Product(void)<br>{<br>}<br>Product::~Product(void)<br>{<br>}<br></pre><br><strong>具体产品类</strong>：产品1和产品2，这个角色实现了抽象产品角色所定义的接口。<br>代码实现：<br><pre class="programlisting">        //产品A<br>class ConcreteProductA:public Product<br>{<br>public:<br>ConcreteProductA(void);<br>public:<br>virtual ~ConcreteProductA(void);<br>public:<br>virtual void Function();<br>};<br>//cpp<br>ConcreteProductA::ConcreteProductA()<br>{<br>cout&lt;&lt;”创建 A 产品”&lt;&lt;endl;<br>}<br>ConcreteProductA::~ConcreteProductA()<br>{<br>cout&lt;&lt;”释放 A 产品”&lt;&lt;endl;<br>}<br>void ConcreteProductA::Function()<br>{<br>cout&lt;&lt;”这是产品 A 具有的基本功能”&lt;&lt;endl;<br>}<br>//产品B与A类似不这里不再给出，大家可以下载源码<br></pre><br><br><strong>工厂类</strong>：负责具体产品的创建，有两种方式实现产品的创建，I、创建不同的产品用不同的方法；II、创建不同产品用相同的方法，然后通过传递参数实现不同产品的创建。本实例中两种模式都给出了，大家自行分析。<br><br><pre class="programlisting">//简单工厂，此类不需要继承，直接硬编码实现生成的产品<br>class SimpleFactory<br>{<br>public:<br>SimpleFactory(){}<br>public:<br>~SimpleFactory(){}<br>public:<br>Product <em>CreateProduct(int ProuctType);<br>Product </em>CreateProductA();<br>Product <em>CreateProductB();<br>};<br>//CPP<br>Product </em> SimpleFactory::CreateProduct(int ProductType=0)<br>{<br>Product <em>p = 0;<br>switch(ProductType)<br>{<br>case 0:<br>p= new ConcreteProductA();<br>break;<br>case 1:<br>p= new ConcreteProductB();<br>break;<br>default:<br>p= new ConcreteProductA();<br>break;<br>}<br>return p;<br>}<br>Product </em>SimpleFactory::CreateProductA()<br>{<br>return new ConcreteProductA();<br>}<br>Product <em>SimpleFactory::CreateProductB()<br>{<br>return new ConcreteProductB();<br>}<br></em></pre><br><strong>客户端程序</strong>：访问的角色包括产品基类、工厂类。不直接访问具体产品类。通过基类指针的多态实现产品功能的调用。<br><strong>访问描述</strong>：客户程序通过调用工厂的方法返回抽象产品，然后执行产品的方法。<br><pre class="programlisting">//调用代码<br>SimpleFactory sf;<br>Product p = sf.CreateProductA();<br>p-&gt;Function();<br>delete p;<br>p = sf.CreateProductB();<br>p-&gt;Function();<br>delete p;<br></pre><br></div>
-
-<h5 id="优缺点说明"><a href="#优缺点说明" class="headerlink" title="优缺点说明"></a>优缺点说明</h5><p><strong>优点</strong>：1) 首先解决了代码中大量New的问题。为何要解决这个问题，好处的说明我想放到结尾总结中。<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;2) 用工厂方法在一个类的内部创建对象通常比直接创建对象更灵活。<br><strong>缺点</strong>：对修改不封闭，新增加产品您要修改工厂。违法了鼎鼎大名的开闭法则（OCP）。</p>
-<h5 id="附加说明"><a href="#附加说明" class="headerlink" title="附加说明"></a>附加说明</h5><ul>
-<li>大家可以参看 吕震宇 老师的<a href="http://www.cnblogs.com/zhenyulu/articles/36462.html" target="_blank" rel="noopener">C#设计模式（四）</a>参看这个模式的分析，里面还给出了这个模式的两个变体，实现比较简单，有兴趣的朋友可以自行用C++实现一下。*   产品基类的代码中构造函数我用了Protected，而没有使用Public，主要是为了体现编码中的一个最小权限原则。说明此类不许用户直接实例化。虽然这里使用了virtual void Function() = 0;编译器也会控制不让用户直接实例化，不过我依然认为使用私有化构造函数来保护类不直接实例化是一个良好的编程风格。</li>
-</ul>
-<h4 id="工厂方法模式"><a href="#工厂方法模式" class="headerlink" title="工厂方法模式"></a>工厂方法模式</h4><h5 id="生活例子-1"><a href="#生活例子-1" class="headerlink" title="生活例子:"></a>生活例子:</h5><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 人是最贪得无厌的动物，老婆手艺再好，总有不会做的菜，你想吃回锅肉，怎么办，让老婆学呗，于是就给她就新增了做回锅肉的方法，以后你再想吃一个新菜，就要给你老婆新加一个方法，显然用老婆做菜的缺点也就暴露出来了，用程序设计的描述就是对修改永远不能封闭。当然优点也是有的，你有了老婆这个工厂，这些菜不用你自己做了，只要直接调用老婆这个工厂的方法就可以了。 </p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;面对上面对修改不能封闭的问题，有没有好的解决方案吗，如果你有钱，问题就迎刃而解了，把老婆抽象变成一个基类，你多娶几个具体的老婆，分别有做鱼的，做青菜的，炖汤的老婆，如果你想吃一个新菜，就再新找个女人，从你的老婆基类继承一下，让她来做这个新菜。显然多多的老婆这是所有男人的梦想，没有办法，法律不允许，那么咱们只是为了做饭，老婆这个抽象类咱们不叫老婆了，叫做厨师吧，她的子类也自然而然的该叫做鱼的厨师、炖汤的厨师了。现在来看这个模式发生了变化，结构中多了一个厨师的抽象，抽象并不具体的加工产品了，至于是炖汤还是炖鱼，是由这个抽象工厂的继承子类来实现，现在的模式也就变成工厂方法模式了，这个上面的结构图1)就变成了下面的图3的结构了。<br><img src="http://images.cnblogs.com/cnblogs_com/Seasky/167561/r_1-4.JPG" alt=""><br>&nbsp; &nbsp; &nbsp;&nbsp; （图3）</p>
-<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;现在再来分析现在的模式，显然简单工厂的缺陷解决了，新增加一个菜只需要新增加一个厨师就行了，原来的厨师还在做原来的工作，这样你的设计就对修改封闭了。你看把老婆解放出来，招聘大量的厨师到你家里这个方案多么的完美，你老婆也会爱死你了。当然前提就是你要有多多的钱噢，当然这里的钱的多少在软件领域应该看你的客户软件投资方的要求。<br>下面来一下标准的工厂模式的实现 </p>
-<h5 id="意图-1"><a href="#意图-1" class="headerlink" title="意图"></a>意图</h5><ul>
-<li>定义一个用户创建对象的接口，让子类决定实例化哪一个类。Factory Method使一个类的实例化延迟到其子类。*   上面是GOF关于此模式的意图描述，我想补充的是您可以这样理解：为了改善简单工厂对修改不能关闭的问题。</li>
-</ul>
-<h5 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h5><p>&nbsp; <img src="http://images.cnblogs.com/cnblogs_com/Seasky/167561/r_1-5.JPG" alt=""><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;图4</p>
-<h5 id="角色分析-1"><a href="#角色分析-1" class="headerlink" title="角色分析"></a>角色分析</h5><div style="padding-right: 20px; padding-left: 30px; padding-bottom: 10px; padding-top: 0px;"><strong>产品基类</strong>：同简单工厂的产品基类，其实就是用和简单工厂中的是同一个类，这里并没有重写。<br><strong>具体产品类</strong>：也是用的简单工厂的具体产品类，为了体现对修改的关闭这里为系统新添加了一个具体产品类，就是&ldquo;新产品&rdquo;，代码中叫做&ldquo;ConcreteProductANew&rdquo;<br><strong>工厂基类</strong>：定义了工厂创建产品的接口，但是没有实现，具体创建工作由其继承类实现。<br>代码实例<br><br><pre class="programlisting">//工厂模式，此模式的工厂只定义加工产品的接口，具体生成交予其继承类实现<br>//只有具体的继承类才确定要加工何种产品<br>class Factory<br>{<br>public:<br>Factory(void);<br>public:<br>virtual ~Factory(void);<br>public:<br>virtual Product<em> CreateProduct(int ProductType = 0) =0;<br>};<br>//CPP<br>Factory::Factory(void)<br>{<br>}<br>Factory::~Factory(void)<br>{<br>}<br></em></pre><br><strong>具体工厂类</strong>：工厂基类的具体实现，由此类决定创建具体产品，这里 <strong>ConcreteFactory1</strong> 对于与图中的 <strong>工厂实现</strong>，<strong>ConcreteFactory2</strong> 对于与图中的<strong>新工厂</strong>。<br>下面给出实现代码<br><br><pre class="programlisting">//工厂实现<br>class ConcreteFactory1:public Factory<br>{<br>public:<br>ConcreteFactory1();<br>public:<br>virtual ~ConcreteFactory1();<br>public :<br>Product CreateProduct(int ProductType);<br>};<br>//新工厂，当要创建新类是实现此新工厂<br>class ConcreteFactory2:public Factory<br>{<br>public:<br>ConcreteFactory2();<br>public:<br>virtual ~ConcreteFactory2();<br>public :<br>Product<em> CreateProduct(int ProductType);<br>};<br>//CPP<br>ConcreteFactory1::ConcreteFactory1()<br>{<br>}<br>ConcreteFactory1::~ConcreteFactory1()<br>{<br>}<br>Product </em> ConcreteFactory1::CreateProduct(int ProductType = 0)<br>{<br>Product <em>p = 0;<br>switch(ProductType)<br>{<br>case 0:<br>p= new ConcreteProductA();<br>break;<br>case 1:<br>p= new ConcreteProductB();<br>break;<br>default:<br>p= new ConcreteProductA();<br>break;<br>}<br>return p;<br>}<br>ConcreteFactory2::ConcreteFactory2()<br>{<br>}<br>ConcreteFactory2::~ConcreteFactory2()<br>{<br>}<br>Product </em> ConcreteFactory2::CreateProduct(int ProductType = 0)<br>{<br>return new ConcreteProductANew();<br>}<br></pre><br><strong>客户端调用</strong>：访问角色（产品基类、工厂基类、工厂实现类）<br><strong>调用描述</strong>：客户程序通过工厂基类的方法调用工厂实现类用来创建所需要的具体产品。从而实现产品功能的访问。<br>代码实现<br><br><pre class="programlisting">Factory<em>fct = new ConcreteFactory1();<br>Product </em>p = fct-&gt;CreateProduct(0);<br>p-&gt;Function();<br>delete p;<br>p = fct-&gt;CreateProduct(1);<br>p-&gt;Function();<br>delete p;<br>delete fct;<br>fct = new ConcreteFactory2();<br>p=fct-&gt;CreateProduct();<br>delete p;<br>delete fct;<br></pre><br></div>
-
-<h5 id="优缺点分析"><a href="#优缺点分析" class="headerlink" title="优缺点分析"></a>优缺点分析</h5><p><strong>优点 </strong></p>
-<ul>
-<li>简单工厂具有的优点*   解决了简单工厂的修改不能关闭的问题。系统新增产品，新增一个产品工厂即可，对抽象工厂不受影响。</li>
-</ul>
-<p><strong>缺点</strong>：对于创建不同系列的产品无能为力 </p>
-<h5 id="适用性"><a href="#适用性" class="headerlink" title="适用性"></a>适用性</h5><ul>
-<li>当一个类不知道它所必须创建的对象的类的时候。<em>   当一个类希望由它的子类来指定它所创建的对象的时候。</em>   当类将创建对象的职责委托给多个帮助子类中的某一个，并且你希望将哪一个帮助子类是代理者这一信息局部化的时候。</li>
-</ul>
-<h5 id="其他参考"><a href="#其他参考" class="headerlink" title="其他参考"></a>其他参考</h5><ul>
-<li>吕震宇的<a href="http://www.cnblogs.com/zhenyulu/articles/36590.html" target="_blank" rel="noopener">C#设计模式（5）－Factory Method Pattern </a></li>
-<li>TerryLee 的<a href="http://terrylee.cnblogs.com/archive/2006/01/04/310716.html" target="_blank" rel="noopener">.NET设计模式（5）：工厂方法模式（Factory Method） </a></li>
-</ul>
-<p>&nbsp;</p>
-<h4 id="抽象工厂模式"><a href="#抽象工厂模式" class="headerlink" title="抽象工厂模式"></a>抽象工厂模式</h4><h5 id="生活例子-2"><a href="#生活例子-2" class="headerlink" title="生活例子"></a>生活例子</h5><p>&nbsp; &nbsp;&nbsp;&nbsp; 世事多变，随着时间的推移，走过的地方越来越多，你天南海北的朋友也越来越多。你发现菜原来还分了许多菜系，鲁菜、粤菜、湘菜等等，它们各有各的风味，同样是红烧肉由不同菜系出来的味道也各不相同， 你招待不同的朋友要用不同的菜系，这下难办了，你的厨师都是鲁菜风味，怎么办，广东的朋友来了吃不惯。现在我们再回到简单工厂模式（就是老婆做菜的模式），我们把红烧肉再向下继承，生成鲁菜红烧肉、粤菜红烧肉、湘菜红烧肉；清蒸鱼向下继承为鲁菜清蒸鱼、粤菜清蒸鱼、湘菜清蒸鱼，其它也以此类推。我们也修改一下老婆的这个类，不让其返回食物基类，而是返回红烧肉、清蒸鱼、爆炒空心菜、西红柿鸡蛋汤这一层次，并把这些方法抽象化，作为菜系工厂基类，然后再从此基类继承出，鲁菜工厂、粤菜工厂、湘菜工厂等等，再由这些具体工厂实现创建具体菜的工作，哈哈你如果招待广东朋友就用粤菜工厂，返回的就是一桌粤菜菜系的红烧肉、清蒸鱼、空心菜和西红柿鸡蛋汤了，你的广东朋友一定会吃的非常合乎胃口了。噢，非常好，你已经实现了抽象工厂模式了。结构模型图也变成了下图 6)的样子了。<br><img src="http://images.cnblogs.com/cnblogs_com/Seasky/167561/r_1-6.JPG" alt=""><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; （图6）<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; 现在可以看到，想新来做一个菜系，只需新聘请一个厨师就可以了，多么完美，但是你先别高兴太早，如果你想新增加一个菜就变得非常困难了。</p>
-<h5 id="意图-2"><a href="#意图-2" class="headerlink" title="意图"></a>意图</h5><p>&nbsp; &nbsp; &nbsp; &nbsp;提供一个创建一系列相关或相互依赖对象的接口，而无需指定它们具体的类。<br><strong>结构</strong><br><img src="http://images.cnblogs.com/cnblogs_com/Seasky/167561/r_1-7.JPG" alt=""></p>
-<h5 id="角色分析-2"><a href="#角色分析-2" class="headerlink" title="角色分析"></a>角色分析</h5><div style="padding-right: 20px; padding-left: 30px; padding-bottom: 10px; padding-top: 0px;"><strong>产品基类</strong>：这里包含产品基类A和产品基类B，实际上在我的示例代码中，这两个产品都从共同的基类继承而来，但是这个继承关系却是在这个模式之外的部分，而本身这个模式关心的是这两个产品基类的差异部分。<br>代码实现：这里的代码就是借用的简单工厂模式中具体产品类的代码实现部分，为了大家阅读方便，下面重新给出一下。<br><br><pre class="programlisting">        //产品A<br>class ConcreteProductA:public Product<br>{<br>public:<br>ConcreteProductA(void);<br>public:<br>virtual ~ConcreteProductA(void);<br>public:<br>virtual void Function();<br>};<br>//cpp<br>ConcreteProductA::ConcreteProductA()<br>{<br>cout&lt;&lt;”创建 A 产品”&lt;&lt;endl;<br>}<br>ConcreteProductA::~ConcreteProductA()<br>{<br>cout&lt;&lt;”释放 A 产品”&lt;&lt;endl;<br>}<br>void ConcreteProductA::Function()<br>{<br>cout&lt;&lt;”这是产品 A 具有的基本功能”&lt;&lt;endl;<br>}<br>//产品B与A类似不这里不再给出，大家可以下载源码<br></pre><br><br><strong><br>具体产品</strong>类：这里的具体产品类是产品A1，A2，B1、B2等，<br>代码实现：A1对应的实现就是&ldquo;&rdquo;<br><br><pre class="programlisting">class ConcreteProductA1:public ConcreteProductA<br>{<br>public:<br>ConcreteProductA1(void);<br>public:<br>virtual ~ConcreteProductA1(void);<br>public:<br>virtual void Function();<br>};<br>//CPP<br>ConcreteProductA1::ConcreteProductA1()<br>{<br>cout&lt;&lt;”创建 A1 产品”&lt;&lt;endl;<br>}<br>ConcreteProductA1::~ConcreteProductA1()<br>{<br>cout&lt;&lt;”释放 A1 产品”&lt;&lt;endl;<br>}<br>void ConcreteProductA1::Function()<br>{<br>cout&lt;&lt;”这时产品 A1 具有的基本功能”&lt;&lt;endl;<br>}<br></pre><br><br><strong>工厂抽象</strong>接口：定义了创建产品的接口，这里返回参数是返回的产品A，产品B，而本身产品A和B的共同基类，小弟认为正是这个特征构成了抽象工厂和工厂模式的区别。<br>代码实现<br><br><pre class="programlisting">//抽象工厂模式<br>class AbstractFactory<br>{<br>public:<br>AbstractFactory();<br>public:<br>virtual ~AbstractFactory();<br>public:<br>virtual ConcreteProductA<em> CreateA() = 0;<br>virtual ConcreteProductB</em> CreateB() = 0;<br>};<br>//CPP<br>AbstractFactory::AbstractFactory()<br>{<br>}<br>AbstractFactory::~AbstractFactory()<br>{<br>}<br></pre><br><br>具体工厂实现类：工厂1和工厂2。新增加系列，只需新实现一个工厂。<br>代码实现: 工厂1的就是ConcreteAbsFactory1，工厂2的代码类似，这里没有给出，可以在下载代码中看到<br><br><pre class="programlisting">////工厂1—–<br>class ConcreteAbsFactory1:public AbstractFactory<br>{<br>public:<br>ConcreteAbsFactory1();<br>public:<br>virtual ~ConcreteAbsFactory1();<br>public:<br>virtual ConcreteProductA<em> CreateA();<br>virtual ConcreteProductB</em> CreateB();<br>};<br>//CPP<br>ConcreteAbsFactory1::ConcreteAbsFactory1()<br>{<br>}<br>ConcreteAbsFactory1::~ConcreteAbsFactory1()<br>{<br>}<br>ConcreteProductA<em> ConcreteAbsFactory1::CreateA()<br>{<br>return new ConcreteProductA1();<br>}<br>ConcreteProductB </em> ConcreteAbsFactory1::CreateB()<br>{<br>return new ConcreteProductB1();<br>}<br></pre><br><br>客户端访问： 访问角色（产品基类、抽象工厂、具体工厂实现类）<br>访问描述： 通过抽象工厂的指针访问具体工厂实现来创建对应系列的产品，然后通过产品基类指针访问产品功能。<br>调用代码：<br><br><pre class="programlisting">          AbstractFactory <em>absfct = new ConcreteAbsFactory1();<br>ConcreteProductA </em>cpa = absfct-&gt;CreateA();<br>cpa-&gt;Function();<br>delete cpa;<br>ConcreteProductB *cpb = absfct-&gt;CreateB();<br>cpb-&gt;Function();<br>delete cpb;<br>delete absfct;<br>absfct = new ConcreteAbsFactory2();<br>cpa = absfct-&gt;CreateA();<br>cpa-&gt;Function();<br>delete cpa;<br>cpb = absfct-&gt;CreateB();<br>cpb-&gt;Function();<br>delete cpb;<br></pre><br></div>
-
-<p>&nbsp;</p>
-<h5 id="和工厂模式的分析比较"><a href="#和工厂模式的分析比较" class="headerlink" title="和工厂模式的分析比较"></a>和工厂模式的分析比较</h5><p>&nbsp; &nbsp; &nbsp;&nbsp; 现在可以和工厂模式对比一下，抽象工厂返回的接口不再是产品A和产品B的共同基类Product了，而是产品A、产品B基类（在工厂模式中它们为具体实现类，这里变成了基类）了。此时工厂的抽象和简单工厂中的工厂方法也很类似，就是这些特征区使其别于工厂模式而变成抽象工厂模式了，因此抽象工厂解决的是创建一系列有共同风格的产品（鲁菜还是粤菜），而工厂方法模式解决的创建有共同特征的一系列产品（红烧肉、清蒸鱼它们都是食物）。当然简单工厂的缺陷在抽象工厂中又再次出现了，我要新增加一个产品，工厂抽象接口就要改变了。因此抽象工厂并不比工厂模式完美，只不过是各自的适用领域不同而已。其实，这里如果把抽象工厂模式的接口返回产品A和产品B的共同基类（工厂模式返回的参数），你会发现，奇怪这个模式怎么这么眼熟，它不是恰恰退化成工厂模式了。<br>&nbsp; &nbsp; &nbsp; &nbsp;类模式与对象模式的区别讨论：先看定义类&ldquo;模式使用继承关系，把对象的创建延迟的子类，对象模式把对象的创建延迟到另一个对象中&rdquo;。 分析：首先它们创建对象都不是在基类中完成，都是在子类中实现，因此都符合类模式的概念；但是工厂模式的创建产品对象是在编译期决定的，要调用某个工厂固定的，而抽象工厂模式对产品的创建是在运行时动态决定的，只有到运行时才确定要调用那个工厂，调用工厂随运行环境而改变。（这里我一直很混乱，欢迎大家讨论）</p>
-<h5 id="适用性-1"><a href="#适用性-1" class="headerlink" title="适用性"></a>适用性</h5><ul>
-<li>一个系统要独立于它的产品的创建、组合和表示时<em>   一个系统要由多个 产品系列中的一个来配置时</em>   当你要强调一个系列相关的产品对象的设计以便进行联合使用时*   当你提供一个产品类库，而只想显示它们的接口而不是实现时。</li>
-</ul>
-<h5 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h5><ul>
-<li>吕震宇的<a href="http://www.cnblogs.com/zhenyulu/articles/36885.html" target="_blank" rel="noopener">C#设计模式（6）</a>*   TerryLee 的<a href="http://terrylee.cnblogs.com/archive/2005/12/13/295965.html" target="_blank" rel="noopener">.NET设计模式（3）：抽象工厂模式（Abstract Factory）</a></li>
-</ul>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;工厂本质就是用工厂方法替代直接New来创建对象。这里不是指的让用户重载一个新操作符号来进行创建对象的操作，而是说把New 操作封装在一个方法中，等用户需要创建对象时调用此方法而避免直接使用New而已。这样做的目的就是之一就是封装，避免代码中大量New的运算符，这当然不是主要目的，因为这样虽然New少了，CreateObject方法却多了，但是如果产品类的构造函数变了，我想常用工厂模式的修改源代码的工作应该简便许多吧，当然这算不上这个模式的好处，它的真正强大的功能其实在于适应变化，这也是整个设计模式最根本的目的；还有一点就是体现了抽象于实现的分离，当然创建型模式都具有这个特点，工厂模式非常明显吧了，把具体创建工作放置到工厂中，使客户端程序更专注与业务逻辑的，这样的代码结构也更进行合理。</p>
-<p></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1996,7 +1957,7 @@ return 0;
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">155</span>
+                  <span class="site-state-item-count">156</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2007,7 +1968,7 @@ return 0;
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

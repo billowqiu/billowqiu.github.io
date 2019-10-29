@@ -269,6 +269,162 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/03/17/dialog注意事项/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2009/03/17/dialog注意事项/" itemprop="url">Dialog注意事项</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-03-17T22:28:00+08:00">
+                2009-03-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/VC/" itemprop="url" rel="index">
+                    <span itemprop="name">VC</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在CodeProject上面有两篇关于对话框的文章写得很不错，</p>
+<p><a href="http://www.codeproject.com/KB/dialog/gettingmodeless.aspx" target="_blank" rel="noopener">http://www.codeproject.com/KB/dialog/gettingmodeless.aspx</a>关于Modeless的，</p>
+<p><a href="http://www.codeproject.com/KB/dialog/dlgboxtricks.aspx" target="_blank" rel="noopener">http://www.codeproject.com/KB/dialog/dlgboxtricks.aspx</a>关于Dilaog的。</p>
+<p>&nbsp;</p>
+<p><span style="color: #ff0000;">以下是今天自己总结的一点（仅在MFC上试验的）：</span></p>
+<p><span style="color: #ff0000;">任何Window当单击标题栏上的X按钮时都会发生WM_CLOSE消息，从MSDN可以查到这个消息的默认实现是调用DestroyWindow，但是对于Modeless对话框貌似不是这样的，你必须自己调用DestroyWindow不知道这是不是就是MSDN说的Modeless必须自己调用DestroyWindow；</span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="color: #ff0000;">Model对话框的流程是这样的：</span></p>
+<p><span style="color: #ff0000;">WM_CLOSE-&gt;OnCancel-&gt;OnDestroy其中多走了一道OnCancel，貌似Model对话框的WM_CLOSE也不直接调用DestroyWindow，而是在EndDialog间接调用。</span></p>
+<p>&nbsp;</p>
+<p><span style="color: #ff0000;">总结:对于Modeless在WM_CLOSE中自己调用DestroyWindow，否则会出问题的，而且尽量不要在里面有IDOK,IDCANCEL的按钮，即使有也要重载并调用DestroyWindow。</span></p>
+<p>&nbsp;</p>
+<p><span style="color: #339966;">以后有时间再把这个问题在SDK上跑一遍，MFC也真够烦的。</span></p>
+<p></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/02/22/flicker-free-drawing-of-any-control/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1780,151 +1936,6 @@ SetViewportOrgEx ( hdc, xViewOrg, yViewOrg, NULL)
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2008/11/16/本周任务/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2008/11/16/本周任务/" itemprop="url">本周任务</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2008-11-16T12:54:00+08:00">
-                2008-11-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/生活轨迹/" itemprop="url" rel="index">
-                    <span itemprop="name">生活轨迹</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>从惠州当普工回来的当天晚上院里就搞个&nbsp;变态考试，简直是无语了。</p>
-<p>昨天老大让我们这帮剩下的应届生开早会，给我们布置一个任务，每人做一个数据库管理系统，这类系统早在学校就做过好几次了，而且大致思路都差不多。<br>但是现在工作了对自己的要求也该严格了，目前的初步计划是把界面做得好看点，程序健壮性强。</p>
-<p>&nbsp;</p>
-<p></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1975,7 +1986,7 @@ SetViewportOrgEx ( hdc, xViewOrg, yViewOrg, NULL)
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">155</span>
+                  <span class="site-state-item-count">156</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1986,7 +1997,7 @@ SetViewportOrgEx ( hdc, xViewOrg, yViewOrg, NULL)
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

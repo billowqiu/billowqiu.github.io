@@ -269,6 +269,184 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/31/c中newdelete重载总结/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/05/31/c中newdelete重载总结/" itemprop="url">c++中new/delete重载总结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-31T22:18:55+08:00">
+                2015-05-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C++</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>这个问题看了很多次，忘了很多次，最近在重温内存池时又看了下，做个笔记吧。</p>
+<p>首先是两个名词：new表达式，new操作符，</p>
+<p>默认情况下当你写下如下语句时:</p>
+<p>Foo* foo = new Foo;(这里是new-expression)，实际执行了三个步骤：</p>
+<p>1：new表达式调用一个operator new的标准库函数，分配一块足够大、原始的、未命名的内存空间</p>
+<p>2：编译器运行相应的构造函数，并传入初始值</p>
+<p>3：对象分配空间并构造完成，返回一个指向该对象的指针</p>
+<p>delete foo，实际执行了两个相反的步骤：</p>
+<p>1：调用该对象的析构函数</p>
+<p>2：调用operator delete标准库函数，回收空间</p>
+<p>c++中new/delete有如下级别：</p>
+<ul>
+<li>global new/delete</li>
+<li><p>class specific new/delete<br>通过代码来说明问题比较直观</p>
+</li>
+<li><p>重载全局操作符<br><pre class="brush:cpp">#include &lt;iostream&gt;<br>#include &lt;stdlib.h&gt;</pre></p>
+</li>
+</ul>
+<p>class Foo<br>{<br>public:<br>    Foo()<br>    {<br>        std::cout &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl;<br>    }<br>    ~Foo()<br>    {<br>        std::cout &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl;<br>    }<br>};</p>
+<p>//重载全局new操作符，和一般的操作符重载类似<br>void<em> operator new(size_t sz)<br>{<br>    std::cout &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl;<br>    void</em> m = malloc(sz);<br>    if(!m)<br>    {<br>        std::cerr &lt;&lt; “out of memory” &lt;&lt; std::endl;<br>    }</p>
+<pre><code>return m;
+</code></pre><p>}</p>
+<p>//重载全局delete操作符，和一般的操作符重载类似<br>void operator delete(void* m)<br>{<br>    std::cout &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl;<br>    free(m);<br>}</p>
+<p>int main(int argc, const char<em> argv[])<br>{<br>    //new-expression(表达式)<br>    //首先调用全局的operator(操作符) new分配内存,再调用构造函数<br>    Foo</em> foo = new Foo;<br>    //delete-expression<br>    //首先调用析构函数,再调用全局的operator(操作符) delete释放内存<br>    delete foo;</p>
+<pre><code>return 0;
+</code></pre><p>}</p>
+<ul>
+<li>类操作符<br><pre class="brush:cpp">#include &lt;cstddef&gt;<br>#include &lt;iostream&gt;<br>#include &lt;new&gt;</pre></li>
+</ul>
+<p>class Framis<br>{<br>    enum { sz = 10 };<br>    char c[sz]; // To take up space, not used<br>    static unsigned char pool[];<br>    static bool alloc_map[];<br>public:<br>    enum { psize = 100 };  // frami allowed<br>    Framis() { std::cout &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl; }<br>    ~Framis() { std::cout &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl; }<br>    void<em> operator new(size_t) throw(std::bad_alloc);<br>    void operator delete(void</em>);<br>};</p>
+<p>unsigned char Framis::pool[psize * sizeof(Framis)];<br>bool Framis::alloc_map[psize] = {false};</p>
+<p>// Size is ignored – assume a Framis object<br>void<em> Framis::operator new(size_t) throw(std::bad_alloc)<br>{<br>    for(int i = 0; i &lt; psize; i++)<br>    {<br>        if(!alloc_map[i])<br>        {<br>            std::cout &lt;&lt; “using block “ &lt;&lt; i &lt;&lt; “ … “;<br>            alloc_map[i] = true; // Mark it used<br>            return pool + (i </em> sizeof(Framis));<br>        }<br>    }<br>    std::cout &lt;&lt; “out of memory” &lt;&lt; std::endl;<br>    throw std::bad_alloc();<br>}</p>
+<p>void Framis::operator delete(void* m)<br>{<br>    if(!m) return; // Check for null pointer<br>    // Assume it was created in the pool<br>    // Calculate which block number it is:<br>    unsigned long block = (unsigned long)m - (unsigned long)pool;<br>    block /= sizeof(Framis);<br>    std::cout &lt;&lt; “freeing block “ &lt;&lt; block &lt;&lt; std::endl;<br>    // Mark it free:<br>    alloc_map[block] = false;<br>}</p>
+<p>int main()<br>{<br>    Framis<em> f[Framis::psize];<br>    try<br>    {<br>        for(int i = 0; i &lt; Framis::psize; i++)<br>        {<br>            f[i] = new Framis;<br>        }<br>        new Framis; // std::cout of memory<br>    }<br>    catch(std::bad_alloc)<br>    {<br>        std::cerr &lt;&lt; “out of memory!” &lt;&lt; std::endl;<br>    }<br>    delete f[10];<br>    f[10] = 0;<br>    // Use released memory:<br>    Framis</em> x = new Framis;<br>    delete x;<br>    for(int j = 0; j &lt; Framis::psize; j++)<br>    {<br>        delete f[j]; // Delete f[10] OK<br>    }</p>
+<pre><code>return 0;
+</code></pre><p>}<br>上面的例子是从&lt;&lt;think in c++&gt;&gt;中copy过来的，类的new/delete操作符函数，尽管你可以不写static关键字，但是编译器其实把其当做static函数的。</p>
+<p>另外还有个叫做placement new/delete表达式的重载，可以在指定的地址空间上构造/析构对象。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2014/03/11/designing-distributed-systems/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1789,155 +1967,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2013/04/11/linux下静态库、动态库相关问题总结/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2013/04/11/linux下静态库、动态库相关问题总结/" itemprop="url">linux下静态库、动态库相关问题总结</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2013-04-11T00:43:34+08:00">
-                2013-04-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/转载/" itemprop="url" rel="index">
-                    <span itemprop="name">转载</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ul>
-<li><span style="line-height: 14px;">静态库链接顺序</span></li>
-<li>静态库依赖问题<br>下面几个链接作为备忘，看完之后大部分linxu链接相关的问题都可以搞定了。</li>
-</ul>
-<p><a href="http://www.ibm.com/developerworks/cn/linux/l-cn-linklib/" target="_blank" rel="noopener">http://www.ibm.com/developerworks/cn/linux/l-cn-linklib/</a></p>
-<p><a href="http://www.yolinux.com/TUTORIALS/LibraryArchives-StaticAndDynamic.html" target="_blank" rel="noopener">http://www.yolinux.com/TUTORIALS/LibraryArchives-StaticAndDynamic.html</a></p>
-<p><a href="http://ticktick.blog.51cto.com/823160/431329" target="_blank" rel="noopener">http://ticktick.blog.51cto.com/823160/431329</a></p>
-<p><a href="http://mooon.blog.51cto.com/1246491/908358" target="_blank" rel="noopener">http://mooon.blog.51cto.com/1246491/908358</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1988,7 +2017,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">155</span>
+                  <span class="site-state-item-count">156</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1999,7 +2028,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
