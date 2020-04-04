@@ -269,6 +269,237 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/08/25/返回值为引用的一点测试/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2009/08/25/返回值为引用的一点测试/" itemprop="url">返回值为引用的一点测试</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-08-25T22:10:00+08:00">
+                2009-08-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C++</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近做多人视频时设计了一个简单的类，但是简单的类也很能说明问题，也再次说明有些基础知识还是理解得不够深刻，刚写了个测试程序以便日后查阅，主要是关于返回值为引用类型时的一点测试:</p>
+<pre style="border: 1px dotted #785;background: #f5f5f5;">#include &lt;iostream&gt;
+using namespace std;
+
+class CConstRef
+{
+public:
+CConstRef(int iA):m_iA(iA)
+{
+}
+const int&amp; GetA()const
+{
+return m_iA;
+}
+int&amp; GetA()
+{
+return m_iA;
+}
+void PrintAddress()const
+{
+cout&lt;&lt;"Address of m_iA = "&lt;&lt;&amp;m_iA&lt;&lt;endl;
+}
+private:
+int m_iA;
+};
+
+int main(int argc, char* argv[])
+{
+//常量对象
+const CConstRef cCA(8);
+//非常量对象
+CConstRef CA(9);
+//////////////////////////////////////////////////////////////////////////
+//注意下面的调用都是返回对象cCA的成员m_iA的引用,且此引用都是用来初始化另一引用
+//因此地址都相同
+//调用int&amp; GetA()
+int&amp; ra = CA.GetA();
+CA.PrintAddress();
+cout&lt;&lt;"Address of ra = "&lt;&lt;&amp;ra&lt;&lt;endl;
+ra = 3;
+cout&lt;&lt;"Now the CA.m_iA = "&lt;&lt;CA.GetA()&lt;&lt;endl;
+
+//调用int&amp; GetA()
+const int&amp; ra1 = CA.GetA();
+cout&lt;&lt;"Address of ra1 = "&lt;&lt;&amp;ra1&lt;&lt;endl;
+//////////////////////////////////////////////////////////////////////////
+//调用int&amp; GetA()
+int va = CA.GetA();
+CA.PrintAddress();
+cout&lt;&lt;"Address of va = "&lt;&lt;&amp;va&lt;&lt;endl;
+va = 3;
+cout&lt;&lt;"Now the CA.m_iA = "&lt;&lt;CA.GetA()&lt;&lt;endl;
+
+//调用int&amp; GetA()
+const int va1 = CA.GetA();
+cout&lt;&lt;"Address of va1 = "&lt;&lt;&amp;va1&lt;&lt;endl;
+//////////////////////////////////////////////////////////////////////////
+//下面的rb就是cCA.m_iA
+const int&amp; rb = cCA.GetA();
+
+cCA.PrintAddress();
+cout&lt;&lt;"Address of rb = "&lt;&lt;&amp;rb&lt;&lt;endl;
+
+/*
+error: invalid initialization of reference of type 'int&amp;' from expression of type 'const int'
+上面的错误时G++提示的，这么说来其实编译器给我们返回的是const int而不是const int&amp;
+*/
+// int&amp; rb1 = cCA.GetA();
+
+//下面的的vb和vb1都是是cCA.m_iA的一个副本
+const int vb = cCA.GetA();
+cout&lt;&lt;"Address of vb = "&lt;&lt;&amp;vb&lt;&lt;endl;
+
+int vb1 = cCA.GetA();
+cout&lt;&lt;"Address of vb1 = "&lt;&lt;&amp;vb1&lt;&lt;endl;
+vb1 = 10;
+
+cout&lt;&lt;"Now the cCA.m_iA = "&lt;&lt;cCA.GetA()&lt;&lt;endl;
+
+return 0;
+}
+</pre> 
+
+<p>下面是在MinGW的G++下输出的结果</p>
+<p><img src="http://p.blog.csdn.net/images/p_blog_csdn_net/ToCpp/EntryImages/20090825/Result.PNG" alt="返回引用" title="返回引用"></p>
+<p>&nbsp;</p>
+<blockquote>
+<p>&nbsp;</p>
+<p><span style="background-color: #ff0000;"><span style="color: #00ff00;"><span style="background-color: #ffffff;"><strong>路路漫漫其修远兮，吾将上下而求索！</strong></span></span></span><br></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/07/21/c设计模式之一-工厂模式（简单工厂、工厂和抽象/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1934,170 +2165,6 @@ return 0;
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/06/08/使用tinyxml解析xml/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2009/06/08/使用tinyxml解析xml/" itemprop="url">使用TinyXML解析XML</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-06-08T22:59:00+08:00">
-                2009-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index">
-                    <span itemprop="name">C++</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 由于工作需要，以前都是直接硬写在程序中的堆砌代码，现在决定都改为XML描述了，一来程序看起来清爽多了，二来以后扩展也方便。项目中使用的是TinyXML，今天去其官方网站逛了一圈，其中有个Tutorial写的很好，最后有个例子代码，个人感觉稍作修改完全可以拿到实际项目中使用，管他有多少个Node一个递归即搞定：<pre style="border: 1px dotted #785;background: #f5f5f5;">// tutorial demo program</pre></p>
-<p>#include “stdafx.h”</p>
-<p>#include “tinyxml.h”</p>
-<p>// ———————————————————————-<br>// STDOUT dump and indenting utility functions<br>// ———————————————————————-<br>const unsigned int NUM_INDENTS_PER_SPACE=2;</p>
-<p>const char <em> getIndent( unsigned int numIndents )<br>{<br>static const char </em> pINDENT=”                                      + “;<br>static const unsigned int LENGTH=strlen( pINDENT );<br>unsigned int n=numIndents*NUM_INDENTS_PER_SPACE;<br>if ( n &gt; LENGTH ) n = LENGTH;</p>
-<p>return &amp;pINDENT[ LENGTH-n ];<br>}</p>
-<p>// same as getIndent but no “+” at the end<br>const char <em> getIndentAlt( unsigned int numIndents )<br>{<br>static const char </em> pINDENT=”                                        “;<br>static const unsigned int LENGTH=strlen( pINDENT );<br>unsigned int n=numIndents*NUM_INDENTS_PER_SPACE;<br>if ( n &gt; LENGTH ) n = LENGTH;</p>
-<p>return &amp;pINDENT[ LENGTH-n ];<br>}</p>
-<p>int dump_attribs_to_stdout(TiXmlElement* pElement, unsigned int indent)<br>{<br>if ( !pElement ) return 0;</p>
-<p>TiXmlAttribute<em> pAttrib=pElement-&gt;FirstAttribute();<br>int i=0;<br>int ival;<br>double dval;<br>const char</em> pIndent=getIndent(indent);<br>printf(“/n”);<br>while (pAttrib)<br>{<br>printf( “%s%s: value=[%s]”, pIndent, pAttrib-&gt;Name(), pAttrib-&gt;Value());</p>
-<p>if (pAttrib-&gt;QueryIntValue(&amp;ival)==TIXML_SUCCESS)    printf( “ int=%d”, ival);<br>if (pAttrib-&gt;QueryDoubleValue(&amp;dval)==TIXML_SUCCESS) printf( “ d=%1.1f”, dval);<br>printf( “/n” );<br>i++;<br>pAttrib=pAttrib-&gt;Next();<br>}<br>return i;<br>}</p>
-<p>void dump_to_stdout( TiXmlNode* pParent, unsigned int indent = 0 )<br>{<br>if ( !pParent ) return;</p>
-<p>TiXmlNode<em> pChild;<br>TiXmlText</em> pText;<br>int t = pParent-&gt;Type();<br>printf( “%s”, getIndent(indent));<br>int num;</p>
-<p>switch ( t )<br>{<br>case TiXmlNode::DOCUMENT:<br>printf( “Document” );<br>break;</p>
-<p>case TiXmlNode::ELEMENT:<br>printf( “Element [%s]”, pParent-&gt;Value() );<br>num=dump_attribs_to_stdout(pParent-&gt;ToElement(), indent+1);<br>switch(num)<br>{<br>case 0:  printf( “ (No attributes)”); break;<br>case 1:  printf( “%s1 attribute”, getIndentAlt(indent)); break;<br>default: printf( “%s%d attributes”, getIndentAlt(indent), num); break;<br>}<br>break;</p>
-<p>case TiXmlNode::COMMENT:<br>printf( “Comment: [%s]”, pParent-&gt;Value());<br>break;</p>
-<p>case TiXmlNode::UNKNOWN:<br>printf( “Unknown” );<br>break;</p>
-<p>case TiXmlNode::TEXT:<br>pText = pParent-&gt;ToText();<br>printf( “Text: [%s]”, pText-&gt;Value() );<br>break;</p>
-<p>case TiXmlNode::DECLARATION:<br>printf( “Declaration” );<br>break;<br>default:<br>break;<br>}<br>printf( “/n” );<br>for ( pChild = pParent-&gt;FirstChild(); pChild != 0; pChild = pChild-&gt;NextSibling())<br>{<br>dump_to_stdout( pChild, indent+1 );<br>}<br>}</p>
-<p>// load the named file and dump its structure to STDOUT<br>void dump_to_stdout(const char* pFilename)<br>{<br>TiXmlDocument doc(pFilename);<br>bool loadOkay = doc.LoadFile();<br>if (loadOkay)<br>{<br>printf(“/n%s:/n”, pFilename);<br>dump_to_stdout( &amp;doc ); // defined later in the tutorial<br>}<br>else<br>{<br>printf(“Failed to load file /“%s/“/n”, pFilename);<br>}<br>}</p>
-<p>// ———————————————————————-<br>// main() for printing files named on the command line<br>// ———————————————————————-<br>int main(int argc, char* argv[])<br>{<br>for (int i=1; i&lt;argc; i++)<br>{<br>dump_to_stdout(argv[i]);<br>}<br>return 0;<br>}<br> </p>
-<p>递归和树简直就是绝配，前阵子做等了部分加载联系人到树控件时也是用递归搞定的，有时间再把递归好好研究下。</p>
-<p></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2148,7 +2215,7 @@ return 0;
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">156</span>
+                  <span class="site-state-item-count">157</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2223,7 +2290,7 @@ return 0;
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

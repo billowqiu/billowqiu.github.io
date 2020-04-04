@@ -269,6 +269,231 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/10/19/行为模式之command/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2009/10/19/行为模式之command/" itemprop="url">行为模式之Command</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-10-19T22:40:00+08:00">
+                2009-10-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &ldquo;本来是打算看ThinkInC++上面的设计模式学习的，看到第二个模式也就是Command发现上面讲得实在是太少了，只好看那本经典的EBook了，幸好还算清晰，第一章看完一半就决定买一本纸质书了，犹豫了两天昨天晚上终于下单了，Head First 设计模式，明天估计就到货了，希望选择是对的。&rdquo;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 刚刚把EBook上面的Commad一节看完，对这个模式有一点点体会了，但是由于没有在实际项目中用到也只能是纸上谈兵了，主要点就是将调用封装为对象，类似于函数对象吧，在调用和执行之间有个中介Command。涉及的主要参与者有Command-抽象类；CocreateCommand-具体的命令类；Client-应用程序，创建一个具体的命令并设置其接受者；Invoker-调用者，调用Command的接口；Receiver-接受者，执行具体命令类的请求，KoF说任何类都可以是Receiver，下面是KoF 的结构图：</p>
+<p><img src="http://p.blog.csdn.net/images/p_blog_csdn_net/ToCpp/EntryImages/20091019/commad-action.gif" alt="序列图"></p>
+<p>&nbsp;</p>
+<p>下面是类图，Invoker和Command是聚合关系(包含但是不是必须)，ConcreteCommand继承Command，Client和ConcreteCommand单向关联与Receiver，Client依赖于ConcreteCommand，即Client必须得ConcreteCommand才能完成工作</p>
+<p><img src="http://p.blog.csdn.net/images/p_blog_csdn_net/ToCpp/EntryImages/20091019/command.gif" alt="结构图"></p>
+<p>下面是KoF的简短实现：</p>
+<pre style="border: 1px dotted #785;background: #f5f5f5;">class Command {
+    public:
+        virtual ~Command();
+
+        virtual void Execute() = 0;
+    protected:
+        Command();
+    };
+class OpenCommand : public Command {
+    public:
+        OpenCommand(Application*);
+
+        virtual void Execute();
+    protected:
+        virtual const char* AskUser();
+    private:
+        Application* _application;
+        char* _response;
+    };
+OpenCommand::OpenCommand (Application* a) {
+        _application = a;
+    }
+
+    void OpenCommand::Execute () {
+        const char* name = AskUser();
+
+        if (name != 0) {
+            Document* document = new Document(name);
+            _application-&gt;Add(document);
+            document-&gt;Open();
+        }
+    }
+class PasteCommand : public Command {
+    public:
+        PasteCommand(Document*);
+
+        virtual void Execute();
+    private:
+        Document* _document;
+    };
+
+    PasteCommand::PasteCommand (Document* doc) {
+        _document = doc;
+    }
+
+    void PasteCommand::Execute () {
+        _document-&gt;Paste();
+    }</pre> 
+
+<p>对于简单的不需要参数和取消操作的Template版本：</p>
+<pre style="border: 1px dotted #785;background: #f5f5f5;">template &lt;class Receiver&gt;
+    class SimpleCommand : public Command {
+    public:
+        typedef void (Receiver::* Action)();
+
+        SimpleCommand(Receiver* r, Action a) :
+            _receiver(r), _action(a) { }
+
+        virtual void Execute();
+    private:
+        Action _action;
+        Receiver* _receiver;
+    };
+template &lt;class Receiver&gt;
+    void SimpleCommand&lt;Receiver&gt;::Execute () {
+        (_receiver-&gt;*_action)();
+    }
+MyClass* receiver = new MyClass;
+    // ...
+    Command* aCommand =
+        new SimpleCommand&lt;MyClass&gt;(receiver, &amp;MyClass::Action);
+    // ...
+    aCommand-&gt;Execute();
+</pre> 
+
+<p>先贴上这么多，不知道哪一天会在项目中应用到，慢慢体会&hellip;&hellip;</p>
+<p></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/10/18/singleton/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1676,237 +1901,6 @@ if (hbmpFriend &amp;&amp; nRetCopyLines)
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/08/25/返回值为引用的一点测试/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2009/08/25/返回值为引用的一点测试/" itemprop="url">返回值为引用的一点测试</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-08-25T22:10:00+08:00">
-                2009-08-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index">
-                    <span itemprop="name">C++</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近做多人视频时设计了一个简单的类，但是简单的类也很能说明问题，也再次说明有些基础知识还是理解得不够深刻，刚写了个测试程序以便日后查阅，主要是关于返回值为引用类型时的一点测试:</p>
-<pre style="border: 1px dotted #785;background: #f5f5f5;">#include &lt;iostream&gt;
-using namespace std;
-
-class CConstRef
-{
-public:
-CConstRef(int iA):m_iA(iA)
-{
-}
-const int&amp; GetA()const
-{
-return m_iA;
-}
-int&amp; GetA()
-{
-return m_iA;
-}
-void PrintAddress()const
-{
-cout&lt;&lt;"Address of m_iA = "&lt;&lt;&amp;m_iA&lt;&lt;endl;
-}
-private:
-int m_iA;
-};
-
-int main(int argc, char* argv[])
-{
-//常量对象
-const CConstRef cCA(8);
-//非常量对象
-CConstRef CA(9);
-//////////////////////////////////////////////////////////////////////////
-//注意下面的调用都是返回对象cCA的成员m_iA的引用,且此引用都是用来初始化另一引用
-//因此地址都相同
-//调用int&amp; GetA()
-int&amp; ra = CA.GetA();
-CA.PrintAddress();
-cout&lt;&lt;"Address of ra = "&lt;&lt;&amp;ra&lt;&lt;endl;
-ra = 3;
-cout&lt;&lt;"Now the CA.m_iA = "&lt;&lt;CA.GetA()&lt;&lt;endl;
-
-//调用int&amp; GetA()
-const int&amp; ra1 = CA.GetA();
-cout&lt;&lt;"Address of ra1 = "&lt;&lt;&amp;ra1&lt;&lt;endl;
-//////////////////////////////////////////////////////////////////////////
-//调用int&amp; GetA()
-int va = CA.GetA();
-CA.PrintAddress();
-cout&lt;&lt;"Address of va = "&lt;&lt;&amp;va&lt;&lt;endl;
-va = 3;
-cout&lt;&lt;"Now the CA.m_iA = "&lt;&lt;CA.GetA()&lt;&lt;endl;
-
-//调用int&amp; GetA()
-const int va1 = CA.GetA();
-cout&lt;&lt;"Address of va1 = "&lt;&lt;&amp;va1&lt;&lt;endl;
-//////////////////////////////////////////////////////////////////////////
-//下面的rb就是cCA.m_iA
-const int&amp; rb = cCA.GetA();
-
-cCA.PrintAddress();
-cout&lt;&lt;"Address of rb = "&lt;&lt;&amp;rb&lt;&lt;endl;
-
-/*
-error: invalid initialization of reference of type 'int&amp;' from expression of type 'const int'
-上面的错误时G++提示的，这么说来其实编译器给我们返回的是const int而不是const int&amp;
-*/
-// int&amp; rb1 = cCA.GetA();
-
-//下面的的vb和vb1都是是cCA.m_iA的一个副本
-const int vb = cCA.GetA();
-cout&lt;&lt;"Address of vb = "&lt;&lt;&amp;vb&lt;&lt;endl;
-
-int vb1 = cCA.GetA();
-cout&lt;&lt;"Address of vb1 = "&lt;&lt;&amp;vb1&lt;&lt;endl;
-vb1 = 10;
-
-cout&lt;&lt;"Now the cCA.m_iA = "&lt;&lt;cCA.GetA()&lt;&lt;endl;
-
-return 0;
-}
-</pre> 
-
-<p>下面是在MinGW的G++下输出的结果</p>
-<p><img src="http://p.blog.csdn.net/images/p_blog_csdn_net/ToCpp/EntryImages/20090825/Result.PNG" alt="返回引用" title="返回引用"></p>
-<p>&nbsp;</p>
-<blockquote>
-<p>&nbsp;</p>
-<p><span style="background-color: #ff0000;"><span style="color: #00ff00;"><span style="background-color: #ffffff;"><strong>路路漫漫其修远兮，吾将上下而求索！</strong></span></span></span><br></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1957,7 +1951,7 @@ return 0;
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">156</span>
+                  <span class="site-state-item-count">157</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2032,7 +2026,7 @@ return 0;
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

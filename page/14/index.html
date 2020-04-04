@@ -269,6 +269,157 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2008/07/06/cstatusbar创建进度条问题/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2008/07/06/cstatusbar创建进度条问题/" itemprop="url">CStatusBar创建进度条问题</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2008-07-06T01:46:00+08:00">
+                2008-07-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/VC/" itemprop="url" rel="index">
+                    <span itemprop="name">VC</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <pre><code>&lt;DIV class=cnt id=blog_text&gt;
+</code></pre><font color="#800080" size="3">想在状态栏中创建一个进度条，没有在框架窗口中定义进度条，再以状态栏为父窗口创建，而是直接从CStatusBar派生一个类，在其中定义了一个CPropressCtrl成员，按照常规的创子控件思路在OnCreate中创建进度条，</font>
+
+<font color="#800080" size="3">int CQTStatusBar::OnCreate(LPCREATESTRUCT lpCreateStruct)<br>{<br>if (CStatusBar::OnCreate(lpCreateStruct) == -1)<br>&nbsp;&nbsp; return -1;</font>
+
+<font color="#800080" size="3">// TODO: 在此添加您专用的创建代码<br>CRect rect;<br>GetClientRect(&amp;rect);<br>rect.left=rect.right-150;<br>if(!m_wndProress)<br>m_wndProress.Create(WS_CHILD | WS_VISIBLE,rect,this,111);<br>m_wndProress.MoveWindow(rect,false);&nbsp;&nbsp; //为了在大小改变时重载位置<br>m_wndProress.SetRange(0,100);<br>m_wndProress.SetPos(50);</font>
+
+<font color="#800080" size="3">return 0;<br>}</font>
+
+<p><font color="#800080" size="3">结果发现进度条并没有产生，通过调试发现这里的rect根本就没有取到值，换在WM_PAINT消息里面处理，结果正常。纳闷了，难道是OnCreate中状态栏还未创建好吗？应该不是的，估计是MFC设计的问题，CStatusBar的Create函数里面就没让设置大小的函数。</font><br><br></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2008/06/12/删除ctoolbar浮动时的菜单/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1758,208 +1909,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2007/11/21/mfc-is-back-发布日期：2007-11-21/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2007/11/21/mfc-is-back-发布日期：2007-11-21/" itemprop="url">MFC is back</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2007-11-21T18:38:00+08:00">
-                2007-11-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/VC/" itemprop="url" rel="index">
-                    <span itemprop="name">VC</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <pre><code>&lt;TABLE style=&quot;TABLE-LAYOUT: fixed&quot;&gt;
-</code></pre><p><tbody></tbody></p>
-<p><tr></tr></p>
-<p><td></td></p>
-<div class="cnt" id="blog_text">
-
-<span style="FONT-SIZE: 11pt"><font face="Tahoma">Hello again. My name is Ale Contenti, and I’m the Dev Lead for the VC++ Libraries. I’m writing this blog entry from my hotel room in Barcelona. Steve Teixeira and I are here for TechEd Developers Europe. Let me tell you that the atmosphere here is just great! Lots of people and a lot of Visual Studio and C++ users. Lots of interest in Visual Studio 2008 and all the new features and functionality we’ve added to the product.</font></span>
-
-<span style="FONT-SIZE: 11pt; COLOR: #1f497d"><font face="Tahoma"></font></span>
-
-<span style="FONT-SIZE: 11pt; COLOR: #1f497d"><a href="http://www.gregcons.com/KateBlog/" target="_blank" rel="noopener"><font face="Tahoma" color="#0000ff"><u>Kate Gregory</u></font></a><font face="Tahoma">, </font><a href="http://blogs.msdn.com/texblog/" target="_blank" rel="noopener"><font face="Tahoma" color="#800080"><u>Steve</u></font></a><font face="Tahoma"> </font></span><span style="FONT-SIZE: 11pt"><font face="Tahoma">and I covered more than 7 talks about different C++ topics, ranging from debugging to interop to MFC. My main talk was about “MFC Updates for Visual Studio 2008 and Beyond”. &nbsp;&nbsp; In this session I introduced the major new features we’re implementing for MFC. With these features, developers will be able to create modern applications that leverage the “look and feel” of Microsoft Office, Internet Explorer and Visual Studio.</font></span>
-
-<span style="FONT-SIZE: 11pt"><font face="Tahoma"></font></span>
-
-<span style="FONT-SIZE: 11pt"><font face="Tahoma">My MFC talk was in a pretty big room, and the audience was extremely interested! It was great to show the demos and look at the code together! I had a lot of fun and the Q&amp;A session was just perfect, with a lot of great questions and (hopefully) satisfying answers from me </font></span><span style="FONT-SIZE: 11pt">J</span><span style="FONT-SIZE: 11pt"><font face="Tahoma">.</font></span>
-
-<span style="FONT-SIZE: 11pt"><font face="Tahoma"></font></span>
-
-<span style="FONT-SIZE: 11pt"><font face="Tahoma">Let me share with you some of the comments from the attendees:</font></span>
-
-<span style="FONT-SIZE: 11pt"><font face="Tahoma"></font></span>
-
-<span style="FONT-SIZE: 11pt"><span style="mso-list: Ignore">·<span style="FONT: 7pt Times New Roman">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span style="FONT-SIZE: 11pt"><font face="Tahoma">“Great session! At last, MFC is back!”</font></span>
-
-<span style="FONT-SIZE: 11pt"><span style="mso-list: Ignore">·<span style="FONT: 7pt Times New Roman">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span style="FONT-SIZE: 11pt"><font face="Tahoma">“Good demo, great job with all these new control”</font></span>
-
-<span style="FONT-SIZE: 11pt"><span style="mso-list: Ignore">·<span style="FONT: 7pt Times New Roman">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span style="FONT-SIZE: 11pt"><font face="Tahoma">“I am really glad to see the future of MFC/VC++ and the commitment to the native programmer. This was a great session and a nice glimpse of the things to come. Keep up the good work. Also, nice to see so many C++ topics this year with really great presenters.”</font></span>
-
-<span style="FONT-SIZE: 11pt"><span style="mso-list: Ignore">·<span style="FONT: 7pt Times New Roman">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span style="FONT-SIZE: 11pt"><font face="Tahoma">“Very surprised on all the work that has been done to MFC, having been in the situation where MFC seemed to have been left behind (visually at least)”</font></span>
-
-<span style="FONT-SIZE: 11pt"><font face="Tahoma"></font></span>
-
-<span style="FONT-SIZE: 11pt"><font face="Tahoma">I was really happy to have the opportunity to present these updates to the MFC Libraries! Special thanks to the VC++ Libraries Team!</font></span>
-
-<span style="FONT-SIZE: 11pt"><font face="Tahoma"></font></span>
-
-<span style="FONT-SIZE: 11pt"><font face="Tahoma">Kate and I also talked about C++0x and TR1 during a couple of “interactive sessions” or “chalk talk”. Again, great interest on the new TR1 extensions and on what will come from the C++ Standard.</font></span>
-
-<span style="FONT-SIZE: 11pt"><font face="Tahoma"></font></span>
-
-<span style="FONT-SIZE: 11pt"><font face="Tahoma">During the talks, I had time to meet with a lot of customers and MVPs in the VS2008 Ask The Expert (ATE) booth. I really like to listen to our customers scenarios: It really forces me to think outside the box and to realize how many different “field” problems our customers need to face every day!</font></span>
-
-<span style="FONT-SIZE: 11pt"><font face="Tahoma"></font></span>
-
-<span style="FONT-SIZE: 11pt"><font face="Tahoma">Last but not least, Charles from Channel9 found some time to interview Kate, Steve and I about C++, customers and what’s next for VC.</font></span>
-
-<span style="FONT-SIZE: 11pt"><font face="Tahoma"></font></span>
-
-<span style="FONT-SIZE: 11pt"><font face="Tahoma">Heading to Germany, now, for more customer visits!</font></span>
-
-<span style="FONT-SIZE: 11pt"><font face="Tahoma"></font></span>
-
-<span style="FONT-SIZE: 11pt"><font face="Tahoma">Adios!</font></span>
-
-<span style="FONT-SIZE: 11pt"><font face="Tahoma"></font></span>
-
-<span style="FONT-SIZE: 11pt"><font face="Tahoma">Ale Contenti</font></span>
-
-<span style="FONT-SIZE: 11pt"><font face="Tahoma">VC++ Libraries Dev Lead</font></span>
-
-<p><span style="FONT-SIZE: 11pt"><font face="Tahoma">以上摘自<a href="http://blogs.msdn.com/vcblog/default.aspx" target="_blank" rel="noopener"><u><font color="#0000ff">Visual C++ Team Blog</font></u></a>上的一篇文章，终于看到MS更新MFC了，:-)。</font></span><br></p></div><br><p></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2010,7 +1959,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">156</span>
+                  <span class="site-state-item-count">157</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2085,7 +2034,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

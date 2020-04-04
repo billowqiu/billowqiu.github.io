@@ -269,6 +269,220 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2011/04/30/主备切换之state模式实现/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2011/04/30/主备切换之state模式实现/" itemprop="url">主备切换之State模式实现</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2011-04-30T00:53:00+08:00">
+                2011-04-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近项目中需要实现一个主备切换的功能，通过分析可以得出也就两个状态的切换，使用if/switch之类的语句可以轻松搞定，但是为了学习并实践State模式，这里采取了一个State模式的实现：</p>
+<p><pre class="brush:cpp">// HAState.h: interface for the HAState class.<br>//<br>//////////////////////////////////////////////////////////////////////</pre></p>
+<p>#if !defined(AFX_HASTATE_H__410262B3_3FEB_44B3_BFA7_04C4BEBCE636__INCLUDED_)</p>
+<p>#define AFX_HASTATE_H__410262B3_3FEB_44B3_BFA7_04C4BEBCE636__INCLUDED_</p>
+<p>#if _MSC_VER &gt; 1000</p>
+<p>#pragma once</p>
+<p>#endif // _MSC_VER &gt; 1000</p>
+<p>#include &lt;iostream&gt;<br>class HASwitch;<br>enum HASTATE<br>{<br>    STANDBY,<br>    PRIMARY,<br>    FAILURE<br>};<br>class HAState<br>{<br>public:<br>    HAState();<br>    virtual ~HAState();</p>
+<pre><code>virtual HASTATE getState();
+virtual bool standby2primary( HASwitch* pSwitch ) = 0;
+virtual bool primary2standby( HASwitch* pSwitch ) = 0;
+</code></pre><p>protected:<br>    void changeState( HASwitch<em> pSwitch, HAState</em> pNewState );<br>protected:<br>    HASTATE m_euState;<br>};</p>
+<p>#endif // !defined(AFX_HASTATE_H__410262B3_3FEB_44B3_BFA7_04C4BEBCE636__INCLUDED_)<br>// HAState.cpp: implementation of the HAState class.<br>//<br>//////////////////////////////////////////////////////////////////////</p>
+<p>#include “HAState.h”</p>
+<p>#include “HASwitch.h”<br>//////////////////////////////////////////////////////////////////////<br>// Construction/Destruction<br>//////////////////////////////////////////////////////////////////////<br>HAState::HAState():m_euState( FAILURE )<br>{<br>    std::cout &lt;&lt; “Call “ &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl;<br>}<br>HAState::~HAState()<br>{<br>    std::cout &lt;&lt; “Call “ &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl;<br>}<br>void HAState::changeState( HASwitch<em> pSwitch, HAState</em> pNewState )<br>{<br>    std::cout &lt;&lt; “Call “ &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl;<br>    pSwitch-&gt;changeState( pNewState );<br>}<br>HASTATE HAState::getState()<br>{<br>    std::cout &lt;&lt; “Call “ &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl;<br>    return m_euState;<br>}<br>&nbsp;</p>
+<p><pre class="brush:cpp">// PrimaryState.h: interface for the PrimaryState class.<br>//<br>//////////////////////////////////////////////////////////////////////</pre></p>
+<p>#if !defined(AFX_PRIMARYSTATE_H__DFA509B1_9344_4750_A582_5637A65DF2A8__INCLUDED_)</p>
+<p>#define AFX_PRIMARYSTATE_H__DFA509B1_9344_4750_A582_5637A65DF2A8__INCLUDED_</p>
+<p>#if _MSC_VER &gt; 1000</p>
+<p>#pragma once</p>
+<p>#endif // _MSC_VER &gt; 1000</p>
+<p>#include &lt;boost/noncopyable.hpp&gt;</p>
+<p>#include “HAState.h”<br>class PrimaryState : public HAState, public boost::noncopyable<br>{<br>public:<br>    PrimaryState();<br>    virtual ~PrimaryState();<br>    static PrimaryState&amp; instance();<br>    virtual bool standby2primary( HASwitch<em> pSwitch ) ;<br>    virtual bool primary2standby( HASwitch</em> pSwitch ) ;<br>private:<br>    static PrimaryState s_Instance;<br>};</p>
+<p>#endif // !defined(AFX_PRIMARYSTATE_H__DFA509B1_9344_4750_A582_5637A65DF2A8__INCLUDED_)<br>&nbsp;</p>
+<p><pre class="brush:cpp">// PrimaryState.cpp: implementation of the PrimaryState class.<br>//<br>//////////////////////////////////////////////////////////////////////</pre></p>
+<p>#include “PrimaryState.h”</p>
+<p>#include “StandbyState.h”</p>
+<p>#include “HASwitch.h”<br>//////////////////////////////////////////////////////////////////////<br>// Construction/Destruction<br>//////////////////////////////////////////////////////////////////////<br>PrimaryState PrimaryState::s_Instance;<br>PrimaryState::PrimaryState()<br>{<br>    std::cout &lt;&lt; “Call “ &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl;<br>    m_euState = PRIMARY;<br>}<br>PrimaryState::~PrimaryState()<br>{<br>    std::cout &lt;&lt; “Call “ &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl;<br>}<br>bool PrimaryState::standby2primary( HASwitch* pSwitch )<br>{<br>    std::cout &lt;&lt; “Call “ &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl;<br>    std::cout &lt;&lt; “Current state is already primary” &lt;&lt; std::endl;</p>
+<pre><code>return true;
+</code></pre><p>}<br>bool PrimaryState::primary2standby( HASwitch* pSwitch )<br>{<br>    std::cout &lt;&lt; “Call “ &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl;<br>    std::cout &lt;&lt; “Begin switch to standby…” &lt;&lt; std::endl;</p>
+<pre><code>std::cout &amp;lt;&amp;lt; &quot;Do something&quot; &amp;lt;&amp;lt; std::endl;
+changeState( pSwitch, &amp;amp;StandbyState::instance() );
+
+std::cout &amp;lt;&amp;lt; &quot;End switch to standby...&quot; &amp;lt;&amp;lt; std::endl;
+
+return true;
+</code></pre><p>}<br>PrimaryState&amp; PrimaryState::instance()<br>{<br>    std::cout &lt;&lt; “Call “ &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl;<br>    return s_Instance;<br>}<br>// StandbyState.h: interface for the StandbyState class.<br>//<br>//////////////////////////////////////////////////////////////////////</p>
+<p>#if !defined(AFX_STANDBYSTATE_H__028C47F8_1A92_4854_A93D_2AECB6A17DF6__INCLUDED_)</p>
+<p>#define AFX_STANDBYSTATE_H__028C47F8_1A92_4854_A93D_2AECB6A17DF6__INCLUDED_</p>
+<p>#if _MSC_VER &gt; 1000</p>
+<p>#pragma once</p>
+<p>#endif // _MSC_VER &gt; 1000</p>
+<p>#include &lt;boost/noncopyable.hpp&gt;</p>
+<p>#include “HAState.h”<br>class StandbyState : public HAState, public boost::noncopyable<br>{<br>public:<br>    StandbyState();<br>    virtual ~StandbyState();<br>    static StandbyState&amp; instance();<br>    virtual bool standby2primary( HASwitch<em> pSwitch ) ;<br>    virtual bool primary2standby( HASwitch</em> pSwitch ) ;<br>private:<br>    static StandbyState s_Instance;<br>};</p>
+<p>#endif // !defined(AFX_STANDBYSTATE_H__028C47F8_1A92_4854_A93D_2AECB6A17DF6__INCLUDED_)<br>// StandbyState.cpp: implementation of the StandbyState class.<br>//<br>//////////////////////////////////////////////////////////////////////</p>
+<p>#include “StandbyState.h”</p>
+<p>#include “PrimaryState.h”</p>
+<p>#include “HASwitch.h”<br>//////////////////////////////////////////////////////////////////////<br>// Construction/Destruction<br>//////////////////////////////////////////////////////////////////////<br>StandbyState StandbyState::s_Instance;<br>StandbyState::StandbyState()<br>{<br>    std::cout &lt;&lt; “Call “ &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl;<br>    m_euState = STANDBY;<br>}<br>StandbyState::~StandbyState()<br>{<br>    std::cout &lt;&lt; “Call “ &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl;<br>}<br>bool StandbyState::standby2primary( HASwitch* pSwitch )<br>{<br>    std::cout &lt;&lt; “Call “ &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl;<br>    std::cout &lt;&lt; “Begin switch to primary…” &lt;&lt; std::endl;</p>
+<pre><code>std::cout &amp;lt;&amp;lt; &quot;Do something&quot; &amp;lt;&amp;lt; std::endl;
+changeState( pSwitch, &amp;amp;PrimaryState::instance() );
+
+std::cout &amp;lt;&amp;lt; &quot;End switch to primary...&quot; &amp;lt;&amp;lt; std::endl;
+
+return true;
+</code></pre><p>}<br>bool StandbyState::primary2standby( HASwitch* pSwitch )<br>{<br>    std::cout &lt;&lt; “Call “ &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl;<br>    std::cout &lt;&lt; “Current state is already standby” &lt;&lt; std::endl;</p>
+<pre><code>return true;
+</code></pre><p>}<br>StandbyState&amp; StandbyState::instance()<br>{<br>    std::cout &lt;&lt; “Call “ &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl;<br>    return s_Instance;<br>}<br>// HASwitch.h: interface for the HASwitch class.<br>//<br>//////////////////////////////////////////////////////////////////////</p>
+<p>#if !defined(AFX_HASWITCH_H__AC109E28_51E4_46AE_BC07_9E93FA747B65__INCLUDED_)</p>
+<p>#define AFX_HASWITCH_H__AC109E28_51E4_46AE_BC07_9E93FA747B65__INCLUDED_</p>
+<p>#if _MSC_VER &gt; 1000</p>
+<p>#pragma once</p>
+<p>#endif // _MSC_VER &gt; 1000</p>
+<p>#include &lt;boost/noncopyable.hpp&gt;</p>
+<p>#include “HAState.h”<br>class HASwitch : public boost::noncopyable<br>{<br>    friend class HAState;<br>public:<br>    HASwitch();<br>    virtual ~HASwitch();<br>    static HASwitch&amp; instance();<br>    HASTATE getState() const;<br>    boolstandby2primary();<br>    boolprimary2standby();<br>private:<br>    void changeState( HAState<em> pNewState );<br>private:<br>    static HASwitch g_Instance;<br>    HAState</em> m_pCurState;<br>};</p>
+<p>#endif // !defined(AFX_HASWITCH_H__AC109E28_51E4_46AE_BC07_9E93FA747B65__INCLUDED_)<br>&nbsp;</p>
+<p><pre class="brush:cpp">// HASwitch.cpp: implementation of the HASwitch class.<br>//<br>//////////////////////////////////////////////////////////////////////</pre></p>
+<p>#include “HASwitch.h”</p>
+<p>#include “HAState.h”</p>
+<p>#include “PrimaryState.h”</p>
+<p>#include “StandbyState.h”<br>//////////////////////////////////////////////////////////////////////<br>// Construction/Destruction<br>//////////////////////////////////////////////////////////////////////<br>HASwitch HASwitch::g_Instance;<br>HASwitch::HASwitch()<br>{<br>    m_pCurState = &amp;StandbyState::instance();<br>    std::cout &lt;&lt; “Call “ &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl;<br>}<br>HASwitch::~HASwitch()<br>{<br>    std::cout &lt;&lt; “Call “ &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl;<br>}<br>HASTATE HASwitch::getState() const<br>{<br>    std::cout &lt;&lt; “Call “ &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl;<br>    return m_pCurState-&gt;getState();<br>}<br>bool HASwitch::standby2primary()<br>{<br>    std::cout &lt;&lt; “Call “ &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl;<br>    return m_pCurState-&gt;standby2primary(this);<br>}<br>bool HASwitch::primary2standby()<br>{<br>    std::cout &lt;&lt; “Call “ &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl;<br>    return m_pCurState-&gt;primary2standby(this);<br>}<br>void HASwitch::changeState( HAState* pNewState )<br>{<br>    std::cout &lt;&lt; “Call “ &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; std::endl;<br>    m_pCurState = pNewState;<br>}<br>HASwitch&amp; HASwitch::instance()<br>{<br>    return g_Instance;<br>}<br>测试代码：</p>
+<p><pre class="brush:cpp">#include &lt;iostream&gt;</pre></p>
+<p>#include &lt;assert.h&gt;</p>
+<p>#include “HASwitch.h”<br>int main(int argc , char ** argv)<br>{<br>    assert( HASwitch::instance().getState() == STANDBY );<br>    HASwitch::instance().standby2primary();<br>    assert( HASwitch::instance().getState() == PRIMARY );<br>    HASwitch::instance().primary2standby();<br>    assert( HASwitch::instance().getState() == STANDBY );<br>    return 0;<br>}<br>&nbsp;</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2011/04/17/thrift之hello-python-client-cpp-sever/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1651,175 +1865,6 @@ return 0;
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2011/03/01/postgresql简单封装/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2011/03/01/postgresql简单封装/" itemprop="url">PostgreSQL简单封装</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2011-03-01T00:26:00+08:00">
-                2011-03-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index">
-                    <span itemprop="name">C++</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/系统编程/" itemprop="url" rel="index">
-                    <span itemprop="name">系统编程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>工作需要，虽然有libpqxx，但是目前为了刚刚够用，尽量不要引入第三方库。在网上找到简单的封装<a href="http://www.touspassagers.com/2010/12/a-postgresql-database-interface-wrapper-in-c/" target="_blank" rel="noopener">http://www.touspassagers.com/2010/12/a-postgresql-database-interface-wrapper-in-c/</a></p>
-<p>&nbsp;</p>
-<p>直接贴上代码:</p>
-<p><pre style="border: 1px dotted #785;background: #f5f5f5;">#include &lt;iostream&gt;</pre></p>
-<p>#include &lt;stdio.h&gt;</p>
-<p>#include &lt;string&gt;</p>
-<p>#include &lt;stdlib.h&gt;</p>
-<p>#include &lt;libpq-fe.h&gt;</p>
-<p>#include &lt;map&gt;</p>
-<p>#include &lt;math.h&gt;</p>
-<p>#include &lt;string.h&gt;<br>using namespace std;<br>typedef map&lt;int,map&lt;string,string&gt; &gt; map_result;<br>static void<br>finish_connection(PGconn <em>conn)<br>{<br>    PQfinish(conn);<br>}<br>class Conn<br>{<br>public:<br>    // Methods<br>    Conn(char </em>connstring);<br>    ~Conn();<br>    map_result fetch(char <em>SQL);<br>    int insert(char </em>SQL);<br>    void reset();<br>private:<br>    // Members<br>    PGconn <em>conn;<br>    const char </em>conninfo;<br>    PGresult <em>res;<br>};<br>Conn::Conn(char </em>connstring)<br>{<br>    // Connect to the DB<br>    conninfo = connstring;<br>    conn = PQconnectdb(conninfo);<br>    // See if the connection took:<br>    if (PQstatus(conn) != CONNECTION_OK)<br>    {<br>        fprintf(stderr, “Could not connect to db/n%s”,<br>                PQerrorMessage(conn));<br>        finish_connection(conn);<br>    }<br>}<br>Conn::~Conn()<br>{<br>    finish_connection(conn);<br>}<br>void Conn::reset()<br>{<br>    PQfinish(conn);<br>    conn = PQconnectdb(conninfo);<br>}<br>map_result Conn::fetch(char <em>SQL)<br>{<br>    int row, col;<br>    map_result results;<br>    map&lt;string,string&gt; pairs;<br>    // Check the connection:<br>    if (PQstatus(conn) != CONNECTION_OK)<br>        this-&gt;reset();<br>    // Start a transaction:<br>    res = PQexec(conn, “BEGIN”);<br>    if (PQresultStatus(res) != PGRES_COMMAND_OK)<br>    {<br>        fprintf(stderr, “Failed to BEGIN transaction /n%s”,<br>                PQerrorMessage(conn));<br>        PQclear(res);<br>        finish_connection(conn);<br>    }<br>    // Set up fetch query with a CURSOR:<br>    string FinalSQL = string(“DECLARE myportal CURSOR FOR “) +<br>                      string(SQL);<br>    // Declare CURSOR and execute query:<br>    res = PQexec(conn,FinalSQL.c_str());<br>    if (PQresultStatus(res) != PGRES_COMMAND_OK)<br>    {<br>        fprintf(stderr, “QUERY FAILED/n%s/n”,<br>                PQerrorMessage(conn));<br>        PQclear(res);<br>        finish_connection(conn);<br>    }<br>    PQclear(res);<br>    // Fetch results:<br>    res = PQexec(conn, “FETCH ALL in myportal”);<br>    if (PQresultStatus(res) != PGRES_TUPLES_OK)<br>    {<br>        fprintf(stderr, “FETCH ALL failed/n%s/n”,<br>                PQerrorMessage(conn));<br>        PQclear(res);<br>        finish_connection(conn);<br>    }<br>    else<br>    {<br>        row = col = 0;<br>        for (row=0; row&lt;PQntuples(res); row++)<br>        {<br>            for(col=0; col&lt;PQnfields(res); col++)<br>            {<br>                pairs[PQfname(res,col)] = PQgetvalue(res, row, col);<br>            }<br>            results[row] = pairs;<br>        }<br>    }<br>    return results;<br>}<br>int Conn::insert(char </em>sql)<br>{<br>    // Check the connection:<br>    if (PQstatus(conn) != CONNECTION_OK)<br>        this-&gt;reset();<br>    // Start a transaction:<br>    res = PQexec(conn, “START TRANSACTION;”);<br>    if (PQresultStatus(res) != PGRES_COMMAND_OK)<br>    {<br>        fprintf(stderr, “Failed to BEGIN transaction /n%s/n”,<br>                PQerrorMessage(conn));<br>        PQclear(res);<br>        finish_connection(conn);<br>    }<br>    // Execute Insert:<br>    res = PQexec(conn, sql);<br>    if (PQresultStatus(res) != PGRES_COMMAND_OK)<br>    {<br>        fprintf(stderr, “Failed to execute INSERT /n%s/n”,<br>                PQerrorMessage(conn));<br>        PQclear(res);<br>        finish_connection(conn);<br>    }<br>    // COMMIT transaction:<br>    res = PQexec(conn, “COMMIT”);<br>    if (PQresultStatus(res) != PGRES_COMMAND_OK)<br>    {<br>        fprintf(stderr, “Failed to COMMIT transaction/n%s/n”,<br>                PQerrorMessage(conn));<br>        PQclear(res);<br>        finish_connection(conn);<br>    }<br>    return 0;<br>}&nbsp;</p>
-<p>使用代码：</p>
-<p><pre style="border: 1px dotted #785;background: #f5f5f5;">#include &lt;iostream&gt;</pre></p>
-<p>#include &lt;boost/lexical_cast.hpp&gt;</p>
-<p>#include “PGConn.hpp”<br>using namespace std;</p>
-<p>int main()<br>{<br>    map_result res;<br>    Conn <em>postgres = new Conn(“dbname=mydb user=postgres”);<br>    for( int i=0; i&lt;10; ++i )<br>    {<br>        std::string strTemp( “(“ +boost::lexical_cast&lt;std::string&gt;(i) + “,” );<br>        strTemp += boost::lexical_cast&lt;std::string&gt;(i+1) + “,”;<br>        strTemp += boost::lexical_cast&lt;std::string&gt;(i+2) + “);”;<br>        std::string strSql(“INSERT INTO exam_en(language,math,computer) VALUES “ + strTemp );<br>        postgres-&gt;insert( (char</em>)strSql.c_str() );<br>    }<br>    char sql[] = “SELECT * FROM exam_en;”;<br>    res = postgres-&gt;fetch(sql);<br>    map_result::iterator it = res.begin();<br>    for( ; it!=res.end(); ++it )<br>    {<br>        std::cout &lt;&lt; “ROW:” &lt;&lt; it-&gt;first &lt;&lt; std::endl;<br>        map&lt;string,string&gt;::iterator itField = it-&gt;second.begin();<br>        for( ; itField!=it-&gt;second.end(); ++itField )<br>        {<br>            std::cout &lt;&lt; “Field:” &lt;&lt; itField-&gt;first &lt;&lt; “  Value:” &lt;&lt; itField-&gt;second &lt;&lt; std::endl;<br>        }<br>    }<br>    return 0;<br>}<br>&nbsp;</p>
-<p></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1870,7 +1915,7 @@ return 0;
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">156</span>
+                  <span class="site-state-item-count">157</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1945,7 +1990,7 @@ return 0;
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

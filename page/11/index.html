@@ -269,6 +269,170 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/06/08/使用tinyxml解析xml/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2009/06/08/使用tinyxml解析xml/" itemprop="url">使用TinyXML解析XML</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-06-08T22:59:00+08:00">
+                2009-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C++</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 由于工作需要，以前都是直接硬写在程序中的堆砌代码，现在决定都改为XML描述了，一来程序看起来清爽多了，二来以后扩展也方便。项目中使用的是TinyXML，今天去其官方网站逛了一圈，其中有个Tutorial写的很好，最后有个例子代码，个人感觉稍作修改完全可以拿到实际项目中使用，管他有多少个Node一个递归即搞定：<pre style="border: 1px dotted #785;background: #f5f5f5;">// tutorial demo program</pre></p>
+<p>#include “stdafx.h”</p>
+<p>#include “tinyxml.h”</p>
+<p>// ———————————————————————-<br>// STDOUT dump and indenting utility functions<br>// ———————————————————————-<br>const unsigned int NUM_INDENTS_PER_SPACE=2;</p>
+<p>const char <em> getIndent( unsigned int numIndents )<br>{<br>static const char </em> pINDENT=”                                      + “;<br>static const unsigned int LENGTH=strlen( pINDENT );<br>unsigned int n=numIndents*NUM_INDENTS_PER_SPACE;<br>if ( n &gt; LENGTH ) n = LENGTH;</p>
+<p>return &amp;pINDENT[ LENGTH-n ];<br>}</p>
+<p>// same as getIndent but no “+” at the end<br>const char <em> getIndentAlt( unsigned int numIndents )<br>{<br>static const char </em> pINDENT=”                                        “;<br>static const unsigned int LENGTH=strlen( pINDENT );<br>unsigned int n=numIndents*NUM_INDENTS_PER_SPACE;<br>if ( n &gt; LENGTH ) n = LENGTH;</p>
+<p>return &amp;pINDENT[ LENGTH-n ];<br>}</p>
+<p>int dump_attribs_to_stdout(TiXmlElement* pElement, unsigned int indent)<br>{<br>if ( !pElement ) return 0;</p>
+<p>TiXmlAttribute<em> pAttrib=pElement-&gt;FirstAttribute();<br>int i=0;<br>int ival;<br>double dval;<br>const char</em> pIndent=getIndent(indent);<br>printf(“/n”);<br>while (pAttrib)<br>{<br>printf( “%s%s: value=[%s]”, pIndent, pAttrib-&gt;Name(), pAttrib-&gt;Value());</p>
+<p>if (pAttrib-&gt;QueryIntValue(&amp;ival)==TIXML_SUCCESS)    printf( “ int=%d”, ival);<br>if (pAttrib-&gt;QueryDoubleValue(&amp;dval)==TIXML_SUCCESS) printf( “ d=%1.1f”, dval);<br>printf( “/n” );<br>i++;<br>pAttrib=pAttrib-&gt;Next();<br>}<br>return i;<br>}</p>
+<p>void dump_to_stdout( TiXmlNode* pParent, unsigned int indent = 0 )<br>{<br>if ( !pParent ) return;</p>
+<p>TiXmlNode<em> pChild;<br>TiXmlText</em> pText;<br>int t = pParent-&gt;Type();<br>printf( “%s”, getIndent(indent));<br>int num;</p>
+<p>switch ( t )<br>{<br>case TiXmlNode::DOCUMENT:<br>printf( “Document” );<br>break;</p>
+<p>case TiXmlNode::ELEMENT:<br>printf( “Element [%s]”, pParent-&gt;Value() );<br>num=dump_attribs_to_stdout(pParent-&gt;ToElement(), indent+1);<br>switch(num)<br>{<br>case 0:  printf( “ (No attributes)”); break;<br>case 1:  printf( “%s1 attribute”, getIndentAlt(indent)); break;<br>default: printf( “%s%d attributes”, getIndentAlt(indent), num); break;<br>}<br>break;</p>
+<p>case TiXmlNode::COMMENT:<br>printf( “Comment: [%s]”, pParent-&gt;Value());<br>break;</p>
+<p>case TiXmlNode::UNKNOWN:<br>printf( “Unknown” );<br>break;</p>
+<p>case TiXmlNode::TEXT:<br>pText = pParent-&gt;ToText();<br>printf( “Text: [%s]”, pText-&gt;Value() );<br>break;</p>
+<p>case TiXmlNode::DECLARATION:<br>printf( “Declaration” );<br>break;<br>default:<br>break;<br>}<br>printf( “/n” );<br>for ( pChild = pParent-&gt;FirstChild(); pChild != 0; pChild = pChild-&gt;NextSibling())<br>{<br>dump_to_stdout( pChild, indent+1 );<br>}<br>}</p>
+<p>// load the named file and dump its structure to STDOUT<br>void dump_to_stdout(const char* pFilename)<br>{<br>TiXmlDocument doc(pFilename);<br>bool loadOkay = doc.LoadFile();<br>if (loadOkay)<br>{<br>printf(“/n%s:/n”, pFilename);<br>dump_to_stdout( &amp;doc ); // defined later in the tutorial<br>}<br>else<br>{<br>printf(“Failed to load file /“%s/“/n”, pFilename);<br>}<br>}</p>
+<p>// ———————————————————————-<br>// main() for printing files named on the command line<br>// ———————————————————————-<br>int main(int argc, char* argv[])<br>{<br>for (int i=1; i&lt;argc; i++)<br>{<br>dump_to_stdout(argv[i]);<br>}<br>return 0;<br>}<br> </p>
+<p>递归和树简直就是绝配，前阵子做等了部分加载联系人到树控件时也是用递归搞定的，有时间再把递归好好研究下。</p>
+<p></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/05/30/滚动条-可滚动文字的窗口/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2205,158 +2369,6 @@ CMemoryDC *m_pMemDC;
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2009/04/07/一些步入正轨/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="billowqiu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="taocoding">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2009/04/07/一些步入正轨/" itemprop="url">一些步入正轨</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2009-04-07T21:32:00+08:00">
-                2009-04-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/生活轨迹/" itemprop="url" rel="index">
-                    <span itemprop="name">生活轨迹</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近被电脑折腾得不行了，希望这次没有任何问题了，生活和学习也该步入正轨了。</p>
-<p>附记今天看到的，TCP三路握手:</p>
-<p>建立一个TCP连接：</p>
-<p>(1)服务器准备接受客户端的连接</p>
-<p>(2)客户端向服务器发起连接请求。此时客户端TCP发送一个SYN分节。</p>
-<p>(3)服务器确认客户端的SYN（同步），同时也发送一个SYN分节。服务器以单个分节向客户端发送SYN和对客户端的SYN的ACK（确认）。</p>
-<p>(4)客户端确认服务器的SYN。</p>
-<p>此乃TCP的三路握手(three-way-handshake).</p>
-<p>&nbsp;</p>
-<p>这个概念应该是在学习计算机网络时就讲过的，而其还是很详细的，但是现在在工作中看到感觉还是不一样。</p>
-<p></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2407,7 +2419,7 @@ CMemoryDC *m_pMemDC;
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">156</span>
+                  <span class="site-state-item-count">157</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2482,7 +2494,7 @@ CMemoryDC *m_pMemDC;
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

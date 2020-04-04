@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="准备工作 时间机器备份   使用“时间机器”备份您的 Mac，按照官方指导一步一步来就可以了。这里要特别强调一点，在备份的时候务必确认一下这里： 第一次备份的时候没注意，导致没有按需备份所需资料，后面重新备份恢复浪费大把时间。  U盘启动盘   如何创建可引导的 macOS 安装器  转接卡   上篇文章提过，mac的硬盘接口不是标准的m.2，必须得弄一个转接卡，这个万能的宝上有比较多，关键字：“">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MacBooPro升级固态-实战">
+<meta property="og:url" content="http://yoursite.com/2020/04/04/mbp2015-change-ssd/index.html">
+<meta property="og:site_name" content="taocoding">
+<meta property="og:description" content="准备工作 时间机器备份   使用“时间机器”备份您的 Mac，按照官方指导一步一步来就可以了。这里要特别强调一点，在备份的时候务必确认一下这里： 第一次备份的时候没注意，导致没有按需备份所需资料，后面重新备份恢复浪费大把时间。  U盘启动盘   如何创建可引导的 macOS 安装器  转接卡   上篇文章提过，mac的硬盘接口不是标准的m.2，必须得弄一个转接卡，这个万能的宝上有比较多，关键字：“">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/2020/04/timemachine_opt.png">
+<meta property="og:image" content="http://yoursite.com/images/2020/04/m2_to_mac.png">
+<meta property="og:image" content="http://yoursite.com/images/2020/04/1.2_t5.png">
+<meta property="og:image" content="http://yoursite.com/images/2020/04/970evo.png">
+<meta property="og:image" content="http://yoursite.com/images/2020/04/battery_desc.jpg">
+<meta property="og:image" content="http://yoursite.com/images/2020/04/battery_turnoff.png">
+<meta property="og:image" content="http://yoursite.com/images/2020/04/new970evo-disk.jpg">
+<meta property="og:image" content="https://support.apple.com/library/content/dam/edam/applecare/images/zh_CN/macos/highsierra/macos-high-sierra-recovery-mode-reinstall.jpg">
+<meta property="og:image" content="http://yoursite.com/images/2020/04/DiskSpeedTest.png">
+<meta property="og:image" content="http://yoursite.com/images/2020/04/DiskSpeedTest-970evo.png">
+<meta property="og:updated_time" content="2020-04-04T14:26:31.589Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MacBooPro升级固态-实战">
+<meta name="twitter:description" content="准备工作 时间机器备份   使用“时间机器”备份您的 Mac，按照官方指导一步一步来就可以了。这里要特别强调一点，在备份的时候务必确认一下这里： 第一次备份的时候没注意，导致没有按需备份所需资料，后面重新备份恢复浪费大把时间。  U盘启动盘   如何创建可引导的 macOS 安装器  转接卡   上篇文章提过，mac的硬盘接口不是标准的m.2，必须得弄一个转接卡，这个万能的宝上有比较多，关键字：“">
+<meta name="twitter:image" content="http://yoursite.com/images/2020/04/timemachine_opt.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/04/04/mbp2015-change-ssd/">
+
+
+
+
+
+  <title>MacBooPro升级固态-实战 | taocoding</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d13234060d812cb98a47e937139083a9";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">taocoding</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/04/mbp2015-change-ssd/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MacBooPro升级固态-实战</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-04T20:14:11+08:00">
+                2020-04-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><ul>
+<li><p>时间机器备份</p>
+<p>  <a href="https://support.apple.com/zh-cn/HT201250" target="_blank" rel="noopener">使用“时间机器”备份您的 Mac</a>，按照官方指导一步一步来就可以了。这里要特别强调一点，在备份的时候务必确认一下这里：<img src="/images/2020/04/timemachine_opt.png" alt="备份排除项目"> 第一次备份的时候没注意，导致没有按需备份所需资料，后面重新备份恢复浪费大把时间。</p>
+</li>
+<li><p>U盘启动盘</p>
+<p>  <a href="https://support.apple.com/zh-cn/HT201372" target="_blank" rel="noopener">如何创建可引导的 macOS 安装器</a></p>
+</li>
+<li><p>转接卡</p>
+<p>  <a href="https://mp.weixin.qq.com/s/eFT_su8El1y-i9AgKsqTCA" target="_blank" rel="noopener">上篇文章</a>提过，mac的硬盘接口不是标准的m.2，必须得弄一个转接卡，这个万能的宝上有比较多，关键字：“m.2 转 苹果”，价格15～30之间，我选择了一个开了10年的店铺，但是非要两个包邮，想着也不算太贵，就直接拍了，在这个特殊情况下竟然只花了1天半时间就到手了，竟然比正常时候都快。之前看网上的文章，有说这个卡看运气，运气不好长了或者短了或者兼容性不好，那就尴尬了，我这次还算运气好，大小很合适，兼容性也没问题。<br>  <img src="/images/2020/04/m2_to_mac.png" alt="转接卡">非常小巧</p>
+</li>
+<li><p>螺丝刀</p>
+<p>  mac背面的几个螺丝非常小，需要特殊的螺丝刀，这个我在某东上买的，比较亏，建议在某宝上买，10块钱应该可以搞定。除了后背螺丝外，拆解硬盘的时候还需要一个不一样的螺丝刀，如下图：<br>  <img src="/images/2020/04/1.2_t5.png" alt="螺丝刀">其中1.2上用于拆后盖螺丝，t5拆解硬盘。</p>
+</li>
+<li><p>新固态硬盘</p>
+<p>  由于最近疫情原因，ssd涨价非常多，一直在intel760p和三星970evo中纠结，本着这两个都是网友们推荐的兼容性较好的，而且我的本本也都不跑满这些新硬件的性能，选择的依据就是性价比了。在我出手时这两个一直都是100的差价，当转接卡到手后准备下手760的时候，不知道店家干啥的突然涨价100，估计是被大数据杀熟了（我添加了这几款ssd在购物车了），刚好三星那边又搞活动降价了一点点，这么一看那970毫不犹豫了，毕竟原装的也是三星的，性能相对也更好。<br>  <img src="/images/2020/04/970evo.png" alt="螺丝刀"></p>
+</li>
+</ul>
+<h3 id="拆机"><a href="#拆机" class="headerlink" title="拆机"></a>拆机</h3><p>关闭电源！！！</p>
+<ul>
+<li><p>拆后背螺丝</p>
+<p>  这个比较简单，拿1.2螺丝刀挨个弄下里就行了，唯一需要注意的是键盘部位中间的两个螺丝跟其他螺丝相比稍短，不然找起来比较麻烦。</p>
+</li>
+<li><p>拔下电池，这个非常重要！！！<br>  <img src="/images/2020/04/battery_desc.jpg" alt="电池插口位置"><br>  <img src="/images/2020/04/battery_turnoff.png" alt="电池插口拔下来"></p>
+</li>
+</ul>
+<h3 id="硬盘更换"><a href="#硬盘更换" class="headerlink" title="硬盘更换"></a>硬盘更换</h3><p>这个步骤需要用到t5螺丝刀</p>
+<ul>
+<li>拆下原装硬盘螺丝</li>
+<li>拔下硬盘</li>
+<li>插上转接卡</li>
+<li>插上新硬盘</li>
+<li>撞上螺丝</li>
+</ul>
+<p>硬盘换上之后，记得把电池插口还原，此时可以把后盖盖上，但是先不要上螺丝，以免遇到各种不兼容问题导致电脑无法点亮。</p>
+<h3 id="新硬盘系统安装"><a href="#新硬盘系统安装" class="headerlink" title="新硬盘系统安装"></a>新硬盘系统安装</h3><p>插上u盘启动盘，打开电源开关，此时会进到macos的恢复模式，首选需要进行新硬盘的格式化。<img src="/images/2020/04/new970evo-disk.jpg" alt=""><br>关于硬盘格式的选择网上大部分都是建议选择Mac OS 扩展（日志式）+ GUID分区，其实官方也有相应的文档说明：<a href="https://support.apple.com/zh-cn/HT208496#which" target="_blank" rel="noopener">在 APFS 和 Mac OS 扩展格式之间进行选择</a>。我直接用的APFS格式，后面也没遇到啥问题，格式化之后，又回回到使用工具界面：<img src="https://support.apple.com/library/content/dam/edam/applecare/images/zh_CN/macos/highsierra/macos-high-sierra-recovery-mode-reinstall.jpg" alt=""><br>这次选择重新安装macos，按照提示来就好了。</p>
+<h3 id="恢复原硬盘备份"><a href="#恢复原硬盘备份" class="headerlink" title="恢复原硬盘备份"></a>恢复原硬盘备份</h3><p>上面的系统安装完成后，会进行一系列的设置等操作，后面会进到迁移助理界面，这个就需要用到前面提到的时间机器备份了，官方也有很详细的描述。<br><a href="https://support.apple.com/zh-cn/HT203981" target="_blank" rel="noopener">从备份恢复 Mac</a>。我第一次恢复之后，进入系统发现很多应用没有了，部分目录也不见了，当时觉得很奇怪，难道是时间机器有bug么？期间打了一次苹果的技术支持电话，详细说明了情况，可惜那个顾问也没能给到有效解释，只是让我再备份一次。</p>
+<p>我只好再把硬盘来回倒腾了一番，装上了原来的，再次进入时间机器，我猛然看到一个前面第一幅图，然来是有些备份被排除了，很奇怪的是官方的文档也没强调这一点。再次按需备份之后，进入新硬盘系统，时间机器里面也能看到最新的一次备份，但是就是没法进行恢复（按钮颜色都不一样）。</p>
+<p>但是因为有时间机器，我打算干脆重新装一次再恢复得了，进入恢复模式的实用工具之后，点击从TimeMachine恢复，里面就可以看到最新的备份，而且也提示会直接把系统也一起抹掉恢复，最后总算是顺利完成。</p>
+<p>最后来两张性能对比：<br><img src="/images/2020/04/DiskSpeedTest.png" alt=""><br><img src="/images/2020/04/DiskSpeedTest-970evo.png" alt=""><br>读性能基本上没啥区别，写提高近三倍，跟官方标榜的读2300 MB/s 和 写3400 MB/s差距还不小，当然这个主要是2015款mbp的物理接口限制了。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>mac换硬盘这个事情，其实从预谋到实施也就两周，期间主要是新硬盘选择和准备工具花了不少时间。真正换硬盘的时间反而是最微不足道的，备份数据和恢复数据花了95%的时间，最终新的硬盘果然也是没法最大程度释放硬件能力，不过我的初衷是扩大容量，这么来看也算符合预期了。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/29/envoy-00/" rel="next" title="Envoy初试">
+                <i class="fa fa-chevron-left"></i> Envoy初试
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">billowqiu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">157</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/billowqiu" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:billowqiu@163.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#准备工作"><span class="nav-number">1.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拆机"><span class="nav-number">2.</span> <span class="nav-text">拆机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#硬盘更换"><span class="nav-number">3.</span> <span class="nav-text">硬盘更换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新硬盘系统安装"><span class="nav-number">4.</span> <span class="nav-text">新硬盘系统安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#恢复原硬盘备份"><span class="nav-number">5.</span> <span class="nav-text">恢复原硬盘备份</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">billowqiu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

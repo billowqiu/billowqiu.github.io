@@ -269,6 +269,165 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2007/01/21/最简单的mfc程序/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="billowqiu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="taocoding">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2007/01/21/最简单的mfc程序/" itemprop="url">最简单的MFC程序</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2007-01-21T18:31:00+08:00">
+                2007-01-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/VC/" itemprop="url" rel="index">
+                    <span itemprop="name">VC</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <pre><code>&lt;TABLE style=&quot;TABLE-LAYOUT: fixed&quot;&gt;
+</code></pre><p><tbody></tbody></p>
+<p><tr></tr></p>
+<p><td></td></p>
+<p><div class="cnt" id="blog_text"></div></p>
+<div>
+
+<p>#include &lt;afxwin.h&gt;</p>
+<p>//定义一个CWinApp的派生类<br>class CMinApp:public CWinApp<br>{<br>public:<br>virtual BOOL InitInstance();<br>};<br>//重载CWinApp成员函数InitInstance()<br>BOOL CMinApp::InitInstance()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //应用程序初始化<br>{<br>CFrameWnd* pFrame=new CFrameWnd;&nbsp;&nbsp;&nbsp;&nbsp; //动态生成主窗口类对象<br>pFrame-&gt;Create(0,_T(“A Minimal MFC Program”)); //创建主窗口<br>pFrame-&gt;ShowWindow(SW_SHOWMAXIMIZED); //显示主窗口<br>pFrame-&gt;UpdateWindow();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //刷新主窗口<br>AfxGetApp()-&gt;m_pMainWnd=pFrame;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //指定应用程序主窗口<br>return TRUE;<br>}</p>
+<p>//定义一个全局CMinApp对象<br>CMinApp HelloApp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //生成应用程序对象并执行应用程序</p>
+<p>在程序的一开始由CWinApp派生的一个自己的类CMinApp。这个类利用CWinApp中的虚拟初始化函数，改写成自己的初始化函数。在这个初始化函数中动态地建立了CFrameWnd类实例，用来定义窗口和显示窗口。而CWinApp自身去完成建立消息循环的工作，在这个小例子中没有处理消息。上述工作实际上还停留在定义上，程序的运行只有最后一句话，派生类CMinApp的实例化。</p>
+<p>在MFC变成结构中CWinApp相当于WinMain()函数，其中的InitInstance函数是MFC应用程序的入口点，且它是可以重载的，可以应用它编写自己应用程序的初始化。InitInstance函数完成以下工作：</p>
+<p>1：定义框架窗口对CFrameWnd作为应用程序的主窗口</p>
+<p>2：显示主窗口</p>
+<p>3：建立局部窗口与应用程序对象的关系</p>
+<p>声明应用程序对象时，应用程序自动运行，因为类的构造器调用了run()函数，在run()中建立消息循环</p>
+<p>CFrameWnd类负责窗口的创建和显示</p>
+<p>从上面的例子中可以看出MFC程序至少要有两个对象，应用对象和主框架对象，在MFC应用程序中需要定义一个单独的全局应用程序对象。类CFrameWnd的对象代表中应用程序的主框架窗口。主框架窗口的创建和显示工作由CMinApp的成员函数InitInstance完成，在应用程序中必须重载该函数，因为CWinApp基类根本无法知道具体应用程序需要什么样的主框架窗口。应用程序运行开始时，Windows会自动调用应用程序框架内部的WinMain函数（在MFC应用程序中仍然存在WinMain函数作为程序的入口，只不过它被隐藏在应用程序内部了）WinMain函数会去查找应用程序的全局构造对象，然后调用InitInstance函数以进行必要的初始化，接着调用隐藏在CWinApp基类中的函数Run(),应用程序进入运行状态。用户可以通过关闭主窗口来终止应用程序，这一操作会引起一系列事件的发生，首先CFrameWnd对象将被删除，然后退出WinMain,最后删除CMinApp对象。<br></p></div><br><p></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2006/12/25/派生类的拷贝构造函数/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1256,7 +1415,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">156</span>
+                  <span class="site-state-item-count">157</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1331,7 +1490,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
