@@ -1,6 +1,8 @@
 ---
 title: opentracing-api-overview
 date: 2018-11-11 21:27:00
+categories:
+  - microservice
 tags: tracing
 ---
 ### 简介

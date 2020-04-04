@@ -1,6 +1,8 @@
 ---
 title: 分布式跟踪系统历史
 date: 2018-10-21 23:23:27
+categories:
+  - microservice
 tags: tracing
 ---
 #### 介绍

@@ -1,6 +1,8 @@
 ---
 title: jaeger实战
 date: 2019-04-11 20:12:56
+categories:
+  - microservice
 tags: tracing
 ---
 做tracing选型时发现除了Zipkin(这个其实很久之前就有所闻，但是一直没实操过)，还有Uber开源的[Jaeger](https://www.jaegertracing.io)，看到官网就感觉这是一个用心的产品，这个应该离不开Uber有专门的团队维护。

@@ -1,6 +1,8 @@
 ---
 title: 那些年见识过的微服务思想
 date: 2019-09-10 22:10:20
+categories:
+  - microservice
 tags: microservice
 ---
 
